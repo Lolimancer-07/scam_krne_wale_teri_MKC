@@ -92,4 +92,19 @@ describe('Detector Rules Engine', () => {
     expect(result.score).toBeLessThan(30);
     expect(result.category).toBe('other');
   });
+
+  it('recognises legitimate bank verification codes as safe', () => {
+    // Bank-issued verification codes - these are from official sources
+    const sbicode = 'JK-SBIUPI-S';
+    const bobcode = 'JD-BOBSMS-S';
+    const resultSbic = runRules(sbicode);
+    const resultBob = runRules(bobcode);
+
+    // These should not be classified as scam categories
+    expect(resultSbic.category).not.toBe('otp_impersonation');
+    expect(resultBob.category).not.toBe('otp_impersonation');
+    // Scores should be low (benign)
+    expect(resultSbic.score).toBeLessThan(30);
+    expect(resultBob.score).toBeLessThan(30);
+  });
 });

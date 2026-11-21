@@ -47,6 +47,7 @@ const nextConfig = {
   experimental: {
     // Enables instrumentation.ts, which initialises Sentry when configured.
     instrumentationHook: true,
+    serverComponentsExternalPackages: ['tesseract.js'],
   },
   // Installable PWA manifest (includes Web Share Target for SMS/WhatsApp sharing).
   ...(process.env.NEXT_PUBLIC_ENABLE_PWA === 'true' ? { manifest: '/manifest.webmanifest' } : {}),
