@@ -17,25 +17,25 @@ module.exports = {
     },
     extend: {
       colors: {
-        // Deep Space Obsidian Sentinel Theme Tokens
-        surface: '#050b14',
-        'surface-dim': '#020617',
-        'surface-bright': '#1e293b',
-        'surface-container-lowest': '#020617',
-        'surface-container-low': '#0a101f',
-        'surface-container': '#0f172a',
-        'surface-container-high': '#1e293b',
-        'surface-container-highest': '#334155',
-        'surface-variant': '#1e293b',
-        'surface-tint': '#6366f1',
-        'on-surface': '#f8fafc',
+        // Deep Space Obsidian Sentinel Theme Tokens (Neutral Obsidian Charcoal)
+        surface: '#0f131c',
+        'surface-dim': '#0a0e17',
+        'surface-bright': '#31353f',
+        'surface-container-lowest': '#0a0e17',
+        'surface-container-low': '#181b25',
+        'surface-container': '#1c1f29',
+        'surface-container-high': '#262a34',
+        'surface-container-highest': '#31353f',
+        'surface-variant': '#31353f',
+        'surface-tint': '#ef4444',
+        'on-surface': '#dfe2ef',
         'on-surface-variant': '#94a3b8',
-        'inverse-surface': '#f8fafc',
-        'inverse-on-surface': '#0f172a',
+        'inverse-surface': '#dfe2ef',
+        'inverse-on-surface': '#181b25',
         outline: '#334155',
         'outline-variant': '#1e293b',
 
-        // Cyber Threat Palette (Crimson for Scam / High Risk)
+        // Cyber Threat Palette (Crimson for Scam / High Risk / Threat Actions)
         primary: {
           DEFAULT: '#ef4444',
           container: '#dc2626',
@@ -51,7 +51,7 @@ module.exports = {
         'on-primary-fixed-variant': '#991b1b',
         'inverse-primary': '#f87171',
 
-        // Telemetry & Nominal Safe Palette (Electric Emerald)
+        // Telemetry & Nominal Safe Palette (Electric Emerald / Mint Green)
         secondary: {
           DEFAULT: '#10b981',
           container: '#059669',
@@ -90,26 +90,26 @@ module.exports = {
         'on-error': '#ffffff',
         'on-error-container': '#ffffff',
 
-        // Electric Indigo & Cyber Accent
+        // Compatibility alias: map indigo references to emerald
         indigo: {
-          DEFAULT: '#6366f1',
-          container: '#4f46e5',
-          glow: 'rgba(99, 102, 241, 0.4)',
+          DEFAULT: '#10b981',
+          container: '#059669',
+          glow: 'rgba(16, 185, 129, 0.4)',
         },
 
-        // Obsidian Core Dark Architecture
+        // Obsidian Core Dark Architecture (Charcoal Dark Base)
         obsidian: {
-          DEFAULT: '#050b14',
-          depth: '#020617',
-          surface: '#0a101f',
-          card: '#0f172a',
-          elevated: '#1e293b',
+          DEFAULT: '#0f131c',
+          depth: '#0a0e17',
+          surface: '#181b25',
+          card: '#1c1f29',
+          elevated: '#262a34',
         },
         border: 'rgba(255, 255, 255, 0.08)',
-        input: '#0f172a',
-        ring: '#6366f1',
-        background: '#050b14',
-        foreground: '#f8fafc',
+        input: '#181b25',
+        ring: '#10b981',
+        background: '#0f131c',
+        foreground: '#dfe2ef',
       },
       fontFamily: {
         headline: ['"Space Grotesk"', 'sans-serif'],

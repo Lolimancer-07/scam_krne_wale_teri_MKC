@@ -27,7 +27,7 @@ export function Navbar({ onReset }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 w-full z-50 bg-[#050b14]/90 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_1px_12px_rgba(0,0,0,0.5)]">
+    <header className="sticky top-0 w-full z-50 bg-[#0f131c]/90 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_1px_12px_rgba(0,0,0,0.5)]">
       <div className="h-20 w-full px-4 sm:px-6 lg:px-8 max-w-[1440px] mx-auto flex items-center justify-between gap-4">
         {/* Brand & Telemetry Node */}
         <div className="flex items-center gap-4">
@@ -37,14 +37,14 @@ export function Navbar({ onReset }: NavbarProps) {
             className="flex items-center gap-3 group text-left focus:outline-none"
             title="ScamShield Forensic Home"
           >
-            <div className="h-10 w-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center group-hover:border-indigo-400/60 group-hover:bg-indigo-500/20 transition shadow-sm">
-              <ShieldIcon className="w-5 h-5 text-indigo-400 group-hover:scale-105 transition-transform" />
+            <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center group-hover:border-emerald-400/60 group-hover:bg-emerald-500/20 transition shadow-sm">
+              <ShieldIcon className="w-5 h-5 text-emerald-400 group-hover:scale-105 transition-transform" />
             </div>
             <div className="flex flex-col">
               <span className="font-headline font-black text-xl tracking-tight text-white leading-none">
                 ScamShield
               </span>
-              <span className="font-mono text-[10px] text-indigo-400 tracking-widest uppercase mt-1">
+              <span className="font-mono text-[10px] text-emerald-400 tracking-widest uppercase mt-1">
                 {isHindi ? 'भारत साइबर सुरक्षा' : 'India Fraud Defense'}
               </span>
             </div>
@@ -66,7 +66,7 @@ export function Navbar({ onReset }: NavbarProps) {
             onClick={() => handleNavClick(onReset)}
             className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
               isScanner
-                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
@@ -78,7 +78,7 @@ export function Navbar({ onReset }: NavbarProps) {
             onClick={() => handleNavClick()}
             className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
               isLearn
-                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
@@ -90,7 +90,7 @@ export function Navbar({ onReset }: NavbarProps) {
             onClick={() => handleNavClick()}
             className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
               isStats
-                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
@@ -102,7 +102,7 @@ export function Navbar({ onReset }: NavbarProps) {
             onClick={() => handleNavClick()}
             className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
               isPrivacy
-                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
@@ -131,9 +131,9 @@ export function Navbar({ onReset }: NavbarProps) {
             type="button"
             onClick={toggle}
             aria-label={isHindi ? 'Switch to English' : 'हिंदी में बदलें'}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-slate-200 font-mono text-xs hover:border-indigo-400/50 hover:bg-white/[0.08] transition cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-slate-200 font-mono text-xs hover:border-emerald-400/50 hover:bg-white/[0.08] transition cursor-pointer"
           >
-            <GlobeIcon className="w-3.5 h-3.5 text-indigo-400" />
+            <GlobeIcon className="w-3.5 h-3.5 text-emerald-400" />
             <span className="font-bold">{isHindi ? 'EN' : 'हि'}</span>
           </button>
 
@@ -173,17 +173,17 @@ export function Navbar({ onReset }: NavbarProps) {
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-white/[0.08] bg-[#050b14]/98 px-4 py-4 space-y-2 animate-in fade-in-50">
+        <div className="md:hidden border-t border-white/[0.08] bg-[#0f131c]/98 px-4 py-4 space-y-2 animate-in fade-in-50">
           <Link
             href="/"
             onClick={() => handleNavClick(onReset)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider ${
               isScanner
-                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30'
+                ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30'
                 : 'text-slate-300 hover:bg-white/[0.05]'
             }`}
           >
-            <ShieldIcon className="w-4 h-4 text-indigo-400" />
+            <ShieldIcon className="w-4 h-4 text-emerald-400" />
             <span>{isHindi ? 'स्कैनर' : 'Scanner'}</span>
           </Link>
 
@@ -192,11 +192,11 @@ export function Navbar({ onReset }: NavbarProps) {
             onClick={() => handleNavClick()}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider ${
               isLearn
-                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30'
+                ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30'
                 : 'text-slate-300 hover:bg-white/[0.05]'
             }`}
           >
-            <TargetIcon className="w-4 h-4 text-indigo-400" />
+            <TargetIcon className="w-4 h-4 text-emerald-400" />
             <span>{isHindi ? 'सीखें और क्विज़' : 'Learn & Quiz'}</span>
           </Link>
 
@@ -205,11 +205,11 @@ export function Navbar({ onReset }: NavbarProps) {
             onClick={() => handleNavClick()}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider ${
               isStats
-                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30'
+                ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30'
                 : 'text-slate-300 hover:bg-white/[0.05]'
             }`}
           >
-            <BarChartIcon className="w-4 h-4 text-indigo-400" />
+            <BarChartIcon className="w-4 h-4 text-emerald-400" />
             <span>{isHindi ? 'लाइव आंकड़े' : 'Live Stats'}</span>
           </Link>
 
@@ -218,11 +218,11 @@ export function Navbar({ onReset }: NavbarProps) {
             onClick={() => handleNavClick()}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider ${
               isPrivacy
-                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30'
+                ? 'bg-emerald-500/15 text-emerald-300 font-bold border border-emerald-500/30'
                 : 'text-slate-300 hover:bg-white/[0.05]'
             }`}
           >
-            <LockIcon className="w-4 h-4 text-indigo-400" />
+            <LockIcon className="w-4 h-4 text-emerald-400" />
             <span>{isHindi ? 'गोपनीयता' : 'Privacy & Arch'}</span>
           </Link>
         </div>

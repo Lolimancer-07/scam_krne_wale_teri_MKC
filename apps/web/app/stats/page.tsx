@@ -9,6 +9,7 @@ import {
   BarChartIcon,
   LockIcon,
   ScaleIcon,
+  RotateCcwIcon,
 } from '@/components/Icons';
 
 interface StatsData {
@@ -26,10 +27,12 @@ interface StatsData {
 export default function StatsPage() {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const { lang } = useLanguage();
   const isHindi = lang === 'hi';
 
-  useEffect(() => {
+  const loadStats = (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
     fetch('/api/v1/stats')
       .then((res) => res.json())
       .then((json) => {
@@ -53,7 +56,14 @@ export default function StatsPage() {
           degraded: false,
         });
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setRefreshing(false);
+      });
+  };
+
+  useEffect(() => {
+    loadStats();
   }, []);
 
   const total = stats?.totalScans || 14820;
@@ -142,6 +152,17 @@ export default function StatsPage() {
               <ShieldCheckIcon className="w-4 h-4 text-emerald-400" />
               <span>Zero-PII Sovereign Memory Sandbox</span>
             </div>
+            <button
+              type="button"
+              onClick={() => loadStats(true)}
+              disabled={refreshing}
+              className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl border border-white/[0.08] transition flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              <RotateCcwIcon
+                className={`w-3.5 h-3.5 text-indigo-400 ${refreshing ? 'animate-spin' : ''}`}
+              />
+              <span>{refreshing ? 'Refreshing...' : 'Refresh Metrics'}</span>
+            </button>
             <button
               type="button"
               onClick={handleExportAudit}

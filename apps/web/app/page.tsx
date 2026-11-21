@@ -127,7 +127,6 @@ export default function HomePage() {
             result={analyzedResult}
             onReset={handleReset}
             lang={lang}
-            screenshotPreview={analyzedScreenshot}
           />
         ) : (
           <AnalyzerForm

@@ -14,7 +14,9 @@ import {
   RotateCcwIcon,
   CheckCircleIcon,
   Volume2Icon,
+  VolumeXIcon,
   CopyIcon,
+  CameraIcon,
   PhoneCallIcon,
   ArrowRightIcon,
   LockIcon,
@@ -59,15 +61,23 @@ interface ResultCardProps {
   result: DetectionResultData;
   onReset: () => void;
   lang?: 'en' | 'hi';
+  screenshotPreview?: string | null;
 }
 
-export function ResultCard({ originalText, result, onReset, lang = 'en' }: ResultCardProps) {
+export function ResultCard({
+  originalText,
+  result,
+  onReset,
+  lang = 'en',
+  screenshotPreview,
+}: ResultCardProps) {
   const [feedbackSent, setFeedbackSent] = useState<boolean | null>(null);
   const [showEmergency, setShowEmergency] = useState(false);
   const [showNcrpDraft, setShowNcrpDraft] = useState(false);
   const [copiedIncident, setCopiedIncident] = useState(false);
   const [copiedNcrp, setCopiedNcrp] = useState(false);
   const [familyCopied, setFamilyCopied] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const { lang: currentLang } = useLanguage();
 
   const isHindi = (lang || currentLang) === 'hi';
@@ -140,11 +150,19 @@ export function ResultCard({ originalText, result, onReset, lang = 'en' }: Resul
 
   const handleReadAloud = () => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(
       result.ai?.explanation ?? currentVerdictConfig.summary,
     );
     utterance.lang = isHindi ? 'hi-IN' : 'en-IN';
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    setIsSpeaking(true);
     window.speechSynthesis.speak(utterance);
   };
 
@@ -284,11 +302,24 @@ export function ResultCard({ originalText, result, onReset, lang = 'en' }: Resul
               <button
                 type="button"
                 onClick={handleReadAloud}
-                className="px-3.5 py-1.5 text-xs font-mono rounded-xl border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white transition flex items-center gap-1.5 cursor-pointer"
-                aria-label="Read assessment aloud"
+                className={`px-3.5 py-1.5 text-xs font-mono rounded-xl border transition flex items-center gap-1.5 cursor-pointer ${
+                  isSpeaking
+                    ? 'border-indigo-400 bg-indigo-500/20 text-indigo-200 animate-pulse'
+                    : 'border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white'
+                }`}
+                aria-label={isSpeaking ? 'Stop voice readout' : 'Read assessment aloud'}
               >
-                <Volume2Icon className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Read Aloud (Voice)</span>
+                {isSpeaking ? (
+                  <>
+                    <VolumeXIcon className="w-3.5 h-3.5 text-rose-400" />
+                    <span>Stop Voice Readout</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2Icon className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>Read Aloud (Voice)</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -451,6 +482,31 @@ export function ResultCard({ originalText, result, onReset, lang = 'en' }: Resul
           </p>
         </div>
       </div>
+
+      {/* 2.5 Original Screenshot Preview (if analyzed via OCR) */}
+      {screenshotPreview && (
+        <div className="bg-[#0a101f] p-6 rounded-2xl border border-indigo-500/30 space-y-4 shadow-xl">
+          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
+            <div className="flex items-center gap-2">
+              <CameraIcon className="w-4 h-4 text-indigo-400" />
+              <h3 className="font-mono text-xs font-bold text-white uppercase tracking-wider">
+                ORIGINAL SCANNED SCREENSHOT // OCR EVIDENCE BUFFER
+              </h3>
+            </div>
+            <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono text-[10px] font-bold border border-indigo-500/30">
+              OCR EXTRACTED
+            </span>
+          </div>
+          <div className="max-w-lg mx-auto overflow-hidden rounded-xl border border-white/[0.08] shadow-lg bg-[#050b14] p-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={screenshotPreview}
+              alt="Analyzed screenshot"
+              className="w-full object-contain max-h-72 rounded-lg mx-auto"
+            />
+          </div>
+        </div>
+      )}
 
       {/* 3. Highlighted Message Analysis (Forensic Text Inspection) */}
       <div className="bg-[#0a101f] p-6 rounded-2xl border border-white/[0.08] space-y-4 shadow-xl">

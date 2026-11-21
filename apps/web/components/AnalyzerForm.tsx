@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { DetectionResultData } from './ResultCard';
 import {
   FileTextIcon,
@@ -17,11 +17,7 @@ import {
 } from './Icons';
 
 interface AnalyzerFormProps {
-  onAnalyzeSuccess: (
-    data: DetectionResultData,
-    text: string,
-    screenshotPreview?: string | null,
-  ) => void;
+  onAnalyzeSuccess: (data: DetectionResultData, text: string) => void;
   lang?: 'en' | 'hi';
   initialText?: string;
 }
@@ -74,134 +70,6 @@ const THREAT_PRESETS = [
   },
 ];
 
-const SCREENSHOT_PRESETS = [
-  {
-    id: 'sbi_screenshot',
-    title: 'SBI KYC Block Alert',
-    tag: 'SMS SPOOF',
-    tagColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
-    icon: BuildingIcon,
-    desc: 'Simulated banking SMS',
-    sender: 'VM-SBINB',
-    time: '11:42 AM',
-    text: 'Dear SBI Customer, your YONO account is suspended today due to pending KYC. Update immediately at http://sbi-kyc-verify.xyz to resume banking services.',
-  },
-  {
-    id: 'electricity_screenshot',
-    title: 'Power Cutoff Threat',
-    tag: 'EXTORTION',
-    tagColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
-    icon: ZapIcon,
-    desc: '9:30 PM cutoff notice',
-    sender: 'VK-DHBVN',
-    time: '04:15 PM',
-    text: 'Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM due to unpaid bill. Immediately contact DISCOM officer at 9876543210.',
-  },
-  {
-    id: 'arrest_screenshot',
-    title: 'Digital Arrest Warrant',
-    tag: 'BLACKMAIL',
-    tagColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
-    icon: ScaleIcon,
-    desc: 'Supreme Court & CBI notice',
-    sender: 'CBI-CYBERCELL',
-    time: '02:08 PM',
-    text: 'Supreme Court & CBI Notice: Digital arrest warrant issued against Aadhaar for suspicious parcel with contraband. Join Skype interrogation room immediately.',
-  },
-];
-
-const URL_PRESETS = [
-  {
-    id: 'sbi_phish',
-    title: 'SBI Lookalike Phishing',
-    tag: 'SPOOFED TLD',
-    tagColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
-    desc: 'http://sbi-kyc-verify.xyz',
-    url: 'http://sbi-kyc-verify.xyz',
-  },
-  {
-    id: 'ip_pay',
-    title: 'Direct IP Bypass',
-    tag: 'IP ANOMALY',
-    tagColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
-    desc: 'http://192.168.1.100/pay',
-    url: 'http://192.168.1.100/pay',
-  },
-  {
-    id: 'sbi_legit',
-    title: 'Official SBI Portal',
-    tag: 'ALLOWLISTED',
-    tagColor: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30',
-    desc: 'https://onlinesbi.sbi',
-    url: 'https://onlinesbi.sbi',
-  },
-];
-
-function createScreenshotBlob(preset: (typeof SCREENSHOT_PRESETS)[0]): Promise<File> {
-  return new Promise((resolve) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 800;
-    canvas.height = 360;
-    const ctx = canvas.getContext('2d')!;
-
-    // Background
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(0, 0, 800, 360);
-
-    // Header bar (phone / SMS interface)
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(0, 0, 800, 60);
-
-    // Header text
-    ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 20px monospace';
-    ctx.fillText(`< ${preset.sender}`, 24, 38);
-
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = '14px monospace';
-    ctx.fillText(`${preset.time} · Verified Sender (TRAI)`, 480, 38);
-
-    // Chat bubble
-    ctx.fillStyle = '#020617';
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(24, 80, 752, 240, 16);
-    ctx.fill();
-    ctx.stroke();
-
-    // Text in chat bubble
-    ctx.fillStyle = '#f1f5f9';
-    ctx.font = '18px monospace';
-    const words = preset.text.split(' ');
-    let line = '';
-    let y = 125;
-    for (let n = 0; n < words.length; n++) {
-      const testLine = line + words[n] + ' ';
-      const metrics = ctx.measureText(testLine);
-      if (metrics.width > 700 && n > 0) {
-        ctx.fillText(line, 44, y);
-        line = words[n] + ' ';
-        y += 30;
-      } else {
-        line = testLine;
-      }
-    }
-    ctx.fillText(line, 44, y);
-
-    // Bottom timestamp
-    ctx.fillStyle = '#64748b';
-    ctx.font = '13px monospace';
-    ctx.fillText(`Received ${preset.time} · SMS Gateway IN-DLT`, 44, 295);
-
-    canvas.toBlob((blob) => {
-      if (blob) {
-        resolve(new File([blob], `${preset.id}.png`, { type: 'image/png' }));
-      }
-    }, 'image/png');
-  });
-}
-
 export function AnalyzerForm({
   onAnalyzeSuccess,
   lang = 'en',
@@ -212,91 +80,12 @@ export function AnalyzerForm({
   const [urlInput, setUrlInput] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [storeRaw, setStoreRaw] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isHindi = lang === 'hi';
-
-  // Synchronize initialText updates (e.g. from query params)
-  useEffect(() => {
-    if (initialText) {
-      setText(initialText);
-    }
-  }, [initialText]);
-
-  // Support pasting screenshot from clipboard (Ctrl+V / Cmd+V)
-  useEffect(() => {
-    const handlePaste = (e: ClipboardEvent) => {
-      if (activeTab !== 'image') return;
-      const items = e.clipboardData?.items;
-      if (!items) return;
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.startsWith('image/')) {
-          const file = items[i].getAsFile();
-          if (file) {
-            processSelectedImage(file);
-            break;
-          }
-        }
-      }
-    };
-    window.addEventListener('paste', handlePaste);
-    return () => window.removeEventListener('paste', handlePaste);
-  }, [activeTab]);
-
-  const processSelectedImage = (file: File) => {
-    if (file.size > 5 * 1024 * 1024) {
-      setErrorMessage(
-        isHindi ? 'चित्र का आकार 5MB से कम होना चाहिए' : 'Image exceeds 5MB size limit',
-      );
-      return;
-    }
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
-    setErrorMessage(null);
-  };
-
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      processSelectedImage(file);
-    }
-  };
-
-  const handleScreenshotPresetSelect = async (preset: (typeof SCREENSHOT_PRESETS)[0]) => {
-    try {
-      const file = await createScreenshotBlob(preset);
-      processSelectedImage(file);
-    } catch {
-      setErrorMessage('Failed to generate sample screenshot preview.');
-    }
-  };
 
   const handleTextSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -392,9 +181,18 @@ export function AnalyzerForm({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      processSelectedImage(file);
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage(
+        isHindi ? 'चित्र का आकार 5MB से कम होना चाहिए' : 'Image exceeds 5MB size limit',
+      );
+      return;
     }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setErrorMessage(null);
   };
 
   const handleImageSubmit = async (e: React.FormEvent) => {
@@ -417,7 +215,7 @@ export function AnalyzerForm({
     setErrorMessage(null);
 
     const abortController = new AbortController();
-    const timeoutId = setTimeout(() => abortController.abort(), 18000);
+    const timeoutId = setTimeout(() => abortController.abort(), 14000);
 
     try {
       const formData = new FormData();
@@ -436,18 +234,14 @@ export function AnalyzerForm({
         throw new Error(json.error?.message || 'Failed to analyze screenshot');
       }
 
-      onAnalyzeSuccess(
-        json.data,
-        json.data.extractedText || 'Extracted screenshot text',
-        imagePreview,
-      );
+      onAnalyzeSuccess(json.data, json.data.extractedText || 'Extracted screenshot text');
     } catch (err: unknown) {
       clearTimeout(timeoutId);
       if (err instanceof DOMException && err.name === 'AbortError') {
         setErrorMessage(
           isHindi
             ? 'ओसीआर प्रसंस्करण समय समाप्त हो गया। कृपया चित्र को क्रॉप करें या सीधे टेक्स्ट टैब में पेस्ट करें।'
-            : 'Screenshot OCR processing timed out. Please crop the screenshot closer to the message or paste text directly into the "Paste Message" tab.',
+            : 'OCR processing timed out. Please try a closer crop or paste text directly in "Paste Message".',
         );
       } else {
         setErrorMessage((err as Error).message);
@@ -463,17 +257,13 @@ export function AnalyzerForm({
     setUrlInput('');
     setImageFile(null);
     setImagePreview(null);
-    setIsDragging(false);
     setErrorMessage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
   };
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto bg-[#0a101f] rounded-2xl shadow-2xl border border-white/[0.08] overflow-hidden">
+    <div className="relative w-full max-w-5xl mx-auto bg-[#181b25] rounded-2xl shadow-2xl border border-white/[0.08] overflow-hidden">
       {/* Top Tab Navigation & Status Header */}
-      <div className="flex flex-wrap items-center justify-between bg-[#050b14] px-4 sm:px-6 pt-3 border-b border-white/[0.08]">
+      <div className="flex flex-wrap items-center justify-between bg-[#0f131c] px-4 sm:px-6 pt-3 border-b border-white/[0.08]">
         <div className="flex items-center gap-1 sm:gap-2" role="tablist">
           <button
             type="button"
@@ -486,11 +276,11 @@ export function AnalyzerForm({
             }}
             className={`group flex items-center gap-2 px-4 sm:px-5 py-3 font-mono text-xs uppercase tracking-wider rounded-t-lg transition-all cursor-pointer ${
               activeTab === 'text'
-                ? 'bg-[#0a101f] text-indigo-300 font-bold border-b-2 border-indigo-400 shadow-[inset_0_-2px_0_0_#818cf8]'
+                ? 'bg-[#181b25] text-emerald-300 font-bold border-b-2 border-emerald-400 shadow-[inset_0_-2px_0_0_#34d399]'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.03]'
             }`}
           >
-            <FileTextIcon className="w-4 h-4 text-indigo-400" />
+            <FileTextIcon className="w-4 h-4 text-emerald-400" />
             <span>{isHindi ? 'संदेश पेस्ट करें' : 'Paste Message'}</span>
           </button>
 
@@ -505,13 +295,13 @@ export function AnalyzerForm({
             }}
             className={`group flex items-center gap-2 px-4 sm:px-5 py-3 font-mono text-xs uppercase tracking-wider rounded-t-lg transition-all cursor-pointer ${
               activeTab === 'image'
-                ? 'bg-[#0a101f] text-indigo-300 font-bold border-b-2 border-indigo-400 shadow-[inset_0_-2px_0_0_#818cf8]'
+                ? 'bg-[#181b25] text-emerald-300 font-bold border-b-2 border-emerald-400 shadow-[inset_0_-2px_0_0_#34d399]'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.03]'
             }`}
           >
-            <CameraIcon className="w-4 h-4 text-indigo-400" />
+            <CameraIcon className="w-4 h-4 text-emerald-400" />
             <span>{isHindi ? 'स्क्रीनशॉट (OCR)' : 'Screenshot (OCR)'}</span>
-            <span className="px-1.5 py-0.5 bg-indigo-500/20 text-indigo-300 font-mono text-[9px] font-bold rounded">
+            <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-300 font-mono text-[9px] font-bold rounded">
               BETA
             </span>
           </button>
@@ -527,11 +317,11 @@ export function AnalyzerForm({
             }}
             className={`group flex items-center gap-2 px-4 sm:px-5 py-3 font-mono text-xs uppercase tracking-wider rounded-t-lg transition-all cursor-pointer ${
               activeTab === 'url'
-                ? 'bg-[#0a101f] text-indigo-300 font-bold border-b-2 border-indigo-400 shadow-[inset_0_-2px_0_0_#818cf8]'
+                ? 'bg-[#181b25] text-emerald-300 font-bold border-b-2 border-emerald-400 shadow-[inset_0_-2px_0_0_#34d399]'
                 : 'text-slate-400 hover:text-white hover:bg-white/[0.03]'
             }`}
           >
-            <LinkIcon className="w-4 h-4 text-indigo-400" />
+            <LinkIcon className="w-4 h-4 text-emerald-400" />
             <span>{isHindi ? 'सीधा लिंक' : 'Check URL'}</span>
           </button>
         </div>
@@ -565,7 +355,7 @@ export function AnalyzerForm({
               </p>
             </div>
           </div>
-          <div className="flex items-center self-start md:self-auto gap-1.5 px-3 py-1 bg-[#050b14] rounded-lg font-mono text-[11px] text-amber-300 border border-amber-500/30">
+          <div className="flex items-center self-start md:self-auto gap-1.5 px-3 py-1 bg-[#0f131c] rounded-lg font-mono text-[11px] text-amber-300 border border-amber-500/30">
             <ShieldCheckIcon className="w-3.5 h-3.5 text-amber-400" />
             <span>AIR-GAPPED BUFFER</span>
           </div>
@@ -576,14 +366,14 @@ export function AnalyzerForm({
           <form onSubmit={handleTextSubmit} className="space-y-5">
             <div className="flex flex-col space-y-2">
               <div className="flex justify-between items-center text-slate-400 font-mono text-[11px] px-1 uppercase tracking-wider">
-                <span className="flex items-center gap-1.5 text-indigo-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                <span className="flex items-center gap-1.5 text-emerald-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                   PAYLOAD_INGEST_STREAM (SMS / WHATSAPP / TELEGRAM / EMAIL)
                 </span>
                 <span className="text-slate-500">ENCODING: UTF-8</span>
               </div>
 
-              <div className="relative bg-[#050b14] rounded-xl p-4 border border-white/[0.08] focus-within:border-indigo-500/50 focus-within:ring-1 focus-within:ring-indigo-500/30 transition-all">
+              <div className="relative bg-[#0f131c] rounded-xl p-4 border border-white/[0.08] focus-within:border-emerald-500/50 focus-within:ring-1 focus-within:ring-emerald-500/30 transition-all">
                 <textarea
                   id="scam-input"
                   value={text}
@@ -641,17 +431,17 @@ export function AnalyzerForm({
                         setText(preset.text);
                         setErrorMessage(null);
                       }}
-                      className="flex flex-col text-left p-3.5 bg-[#0f172a] rounded-xl border border-white/[0.06] hover:border-indigo-500/40 hover:bg-[#1e293b]/60 transition-all group shadow-sm cursor-pointer"
+                      className="flex flex-col text-left p-3.5 bg-[#1c1f29] rounded-xl border border-white/[0.06] hover:border-emerald-500/40 hover:bg-[#262a34]/60 transition-all group shadow-sm cursor-pointer"
                     >
                       <div className="flex items-center justify-between w-full mb-1.5">
-                        <IconComp className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
+                        <IconComp className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
                         <span
                           className={`px-1.5 py-0.5 font-mono text-[9px] font-bold rounded ${preset.tagColor}`}
                         >
                           {preset.tag}
                         </span>
                       </div>
-                      <span className="font-headline font-semibold text-xs text-slate-100 group-hover:text-indigo-300 transition-colors">
+                      <span className="font-headline font-semibold text-xs text-slate-100 group-hover:text-emerald-300 transition-colors">
                         {preset.title}
                       </span>
                       <span className="font-mono text-[10px] text-slate-400 mt-0.5 line-clamp-1">
@@ -670,7 +460,7 @@ export function AnalyzerForm({
                   type="checkbox"
                   checked={storeRaw}
                   onChange={(e) => setStoreRaw(e.target.checked)}
-                  className="mt-0.5 md:mt-0 w-4 h-4 rounded bg-[#050b14] text-indigo-500 focus:ring-0 focus:outline-none accent-indigo-500"
+                  className="mt-0.5 md:mt-0 w-4 h-4 rounded bg-[#0f131c] text-emerald-500 focus:ring-0 focus:outline-none accent-emerald-500"
                 />
                 <span className="font-body text-xs text-slate-400 hover:text-slate-200 transition-colors">
                   {isHindi
@@ -694,7 +484,7 @@ export function AnalyzerForm({
                   type="submit"
                   id="analyze-btn"
                   disabled={loading}
-                  className="relative px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-xl shadow-[0_0_20px_rgba(99,102,241,0.35)] hover:shadow-[0_0_28px_rgba(99,102,241,0.55)] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer border border-indigo-400/30"
+                  className="relative px-6 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-xl shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_28px_rgba(239,68,68,0.6)] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer border border-red-500/30"
                 >
                   {loading ? (
                     <>
@@ -723,7 +513,7 @@ export function AnalyzerForm({
                     setActiveTab('text');
                     setErrorMessage(null);
                   }}
-                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-indigo-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-indigo-400/30"
+                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-emerald-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-emerald-400/30"
                 >
                   {isHindi ? 'सीधे संदेश पेस्ट करें' : 'Switch to Paste Message Tab'}
                 </button>
@@ -735,43 +525,29 @@ export function AnalyzerForm({
         {/* Tab 2: Screenshot OCR */}
         {activeTab === 'image' && (
           <form onSubmit={handleImageSubmit} className="space-y-5">
-            <div
-              onDragEnter={handleDragEnter}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition bg-[#050b14] ${
-                isDragging
-                  ? 'border-indigo-400 bg-indigo-500/15 scale-[1.01]'
-                  : 'border-white/[0.12] hover:border-indigo-400/50'
-              }`}
-            >
+            <div className="border-2 border-dashed border-white/[0.12] rounded-2xl p-8 text-center hover:border-emerald-400/50 transition bg-[#0f131c]">
               {imagePreview ? (
                 <div className="space-y-4">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imagePreview}
                     alt="Screenshot preview"
-                    className="max-h-64 mx-auto rounded-xl shadow-md border border-white/[0.08] object-contain"
+                    className="max-h-64 mx-auto rounded-xl shadow-md border border-white/[0.08]"
                   />
-                  <div className="flex items-center justify-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImageFile(null);
-                        setImagePreview(null);
-                        if (fileInputRef.current) fileInputRef.current.value = '';
-                      }}
-                      className="font-mono text-xs text-rose-400 hover:text-rose-300 hover:underline font-semibold cursor-pointer flex items-center gap-1.5"
-                    >
-                      <RotateCcwIcon className="w-3.5 h-3.5" />
-                      <span>{isHindi ? 'चित्र हटाएं' : 'Remove Image Buffer'}</span>
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageFile(null);
+                      setImagePreview(null);
+                    }}
+                    className="font-mono text-xs text-rose-400 hover:underline font-semibold cursor-pointer"
+                  >
+                    {isHindi ? 'चित्र हटाएं' : 'Remove Image Buffer'}
+                  </button>
                 </div>
               ) : (
                 <label className="cursor-pointer space-y-3 block">
-                  <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 w-fit mx-auto text-indigo-400">
+                  <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 w-fit mx-auto text-emerald-400">
                     <CameraIcon className="w-8 h-8" />
                   </div>
                   <div>
@@ -781,62 +557,17 @@ export function AnalyzerForm({
                         : 'Select or Drag & Drop SMS / WhatsApp Screenshot'}
                     </span>
                     <span className="font-body text-xs text-slate-400 block mt-1">
-                      PNG, JPG, or WebP up to 5MB. Drag &amp; drop, Ctrl+V paste, or browse.
+                      PNG, JPG, or WebP up to 5MB. Powered by Tesseract OCR (English + Hindi)
                     </span>
                   </div>
                   <input
-                    ref={fileInputRef}
                     type="file"
-                    accept="image/png,image/jpeg,image/jpg,image/webp,image/*,.png,.jpg,.jpeg,.webp"
+                    accept="image/png,image/jpeg,image/webp"
                     onChange={handleImageChange}
                     className="hidden"
                   />
                 </label>
               )}
-            </div>
-
-            {/* Quick Screenshot Samples: 3 Realistic Indian Scams */}
-            <div className="space-y-2 pt-1">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-slate-400 uppercase tracking-wider font-semibold">
-                  {isHindi ? 'त्वरित स्क्रीनशॉट नमूने:' : 'Quick Load Sample Screenshots:'}
-                </span>
-                <span className="font-mono text-[10px] text-slate-500">
-                  {isHindi
-                    ? 'नमूना लोड करने के लिए क्लिक करें'
-                    : 'Click preset to load authentic simulated screenshot'}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                {SCREENSHOT_PRESETS.map((preset) => {
-                  const IconComp = preset.icon;
-                  return (
-                    <button
-                      key={preset.id}
-                      type="button"
-                      aria-label={preset.title}
-                      onClick={() => handleScreenshotPresetSelect(preset)}
-                      className="flex flex-col text-left p-3.5 bg-[#0f172a] rounded-xl border border-white/[0.06] hover:border-indigo-500/40 hover:bg-[#1e293b]/60 transition-all group shadow-sm cursor-pointer"
-                    >
-                      <div className="flex items-center justify-between w-full mb-1.5">
-                        <IconComp className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
-                        <span
-                          className={`px-1.5 py-0.5 font-mono text-[9px] font-bold rounded ${preset.tagColor}`}
-                        >
-                          {preset.tag}
-                        </span>
-                      </div>
-                      <span className="font-headline font-semibold text-xs text-slate-100 group-hover:text-indigo-300 transition-colors">
-                        {preset.title}
-                      </span>
-                      <span className="font-mono text-[10px] text-slate-400 mt-0.5 line-clamp-1">
-                        {preset.desc}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
             </div>
 
             {errorMessage && (
@@ -851,7 +582,7 @@ export function AnalyzerForm({
                     setActiveTab('text');
                     setErrorMessage(null);
                   }}
-                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-indigo-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-indigo-400/30"
+                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-emerald-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-emerald-400/30"
                 >
                   {isHindi ? 'सीधे संदेश पेस्ट करें' : 'Switch to Paste Message Tab'}
                 </button>
@@ -862,15 +593,14 @@ export function AnalyzerForm({
               <button
                 type="button"
                 onClick={clearInput}
-                className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl transition-all border border-white/[0.08] cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl transition-all border border-white/[0.08] cursor-pointer"
               >
-                <RotateCcwIcon className="w-3.5 h-3.5" />
-                <span>{isHindi ? 'खाली करें' : 'Clear Buffer'}</span>
+                {isHindi ? 'खाली करें' : 'Clear Buffer'}
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-xl shadow-[0_0_20px_rgba(99,102,241,0.35)] hover:shadow-[0_0_28px_rgba(99,102,241,0.55)] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer border border-indigo-400/30"
+                className="px-6 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-xl shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_28px_rgba(239,68,68,0.6)] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer border border-red-500/30"
               >
                 {loading ? (
                   <>
@@ -895,7 +625,7 @@ export function AnalyzerForm({
               <label className="font-mono text-xs font-semibold text-slate-300 uppercase tracking-wider block">
                 {isHindi ? 'जांच के लिए संदिग्ध वेबसाइट लिंक दर्ज करें:' : 'Suspicious Target URL Ingest:'}
               </label>
-              <div className="relative bg-[#050b14] rounded-xl p-3.5 border border-white/[0.08] focus-within:border-indigo-500/50 transition-all">
+              <div className="relative bg-[#0f131c] rounded-xl p-3.5 border border-white/[0.08] focus-within:border-emerald-500/50 focus-within:ring-1 focus-within:ring-emerald-500/30 transition-all">
                 <input
                   type="text"
                   value={urlInput}
@@ -913,48 +643,6 @@ export function AnalyzerForm({
               </span>
             </div>
 
-            {/* Quick URL Vectors */}
-            <div className="space-y-2 pt-1">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-slate-400 uppercase tracking-wider font-semibold">
-                  {isHindi ? 'त्वरित यूआरएल नमूने:' : 'Quick Load Suspicious URLs:'}
-                </span>
-                <span className="font-mono text-[10px] text-slate-500">
-                  {isHindi ? 'नमूना लोड करने के लिए क्लिक करें' : 'Click preset to populate target URL'}
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                {URL_PRESETS.map((preset) => (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    aria-label={preset.title}
-                    onClick={() => {
-                      setUrlInput(preset.url);
-                      setErrorMessage(null);
-                    }}
-                    className="flex flex-col text-left p-3.5 bg-[#0f172a] rounded-xl border border-white/[0.06] hover:border-indigo-500/40 hover:bg-[#1e293b]/60 transition-all group shadow-sm cursor-pointer"
-                  >
-                    <div className="flex items-center justify-between w-full mb-1.5">
-                      <LinkIcon className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
-                      <span
-                        className={`px-1.5 py-0.5 font-mono text-[9px] font-bold rounded ${preset.tagColor}`}
-                      >
-                        {preset.tag}
-                      </span>
-                    </div>
-                    <span className="font-headline font-semibold text-xs text-slate-100 group-hover:text-indigo-300 transition-colors">
-                      {preset.title}
-                    </span>
-                    <span className="font-mono text-[10px] text-slate-400 mt-0.5 line-clamp-1">
-                      {preset.desc}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {errorMessage && (
               <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 animate-in fade-in-50">
                 <div className="flex items-center gap-2.5">
@@ -967,7 +655,7 @@ export function AnalyzerForm({
                     setActiveTab('text');
                     setErrorMessage(null);
                   }}
-                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-indigo-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-indigo-400/30"
+                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-emerald-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-emerald-400/30"
                 >
                   {isHindi ? 'सीधे संदेश पेस्ट करें' : 'Switch to Paste Message Tab'}
                 </button>
@@ -978,15 +666,14 @@ export function AnalyzerForm({
               <button
                 type="button"
                 onClick={clearInput}
-                className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl transition-all border border-white/[0.08] cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl transition-all border border-white/[0.08] cursor-pointer"
               >
-                <RotateCcwIcon className="w-3.5 h-3.5" />
-                <span>{isHindi ? 'खाली करें' : 'Clear Buffer'}</span>
+                {isHindi ? 'खाली करें' : 'Clear Buffer'}
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-xl shadow-[0_0_20px_rgba(99,102,241,0.35)] hover:shadow-[0_0_28px_rgba(99,102,241,0.55)] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer border border-indigo-400/30"
+                className="px-6 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-mono text-xs font-bold uppercase tracking-wider rounded-xl shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_28px_rgba(239,68,68,0.6)] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer border border-red-500/30"
               >
                 {loading ? (
                   <>

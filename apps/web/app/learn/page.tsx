@@ -15,6 +15,8 @@ import {
   PackageIcon,
   BriefcaseIcon,
   ShieldCheckIcon,
+  SearchIcon,
+  ArrowRightIcon,
 } from '@/components/Icons';
 
 const SCAM_GUIDES = [
@@ -266,6 +268,19 @@ export default function LearnPage() {
                         </li>
                       ))}
                     </ul>
+
+                    <div className="pt-2">
+                      <a
+                        href={`/?text=${encodeURIComponent(guide.example)}`}
+                        className="w-full px-3.5 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 hover:text-white font-mono text-xs rounded-xl border border-indigo-500/30 transition flex items-center justify-center gap-1.5 font-semibold group cursor-pointer"
+                      >
+                        <SearchIcon className="w-3.5 h-3.5 text-indigo-400" />
+                        <span>
+                          {isHindi ? 'स्कैनर में इस पैटर्न की जांच करें' : 'Analyze Pattern in Scanner'}
+                        </span>
+                        <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      </a>
+                    </div>
                   </div>
                 </article>
               );
