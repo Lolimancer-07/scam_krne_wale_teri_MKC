@@ -36,7 +36,7 @@ export function RedFlagHighlight({ text, redFlags }: RedFlagHighlightProps) {
 
   if (validFlags.length === 0) {
     return (
-      <p className="text-on-surface font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
+      <p className="text-slate-200 font-mono text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">
         {text}
       </p>
     );
@@ -75,16 +75,16 @@ export function RedFlagHighlight({ text, redFlags }: RedFlagHighlightProps) {
   }
 
   return (
-    <div className="p-4 bg-surface-container-lowest rounded-lg border border-outline-variant/30 text-xs sm:text-sm leading-loose whitespace-pre-wrap font-mono text-on-surface select-text shadow-inner">
+    <div className="p-4 bg-[#050b14] rounded-xl border border-white/[0.08] text-xs sm:text-sm leading-loose whitespace-pre-wrap font-mono text-slate-200 select-text shadow-inner">
       {segments.map((seg, i) =>
         seg.isFlagged && seg.flag ? (
           <mark
             key={`${seg.flag.id}-${i}`}
             title={`${seg.flag.reason} (Risk Weight: +${seg.flag.weight})`}
-            className="bg-error-container text-on-error-container border border-error/40 px-2 py-0.5 rounded font-mono font-semibold inline-flex items-baseline gap-1 mx-0.5"
+            className="bg-rose-500/20 text-rose-200 border border-rose-500/40 px-2 py-0.5 rounded-md font-mono font-semibold inline-flex items-baseline gap-1 mx-0.5"
           >
             <span>{seg.text}</span>
-            <span className="font-mono text-[10px] text-primary font-bold">
+            <span className="font-mono text-[10px] text-rose-400 font-bold">
               [+{seg.flag.weight}]
             </span>
           </mark>

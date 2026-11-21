@@ -59,8 +59,8 @@ export const SIGNALS: SignalPatternDefinition[] = [
     reason:
       'Threatens that your bank account, SIM card, or utility will be suspended or disconnected.',
     patterns: [
-      /\b(?:account|sim|card|service|electricity|power|connection|access|netbanking)\b[^\n\r.]{0,45}\b(?:blocked?|suspended?|deactivated?|disconnected?|frozen|terminated|cut\s*off)\b/i,
-      /\b(?:blocked?|suspended?|deactivated?|disconnected?|frozen|deactivation)\b[^\n\r.]{0,45}\b(?:account|sim|card|service|power|connection|access|netbanking)\b/i,
+      /\b(?:account|sim|card|service|electricity|power|connection|access|netbanking)\b[^\n\r.]{0,45}\b(?:blocked?|suspended?|deactivated?|disconnected?|frozen|terminated|cut\s*off|disabled)\b/i,
+      /\b(?:blocked?|suspended?|deactivated?|disconnected?|frozen|deactivation|disabled)\b[^\n\r.]{0,45}\b(?:account|sim|card|service|power|connection|access|netbanking)\b/i,
       /(?:खाता|अकाउंट|सिम|बिजली|कनेक्शन)[^\n\r.]{0,40}(?:ब्लॉक|निलंबित|बंद|कट\s*जाएगा|काट\s*दी)/u,
       /\b(?:account|sim|bijli|connection|electricity)\b[^\n\r.]{0,50}\b(?:band\s*ho\s*jayega|block\s*hoga|kat\s*jayegi|kat\s*jayega)\b/i,
     ],
@@ -82,8 +82,8 @@ export const SIGNALS: SignalPatternDefinition[] = [
     categoryHint: 'other',
     reason: 'Artificial urgency designed to panic you into acting without verifying.',
     patterns: [
-      /\b(?:urgent(?:ly)?|immediate(?:ly)?|within\s*\d+\s*(?:hours?|hrs?|minutes?|mins?)|today\s*itself|before\s*midnight|tonight|last\s*chance|act\s*now|valid\s*till\s*today|without\s*delay|expiring\s*tonight|aaj\s*raat|limited\s*time)\b/i,
-      /(?:तुरंत|अभी|तत्काल|२४\s*घंटे|समय\s*सीमा|आज\s*रात|सीमित\s*समय)/u,
+      /\b(?:urgent(?:ly)?|immediate(?:ly)?|within\s*\d+\s*(?:hours?|hrs?|minutes?|mins?)|today\s*itself|before\s*midnight|tonight|last\s*chance|act\s*now|valid\s*till\s*today|without\s*delay|without\s*penalty|expiring\s*tonight|aaj\s*raat|limited\s*time)\b/i,
+      /(?:तुरंत|अभी|तत्काल|२४\s*घंटे|समय\s*सीमा|आज\s*रात|सीमित\s*समय|तुरंत\s*संपर्क)/u,
       /\b(?:turant|jaldi|abhi\s*kare|24\s*ghante|aaj\s*raat|bina\s*delay)\b/i,
     ],
   },
@@ -116,8 +116,8 @@ export const SIGNALS: SignalPatternDefinition[] = [
     categoryHint: 'bank_kyc',
     reason: 'References prominent banks, government agencies, utilities, or courier services.',
     patterns: [
-      /\b(?:sbi|state\s*bank\s*of\s*india|hdfc|icici|axis\s*bank|kotak|pnb|bank\s*of\s*baroda|paytm|phonepe|google\s*pay|gpay|india\s*post|bluedart|delhivery|electricity\s*officer|electricity\s*board|bses|dhbvn|uppcl|income\s*tax|uidai|aadhaar|netflix|bank\s*executive)\b/i,
-      /(?:एसबीआई|एचडीएफसी|आईसीआईसीआई|पेटीएम|फोनपे|इंडिया\s*पोस्ट|आयकर|बिजली\s*उपभोक्ता)/u,
+      /\b(?:sbi|state\s*bank\s*of\s*india|hdfc|icici|axis\s*bank|kotak|pnb|canara(?:\s*bank)?|canarabank|union\s*bank|bank\s*of\s*baroda|paytm|phonepe|google\s*pay|gpay|india\s*post|bluedart|delhivery|electricity\s*officer|electricity\s*board|bses|dhbvn|uppcl|income\s*tax|uidai|aadhaar|netflix|bank\s*executive)\b/i,
+      /(?:एसबीआई|एचडीएफसी|आईसीआईसीआई|पेटीएम|फोनपे|इंडिया\s*पोस्ट|आयकर|बिजली\s*उपभोक्ता|बिजली\s*कनेक्शन)/u,
     ],
   },
   {
@@ -129,7 +129,7 @@ export const SIGNALS: SignalPatternDefinition[] = [
     patterns: [
       /\b(?:part[\s-]time\s*job|work\s*from\s*home|daily\s*income|earn\s*(?:rs|₹)\s*\d+[\d,]*\s*(?:per\s*day|daily|per\s*month)|like\s*youtube\s*videos?|telegram\s*(?:task|group|link)|earn\s*from\s*home|job\s*offer\s*for\s*(?:students|housewives))\b/i,
       /(?:घर\s*बैठे\s*कमाएं|पार्ट\s*टाइम\s*जॉब|प्रतिदिन\s*कमाई|बिना\s*किसी\s*निवेश)/u,
-      /\b(?:ghar\s*baithe\s*kamaye|daily\s*earning|daily\s*\d+\s*se\s*\d+|simple\s*youtube\s*video|simple\s*task\s*se\s*paise|telegram\s*link)\b/i,
+      /\b(?:ghar\s*baithe\s*kamaye|daily\s*earning|daily\s*\d+\s*se\s*\d+|simple\s*youtube\s*video|simple\s*task\s*se\s*paise|telegram\s*link|like\s*karne\s*ka\s*kaam|daily\s*\d+\s*se\s*\d+\s*rs|video\s*like\s*karne)\b/i,
     ],
   },
   {
@@ -182,6 +182,7 @@ export const SIGNALS: SignalPatternDefinition[] = [
       /\b(?:call|contact)\s*kare\s*\+?(?:91)?[6-9]\d{9}\b/i,
       /\b(?:call|contact)\s*(?:kare|karen)\b[^\n\r.]{0,20}\b\+?(?:91)?[6-9]\d{9}\b/i,
       /(?:संपर्क\s*करें|कॉल\s*करें)[^\n\r.]{0,20}\b\+?(?:91)?[6-9]\d{9}\b/u,
+      /(?:तुरंत\s*संपर्क\s*करें|तुरंत\s*कॉल\s*करें)/u,
     ],
   },
 ];

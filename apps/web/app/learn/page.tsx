@@ -15,7 +15,6 @@ import {
   PackageIcon,
   BriefcaseIcon,
   ShieldCheckIcon,
-  LockIcon,
 } from '@/components/Icons';
 
 const SCAM_GUIDES = [
@@ -24,7 +23,7 @@ const SCAM_GUIDES = [
     icon: BuildingIcon,
     title: 'Bank & KYC Expiry Scams',
     threat: 'High Threat',
-    threatColor: 'bg-error-container text-on-error border border-error/30',
+    threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
     description:
       'Fraudsters impersonate major Indian banks via bulk SMS or WhatsApp, creating false panic about immediate account suspension to harvest netbanking credentials and OTPs.',
     example:
@@ -40,7 +39,7 @@ const SCAM_GUIDES = [
     icon: ZapIcon,
     title: 'Electricity & Utility Disconnection',
     threat: 'Critical Threat',
-    threatColor: 'bg-error-container text-on-error border border-error/40 shadow-sm',
+    threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-sm',
     description:
       'Attackers send urgent messages threatening power disconnection at 9:30 PM tonight due to an unpaid previous month bill, pressuring victims into calling a fake officer.',
     example:
@@ -56,7 +55,7 @@ const SCAM_GUIDES = [
     icon: QrCodeIcon,
     title: 'UPI & QR Spoof Grid',
     threat: 'High Threat',
-    threatColor: 'bg-error-container text-on-error border border-error/30',
+    threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
     description:
       'When selling goods on OLX or receiving refunds, scammers send a QR code or Collect Request claiming scanning it is necessary to receive payment directly into your account.',
     example:
@@ -72,7 +71,7 @@ const SCAM_GUIDES = [
     icon: ScaleIcon,
     title: 'Digital Arrest & Police Extortion',
     threat: 'Critical Threat',
-    threatColor: 'bg-error-container text-on-error border border-error/40',
+    threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
     description:
       'Scammers impersonate police, CBI, ED, or customs officials in simulated police station video calls, claiming a parcel with illegal narcotics was seized in your name.',
     example:
@@ -88,7 +87,7 @@ const SCAM_GUIDES = [
     icon: PackageIcon,
     title: 'Postal & Courier Delivery Phishing',
     threat: 'Medium Threat',
-    threatColor: 'bg-tertiary-container/30 text-tertiary border border-tertiary/30',
+    threatColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
     description:
       'Messages pretending to be India Post or BlueDart claim your shipment is held due to an incomplete address, requesting a nominal fee (₹25) on a phishing website.',
     example:
@@ -104,7 +103,7 @@ const SCAM_GUIDES = [
     icon: BriefcaseIcon,
     title: 'Work-from-Home & Task Traps',
     threat: 'High Threat',
-    threatColor: 'bg-error-container text-on-error border border-error/30',
+    threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
     description:
       'Lures victims with high daily income (₹3,000–₹8,000) for liking YouTube videos or Google reviews. Small initial payouts are followed by demands for large prepaid deposits.',
     example:
@@ -123,24 +122,24 @@ export default function LearnPage() {
   const isHindi = lang === 'hi';
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-surface text-on-surface">
+    <div className="min-h-screen flex flex-col justify-between bg-[#050b14] text-slate-100">
       <Navbar />
 
       <main className="w-full flex-1 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
         {/* Header & Telemetry Overview */}
         <section className="relative w-full overflow-hidden">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-surface-container-high pb-8">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-white/[0.08] pb-8">
             <div className="max-w-3xl space-y-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded-lg border border-outline-variant/30">
-                <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-                <span className="font-mono text-xs text-secondary uppercase tracking-widest font-semibold">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.04] rounded-lg border border-white/[0.08]">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="font-mono text-xs text-indigo-400 uppercase tracking-widest font-semibold">
                   TRAINING_MODULE_02 // CERT-IN ALIGNED
                 </span>
               </div>
-              <h1 className="font-headline text-3xl sm:text-5xl font-black text-on-surface tracking-tight">
+              <h1 className="font-headline text-3xl sm:text-5xl font-black text-white tracking-tight">
                 {isHindi ? 'धोखाधड़ी से बचाव सीखें' : 'Learn Scam Defense'}
               </h1>
-              <p className="font-body text-sm sm:text-base text-on-surface-variant max-w-2xl leading-relaxed">
+              <p className="font-body text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
                 {isHindi
                   ? 'जानें कि डिजिटल जालसाज तात्कालिकता, डर और लालच का कैसे फायदा उठाते हैं। भारतीय खतरों के लाल झंडे पहचानें और क्विज से अपनी परीक्षा लें।'
                   : 'Understand how digital fraudsters manipulate urgency, fear, and greed. Master red flags across Indian vectors and test your reflexes.'}
@@ -148,11 +147,11 @@ export default function LearnPage() {
             </div>
 
             {/* Readiness Telemetry Widget */}
-            <div className="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl border border-surface-container-high shadow-md">
+            <div className="flex items-center gap-4 bg-[#0a101f] p-4 rounded-2xl border border-white/[0.08] shadow-xl">
               <div className="relative w-14 h-14 flex items-center justify-center">
-                <svg className="w-14 h-14 -rotate-90 text-secondary" viewBox="0 0 36 36">
+                <svg className="w-14 h-14 -rotate-90 text-indigo-500" viewBox="0 0 36 36">
                   <path
-                    className="text-surface-container-high"
+                    className="text-white/[0.08]"
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     fill="none"
                     stroke="currentColor"
@@ -167,30 +166,30 @@ export default function LearnPage() {
                     strokeWidth="3"
                   />
                 </svg>
-                <span className="absolute font-mono text-xs text-on-surface font-bold">06</span>
+                <span className="absolute font-mono text-xs text-white font-bold">06</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-mono text-[10px] text-on-surface-variant uppercase">
+                <span className="font-mono text-[10px] text-slate-400 uppercase">
                   Active Threat Vectors
                 </span>
-                <span className="font-headline font-bold text-sm text-on-surface">
+                <span className="font-headline font-bold text-sm text-white">
                   6 Core Defense Modules
                 </span>
-                <span className="font-mono text-[11px] text-secondary">HELPLINE: 1930 READY</span>
+                <span className="font-mono text-[11px] text-emerald-400">HELPLINE: 1930 READY</span>
               </div>
             </div>
           </div>
 
           {/* Dual Tab Switcher */}
-          <div className="mt-8 flex flex-wrap items-center gap-2 bg-surface-container-low p-1.5 rounded-xl border border-surface-container-high w-fit shadow-sm">
+          <div className="mt-8 flex flex-wrap items-center gap-2 bg-[#0a101f] p-1.5 rounded-xl border border-white/[0.08] w-fit shadow-sm">
             <button
               id="tab-guide"
               type="button"
               onClick={() => setActiveTab('guides')}
               className={`px-5 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'guides'
-                  ? 'bg-secondary-container text-on-secondary-container shadow-[0_0_12px_rgba(78,222,163,0.25)] font-bold'
-                  : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
+                  ? 'bg-indigo-600 text-white shadow-[0_0_12px_rgba(99,102,241,0.35)] font-bold'
+                  : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
               }`}
             >
               <BookOpenIcon className="w-4 h-4" />
@@ -203,8 +202,8 @@ export default function LearnPage() {
               onClick={() => setActiveTab('quiz')}
               className={`px-5 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'quiz'
-                  ? 'bg-secondary-container text-on-secondary-container shadow-[0_0_12px_rgba(78,222,163,0.25)] font-bold'
-                  : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
+                  ? 'bg-indigo-600 text-white shadow-[0_0_12px_rgba(99,102,241,0.35)] font-bold'
+                  : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
               }`}
             >
               <TargetIcon className="w-4 h-4" />
@@ -221,50 +220,48 @@ export default function LearnPage() {
               return (
                 <article
                   key={guide.code}
-                  className="flex flex-col justify-between bg-surface-container-low rounded-xl p-6 border border-surface-container-high shadow-lg hover:border-outline-variant transition-all space-y-4"
+                  className="flex flex-col justify-between bg-[#0a101f] rounded-2xl p-6 border border-white/[0.08] shadow-xl hover:border-indigo-500/40 transition-all space-y-4"
                 >
                   <div className="space-y-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-lg bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-primary">
-                          <IconComp className="w-5 h-5 text-primary" />
+                        <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+                          <IconComp className="w-5 h-5 text-indigo-400" />
                         </div>
-                        <span className="font-mono text-xs text-on-surface-variant font-bold">
+                        <span className="font-mono text-xs text-slate-400 font-bold">
                           {guide.code}
                         </span>
                       </div>
                       <span
-                        className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase ${guide.threatColor}`}
+                        className={`px-2 py-0.5 rounded-lg font-mono text-[10px] font-bold uppercase ${guide.threatColor}`}
                       >
                         {guide.threat}
                       </span>
                     </div>
 
-                    <h2 className="font-headline font-bold text-lg text-on-surface">
-                      {guide.title}
-                    </h2>
-                    <p className="font-body text-xs text-on-surface-variant leading-relaxed">
+                    <h2 className="font-headline font-bold text-lg text-white">{guide.title}</h2>
+                    <p className="font-body text-xs text-slate-400 leading-relaxed">
                       {guide.description}
                     </p>
 
-                    <div className="bg-surface-container-lowest p-3.5 rounded-lg border border-surface-container-high space-y-1">
-                      <span className="font-mono text-[10px] text-primary uppercase font-bold block">
+                    <div className="bg-[#050b14] p-3.5 rounded-xl border border-white/[0.06] space-y-1">
+                      <span className="font-mono text-[10px] text-rose-400 uppercase font-bold block">
                         Intercepted Bait Pattern
                       </span>
-                      <p className="font-mono text-xs text-on-surface leading-relaxed">
+                      <p className="font-mono text-xs text-slate-200 leading-relaxed">
                         &quot;{guide.example}&quot;
                       </p>
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-surface-container-high space-y-2">
-                    <span className="font-mono text-[10px] text-secondary uppercase tracking-wider block font-bold">
+                  <div className="pt-3 border-t border-white/[0.08] space-y-2">
+                    <span className="font-mono text-[10px] text-emerald-400 uppercase tracking-wider block font-bold">
                       Protection Checklist
                     </span>
-                    <ul className="space-y-1.5 font-body text-xs text-on-surface">
+                    <ul className="space-y-1.5 font-body text-xs text-slate-300">
                       {guide.protection.map((item, pIdx) => (
                         <li key={pIdx} className="flex items-start gap-2">
-                          <CheckCircleIcon className="w-3.5 h-3.5 text-secondary shrink-0 mt-0.5" />
+                          <CheckCircleIcon className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                           <span>{item}</span>
                         </li>
                       ))}
@@ -280,10 +277,10 @@ export default function LearnPage() {
       </main>
 
       {/* Sovereign Footer */}
-      <footer className="w-full bg-surface-container-lowest border-t border-surface-container-high mt-12 py-8">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-on-surface-variant">
+      <footer className="w-full bg-[#020617] border-t border-white/[0.08] mt-12 py-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-slate-400">
           <div className="flex items-center gap-2">
-            <ShieldCheckIcon className="w-4 h-4 text-secondary" />
+            <ShieldCheckIcon className="w-4 h-4 text-emerald-400" />
             <span>CERT-In &amp; NCRP Aligned Defense Knowledgebase</span>
           </div>
           <span>Emergency Cybercrime Helpline: 1930</span>

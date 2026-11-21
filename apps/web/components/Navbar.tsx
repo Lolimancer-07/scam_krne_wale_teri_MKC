@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLanguage } from './LanguageProvider';
-import { ShieldIcon, PhoneCallIcon, GlobeIcon } from './Icons';
+import { ShieldIcon, PhoneCallIcon, GlobeIcon, TargetIcon, BarChartIcon, LockIcon } from './Icons';
 
 interface NavbarProps {
   onReset?: () => void;
@@ -13,6 +13,7 @@ interface NavbarProps {
 export function Navbar({ onReset }: NavbarProps) {
   const pathname = usePathname();
   const { lang, toggle } = useLanguage();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isHindi = lang === 'hi';
 
   const isScanner = pathname === '/';
@@ -20,48 +21,53 @@ export function Navbar({ onReset }: NavbarProps) {
   const isStats = pathname.startsWith('/stats');
   const isPrivacy = pathname.startsWith('/privacy');
 
+  const handleNavClick = (callback?: () => void) => {
+    if (callback) callback();
+    setMobileMenuOpen(false);
+  };
+
   return (
-    <header className="sticky top-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-b border-surface-container-high shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
-      <div className="h-20 w-full px-4 lg:px-8 max-w-[1440px] mx-auto flex items-center justify-between gap-4">
+    <header className="sticky top-0 w-full z-50 bg-[#050b14]/90 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_1px_12px_rgba(0,0,0,0.5)]">
+      <div className="h-20 w-full px-4 sm:px-6 lg:px-8 max-w-[1440px] mx-auto flex items-center justify-between gap-4">
         {/* Brand & Telemetry Node */}
         <div className="flex items-center gap-4">
           <Link
             href="/"
-            onClick={onReset}
+            onClick={() => handleNavClick(onReset)}
             className="flex items-center gap-3 group text-left focus:outline-none"
             title="ScamShield Forensic Home"
           >
-            <div className="h-10 w-10 rounded-lg bg-surface-container-high border border-outline/30 flex items-center justify-center group-hover:border-secondary transition shadow-sm">
-              <ShieldIcon className="w-5 h-5 text-secondary" />
+            <div className="h-10 w-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center group-hover:border-indigo-400/60 group-hover:bg-indigo-500/20 transition shadow-sm">
+              <ShieldIcon className="w-5 h-5 text-indigo-400 group-hover:scale-105 transition-transform" />
             </div>
             <div className="flex flex-col">
-              <span className="font-headline font-bold text-xl tracking-tight text-on-surface leading-none">
+              <span className="font-headline font-black text-xl tracking-tight text-white leading-none">
                 ScamShield
               </span>
-              <span className="font-mono text-[10px] text-secondary tracking-widest uppercase mt-1">
-                {isHindi ? 'भारत धोखाधड़ी सुरक्षा' : 'India Fraud Defense Engine'}
+              <span className="font-mono text-[10px] text-indigo-400 tracking-widest uppercase mt-1">
+                {isHindi ? 'भारत साइबर सुरक्षा' : 'India Fraud Defense'}
               </span>
             </div>
           </Link>
 
           {/* Live Engine Status Badge */}
-          <div className="hidden xl:flex items-center gap-2 ml-4 pl-4 py-1 px-3 bg-surface-container-low rounded-lg border border-outline-variant/30">
-            <span className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(78,222,163,0.8)] animate-pulse" />
-            <span className="font-mono text-[11px] text-on-surface-variant tracking-wider">
-              NODE-IN-01: ONLINE | ENGINE LATENCY: 24ms
+          <div className="hidden xl:flex items-center gap-2 ml-4 pl-4 py-1 px-3 bg-white/[0.03] rounded-lg border border-white/[0.08]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" />
+            <span className="font-mono text-[11px] text-slate-300 tracking-wider">
+              NODE-IN-01: ONLINE <span className="text-slate-500">|</span> LATENCY: 24ms
             </span>
           </div>
         </div>
 
-        {/* Primary Route Navigation */}
-        <nav className="hidden lg:flex items-center gap-2">
+        {/* Primary Route Navigation (Desktop) */}
+        <nav className="hidden md:flex items-center gap-1.5" aria-label="Main Navigation">
           <Link
             href="/"
-            onClick={onReset}
-            className={`px-4 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
+            onClick={() => handleNavClick(onReset)}
+            className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
               isScanner
-                ? 'bg-secondary-container text-on-secondary-container font-bold shadow-[0_0_12px_rgba(78,222,163,0.25)]'
-                : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
             {isHindi ? 'स्कैनर' : 'Scanner'}
@@ -69,10 +75,11 @@ export function Navbar({ onReset }: NavbarProps) {
 
           <Link
             href="/learn"
-            className={`px-4 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
+            onClick={() => handleNavClick()}
+            className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
               isLearn
-                ? 'bg-secondary-container text-on-secondary-container font-bold shadow-[0_0_12px_rgba(78,222,163,0.25)]'
-                : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
             {isHindi ? 'सीखें और क्विज़' : 'Learn & Quiz'}
@@ -80,10 +87,11 @@ export function Navbar({ onReset }: NavbarProps) {
 
           <Link
             href="/stats"
-            className={`px-4 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
+            onClick={() => handleNavClick()}
+            className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
               isStats
-                ? 'bg-secondary-container text-on-secondary-container font-bold shadow-[0_0_12px_rgba(78,222,163,0.25)]'
-                : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
             {isHindi ? 'लाइव आंकड़े' : 'Live Stats'}
@@ -91,10 +99,11 @@ export function Navbar({ onReset }: NavbarProps) {
 
           <Link
             href="/privacy"
-            className={`px-4 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
+            onClick={() => handleNavClick()}
+            className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider rounded-lg transition-all ${
               isPrivacy
-                ? 'bg-secondary-container text-on-secondary-container font-bold shadow-[0_0_12px_rgba(78,222,163,0.25)]'
-                : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30 shadow-[0_0_12px_rgba(99,102,241,0.2)]'
+                : 'text-slate-400 hover:text-white hover:bg-white/[0.05]'
             }`}
           >
             {isHindi ? 'गोपनीयता' : 'Privacy & Arch'}
@@ -102,32 +111,122 @@ export function Navbar({ onReset }: NavbarProps) {
         </nav>
 
         {/* Right Action Widgets */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
           {/* Cyber Helpline: 1930 Badge */}
           <a
             href="tel:1930"
-            className="relative flex items-center px-3 py-1.5 bg-error-container text-on-error-container rounded-lg font-mono text-xs uppercase tracking-wider hover:opacity-90 transition border border-error/40 shadow-sm"
+            className="relative flex items-center px-3 py-1.5 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 rounded-lg font-mono text-xs uppercase tracking-wider transition border border-rose-500/30 shadow-sm"
             title="National Cyber Crime Reporting Helpline 1930"
           >
-            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary-container" />
+            <span className="absolute -top-1 -right-1 flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500" />
             </span>
-            <PhoneCallIcon className="w-3.5 h-3.5 mr-1.5 text-on-primary-fixed" />
-            <span className="font-bold tracking-tight text-on-primary-fixed">Helpline: 1930</span>
+            <PhoneCallIcon className="w-3.5 h-3.5 mr-1.5 text-rose-400" />
+            <span className="font-bold tracking-tight">1930</span>
           </a>
 
           {/* Language Toggle */}
           <button
+            type="button"
             onClick={toggle}
             aria-label={isHindi ? 'Switch to English' : 'हिंदी में बदलें'}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container-high border border-outline-variant/40 text-on-surface font-mono text-xs hover:border-secondary transition cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-slate-200 font-mono text-xs hover:border-indigo-400/50 hover:bg-white/[0.08] transition cursor-pointer"
           >
-            <GlobeIcon className="w-3.5 h-3.5 text-secondary" />
+            <GlobeIcon className="w-3.5 h-3.5 text-indigo-400" />
             <span className="font-bold">{isHindi ? 'EN' : 'हि'}</span>
+          </button>
+
+          {/* Mobile Menu Hamburger */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            aria-label="Toggle navigation menu"
+            className="md:hidden flex items-center justify-center p-2 rounded-lg bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:text-white"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              {mobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
           </button>
         </div>
       </div>
+
+      {/* Mobile Navigation Drawer */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-white/[0.08] bg-[#050b14]/98 px-4 py-4 space-y-2 animate-in fade-in-50">
+          <Link
+            href="/"
+            onClick={() => handleNavClick(onReset)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider ${
+              isScanner
+                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30'
+                : 'text-slate-300 hover:bg-white/[0.05]'
+            }`}
+          >
+            <ShieldIcon className="w-4 h-4 text-indigo-400" />
+            <span>{isHindi ? 'स्कैनर' : 'Scanner'}</span>
+          </Link>
+
+          <Link
+            href="/learn"
+            onClick={() => handleNavClick()}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider ${
+              isLearn
+                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30'
+                : 'text-slate-300 hover:bg-white/[0.05]'
+            }`}
+          >
+            <TargetIcon className="w-4 h-4 text-indigo-400" />
+            <span>{isHindi ? 'सीखें और क्विज़' : 'Learn & Quiz'}</span>
+          </Link>
+
+          <Link
+            href="/stats"
+            onClick={() => handleNavClick()}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider ${
+              isStats
+                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30'
+                : 'text-slate-300 hover:bg-white/[0.05]'
+            }`}
+          >
+            <BarChartIcon className="w-4 h-4 text-indigo-400" />
+            <span>{isHindi ? 'लाइव आंकड़े' : 'Live Stats'}</span>
+          </Link>
+
+          <Link
+            href="/privacy"
+            onClick={() => handleNavClick()}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider ${
+              isPrivacy
+                ? 'bg-indigo-500/15 text-indigo-300 font-bold border border-indigo-500/30'
+                : 'text-slate-300 hover:bg-white/[0.05]'
+            }`}
+          >
+            <LockIcon className="w-4 h-4 text-indigo-400" />
+            <span>{isHindi ? 'गोपनीयता' : 'Privacy & Arch'}</span>
+          </Link>
+        </div>
+      )}
     </header>
   );
 }

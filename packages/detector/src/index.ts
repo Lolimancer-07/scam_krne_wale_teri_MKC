@@ -21,8 +21,30 @@ import { DetectionResult, AnalyzeTextInput, AiExplanation } from './types.js';
 export async function analyzeText(input: AnalyzeTextInput): Promise<DetectionResult> {
   const { text, enableAi = false } = input;
 
+  // ── Normalization pipeline (run before any rule matching) ──────────────────────
+  // 1. NFKC — Unicode compatibility decomposition (e.g. ﬁ → fi, fullwidth → ascii)
+  let normalized = text.normalize('NFKC');
+  // 2. Strip zero-width characters (U+200B ZWS, U+200C ZWJ, U+FEFF BOM)
+  normalized = normalized
+    .replace(/\u200b/gi, '')
+    .replace(/\u200c/gi, '')
+    .replace(/\ufeff/, '');
+  // 3. Collapse zero-width-spaced letters (walker removes ZWS between printable chars)
+  //    Walk character-by-character to safely remove ZWS between printable chars.
+  let result = '';
+  for (let i = 0; i < normalized.length; i++) {
+    const ch = normalized[i];
+    if (ch === '\u200b' || ch === '\u200c') {
+      // keep the char only if it's not between two printable ASCII chars
+      continue;
+    }
+    result += ch;
+  }
+  normalized = result.replace(/\s+/g, ' ').trim();
+  // ---------------------------------------------------------------------------
+
   // 1. Rules Engine
-  const rulesResult = runRules(text);
+  const rulesResult = runRules(normalized);
 
   // 2. URL Analyzer
   const urls = extractUrls(text);

@@ -181,42 +181,40 @@ export function Quiz() {
       percentage >= 80
         ? {
             title: 'Cyber Guardian',
-            color: 'text-secondary',
+            color: 'text-emerald-400',
             desc: 'Outstanding! You can accurately spot fake Indian scams and distinguish authentic alerts.',
           }
         : percentage >= 50
           ? {
               title: 'Scam Vigilant',
-              color: 'text-tertiary',
+              color: 'text-amber-400',
               desc: 'Good effort! Review the red flag breakdown below to catch evasive phishing campaigns.',
             }
           : {
               title: 'High Vulnerability',
-              color: 'text-primary',
+              color: 'text-rose-400',
               desc: 'Exercise caution! Review the threat guides to protect yourself from fake KYC and digital arrest scams.',
             };
 
     return (
-      <div className="w-full max-w-2xl mx-auto p-6 sm:p-8 rounded-xl border border-surface-container-high bg-surface-container-low text-center space-y-6 shadow-xl animate-in fade-in-50">
-        <div className="p-4 rounded-xl bg-surface-container border border-outline-variant/30 w-fit mx-auto text-secondary">
+      <div className="w-full max-w-2xl mx-auto p-6 sm:p-8 rounded-2xl border border-white/[0.08] bg-[#0a101f] text-center space-y-6 shadow-2xl animate-in fade-in-50">
+        <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 w-fit mx-auto text-indigo-400">
           <AwardIcon className="w-12 h-12" />
         </div>
         <div>
           <h2 className={`font-headline text-2xl font-bold ${badge.color}`}>{badge.title}</h2>
-          <p className="font-body text-xs sm:text-sm text-on-surface-variant mt-1">{badge.desc}</p>
+          <p className="font-body text-xs sm:text-sm text-slate-300 mt-1">{badge.desc}</p>
         </div>
 
-        <div className="p-6 rounded-lg bg-surface-container-lowest border border-surface-container-high">
-          <span className="font-mono text-xs uppercase tracking-wider text-on-surface-variant font-bold block">
+        <div className="p-6 rounded-xl bg-[#050b14] border border-white/[0.08]">
+          <span className="font-mono text-xs uppercase tracking-wider text-slate-400 font-bold block">
             Your Forensic Defense Score
           </span>
-          <div className="font-headline text-5xl font-black text-on-surface mt-1">
+          <div className="font-headline text-5xl font-black text-white mt-1">
             {score}{' '}
-            <span className="text-xl text-on-surface-variant font-normal">
-              / {QUIZ_QUESTIONS.length}
-            </span>
+            <span className="text-xl text-slate-500 font-normal">/ {QUIZ_QUESTIONS.length}</span>
           </div>
-          <span className="font-mono text-xs font-semibold text-secondary mt-1 inline-block">
+          <span className="font-mono text-xs font-semibold text-emerald-400 mt-1 inline-block">
             ({percentage}% Precision Rating)
           </span>
         </div>
@@ -224,7 +222,7 @@ export function Quiz() {
         <button
           type="button"
           onClick={handleRestart}
-          className="px-6 py-2.5 rounded-lg bg-secondary-container text-on-secondary-container font-mono text-xs uppercase font-bold tracking-wider hover:bg-secondary transition shadow-sm flex items-center gap-2 mx-auto cursor-pointer"
+          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-mono text-xs uppercase font-bold tracking-wider transition shadow-sm flex items-center gap-2 mx-auto cursor-pointer border border-indigo-400/30"
         >
           <RotateCcwIcon className="w-4 h-4" />
           <span>Retake Defense Drill</span>
@@ -237,24 +235,24 @@ export function Quiz() {
   const isCorrect = isAnswered && selectedAnswer === currentQ.isScam;
 
   return (
-    <div className="w-full max-w-2xl mx-auto rounded-xl border border-surface-container-high bg-surface-container-low p-6 sm:p-8 shadow-xl space-y-6">
+    <div className="w-full max-w-2xl mx-auto rounded-2xl border border-white/[0.08] bg-[#0a101f] p-6 sm:p-8 shadow-2xl space-y-6">
       {/* Progress & Header */}
-      <div className="flex items-center justify-between border-b border-surface-container-high pb-4">
+      <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
         <div>
-          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-secondary block">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-indigo-400 block">
             Spot the Scam Quiz
           </span>
-          <h3 className="font-headline text-sm font-semibold text-on-surface">
+          <h3 className="font-headline text-sm font-semibold text-white">
             Question {currentIndex + 1} of {QUIZ_QUESTIONS.length}
           </h3>
         </div>
         <div className="text-right">
-          <span className="font-mono text-[10px] text-on-surface-variant font-bold uppercase block">
+          <span className="font-mono text-[10px] text-slate-400 font-bold uppercase block">
             Score
           </span>
-          <div className="font-headline text-lg font-bold text-on-surface">
+          <div className="font-headline text-lg font-bold text-white">
             {score}{' '}
-            <span className="text-xs text-on-surface-variant font-normal">
+            <span className="text-xs text-slate-500 font-normal">
               / {currentIndex + (isAnswered ? 1 : 0)}
             </span>
           </div>
@@ -262,19 +260,19 @@ export function Quiz() {
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-surface-container-lowest h-2 rounded overflow-hidden border border-surface-container-high">
+      <div className="w-full bg-[#050b14] h-2 rounded-full overflow-hidden border border-white/[0.08]">
         <div
-          className="bg-secondary h-full transition-all duration-300 shadow-[0_0_8px_rgba(78,222,163,0.6)]"
+          className="bg-indigo-500 h-full transition-all duration-300 shadow-[0_0_8px_rgba(99,102,241,0.6)]"
           style={{ width: `${((currentIndex + 1) / QUIZ_QUESTIONS.length) * 100}%` }}
         />
       </div>
 
       {/* Scenario Payload Box */}
       <div className="space-y-1.5">
-        <span className="font-mono text-[10px] text-on-surface-variant uppercase tracking-wider block font-semibold">
+        <span className="font-mono text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">
           INBOUND_PAYLOAD_STREAM // SCENARIO #{currentIndex + 1}
         </span>
-        <div className="p-4 rounded-lg bg-surface-container-lowest border border-surface-container-high text-on-surface font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-all shadow-inner">
+        <div className="p-4 rounded-xl bg-[#050b14] border border-white/[0.08] text-slate-200 font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap select-all shadow-inner">
           {currentQ.scenario}
         </div>
       </div>
@@ -285,18 +283,18 @@ export function Quiz() {
           <button
             type="button"
             onClick={() => handleAnswer(true)}
-            className="p-4 rounded-lg border border-error/40 bg-error-container/15 hover:bg-error-container/30 text-error font-mono font-bold text-xs uppercase tracking-wider transition flex flex-col items-center gap-2 group cursor-pointer"
+            className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-mono font-bold text-xs uppercase tracking-wider transition flex flex-col items-center gap-2 group cursor-pointer"
           >
-            <AlertOctagonIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            <AlertOctagonIcon className="w-6 h-6 text-rose-400 group-hover:scale-110 transition-transform" />
             <span>It&apos;s a SCAM</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleAnswer(false)}
-            className="p-4 rounded-lg border border-secondary/40 bg-secondary-container/15 hover:bg-secondary-container/30 text-secondary font-mono font-bold text-xs uppercase tracking-wider transition flex flex-col items-center gap-2 group cursor-pointer"
+            className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-mono font-bold text-xs uppercase tracking-wider transition flex flex-col items-center gap-2 group cursor-pointer"
           >
-            <ShieldCheckIcon className="w-6 h-6 group-hover:scale-110 transition-transform" />
+            <ShieldCheckIcon className="w-6 h-6 text-emerald-400 group-hover:scale-110 transition-transform" />
             <span>It&apos;s LEGITIMATE</span>
           </button>
         </div>
@@ -304,36 +302,36 @@ export function Quiz() {
         <div className="space-y-4 animate-in fade-in-50">
           {/* Result banner */}
           <div
-            className={`p-4 rounded-lg border text-xs sm:text-sm font-semibold flex items-center gap-3 ${
+            className={`p-4 rounded-xl border text-xs sm:text-sm font-semibold flex items-center gap-3 ${
               isCorrect
-                ? 'bg-secondary-container/20 border-secondary/40 text-secondary'
-                : 'bg-error-container/20 border-error/40 text-error'
+                ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300'
+                : 'bg-rose-500/15 border-rose-500/30 text-rose-300'
             }`}
           >
             {isCorrect ? (
-              <CheckCircleIcon className="w-5 h-5 text-secondary shrink-0" />
+              <CheckCircleIcon className="w-5 h-5 text-emerald-400 shrink-0" />
             ) : (
-              <XCircleIcon className="w-5 h-5 text-error shrink-0" />
+              <XCircleIcon className="w-5 h-5 text-rose-400 shrink-0" />
             )}
             <div>
-              <div className="font-headline font-bold">
+              <div className="font-headline font-bold text-white">
                 {isCorrect ? 'Correct!' : 'Incorrect!'} This transmission is{' '}
                 {currentQ.isScam ? 'a SCAM' : 'LEGITIMATE'}.
               </div>
-              <div className="font-mono text-xs font-normal mt-0.5 text-on-surface-variant">
+              <div className="font-mono text-xs font-normal mt-0.5 text-slate-400">
                 Archetype: {currentQ.category}
               </div>
             </div>
           </div>
 
           {/* Explanation */}
-          <div className="p-4 rounded-lg bg-surface-container-lowest border border-surface-container-high text-xs leading-relaxed space-y-2">
-            <p className="font-body text-on-surface">{currentQ.explanation}</p>
+          <div className="p-4 rounded-xl bg-[#050b14] border border-white/[0.08] text-xs leading-relaxed space-y-2">
+            <p className="font-body text-slate-200">{currentQ.explanation}</p>
             <div>
-              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-on-surface-variant block mb-1">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
                 Forensic Indicators:
               </span>
-              <ul className="list-disc list-inside space-y-0.5 font-body text-on-surface-variant">
+              <ul className="list-disc list-inside space-y-0.5 font-body text-slate-400">
                 {currentQ.redFlags.map((flag, idx) => (
                   <li key={idx}>{flag}</li>
                 ))}
@@ -345,7 +343,7 @@ export function Quiz() {
             <button
               type="button"
               onClick={handleNext}
-              className="px-6 py-2.5 rounded-lg bg-secondary-container text-on-secondary-container font-mono text-xs font-bold uppercase tracking-wider hover:bg-secondary transition flex items-center gap-2 cursor-pointer shadow-sm"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-mono text-xs font-bold uppercase tracking-wider transition flex items-center gap-2 cursor-pointer shadow-sm border border-indigo-400/30"
             >
               <span>
                 {currentIndex + 1 === QUIZ_QUESTIONS.length

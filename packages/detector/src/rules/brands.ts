@@ -6,6 +6,7 @@ export const BRAND_DOMAINS: Record<string, string[]> = {
   kotak: ['kotak.com', 'kotakbank.com'],
   pnb: ['pnbindia.in'],
   bob: ['bankofbaroda.in'],
+  canara: ['canarabank.com', 'canarabank.in'],
   paytm: ['paytm.com'],
   phonepe: ['phonepe.com'],
   googlepay: ['gpay.app', 'google.com'],

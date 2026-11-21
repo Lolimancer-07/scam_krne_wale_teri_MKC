@@ -44,7 +44,12 @@ export function fuseScores(input: FusionInput): FusionDetails {
   }
 
   // Safety floor: ensure unambiguous high-confidence fraud cannot be diluted down
-  if (ruleScore >= 60 || (ruleScore >= 35 && urlScore >= 40) || mlScore >= 75) {
+  if (
+    ruleScore >= 60 ||
+    (ruleScore >= 35 && urlScore >= 40) ||
+    (ruleScore >= 40 && mlScore >= 50) ||
+    mlScore >= 75
+  ) {
     rawCombined = Math.max(rawCombined, ruleScore, 65);
   }
 
