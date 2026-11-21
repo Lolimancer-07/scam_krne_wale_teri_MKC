@@ -1,0 +1,46 @@
+export const BRAND_DOMAINS: Record<string, string[]> = {
+  sbi: ['sbi.co.in', 'onlinesbi.sbi', 'sbicard.com', 'statebankofindia.com'],
+  hdfc: ['hdfcbank.com', 'hdfc.com'],
+  icici: ['icicibank.com', 'icicidirect.com'],
+  axis: ['axisbank.com'],
+  kotak: ['kotak.com', 'kotakbank.com'],
+  pnb: ['pnbindia.in'],
+  bob: ['bankofbaroda.in'],
+  paytm: ['paytm.com'],
+  phonepe: ['phonepe.com'],
+  googlepay: ['gpay.app', 'google.com'],
+  amazon: ['amazon.in', 'amazon.com'],
+  flipkart: ['flipkart.com'],
+  indiapost: ['indiapost.gov.in', 'epostoffice.gov.in'],
+  incometax: ['incometax.gov.in', 'efiling.incometax.gov.in'],
+  uidai: ['uidai.gov.in'],
+  epfo: ['epfindia.gov.in'],
+  irctc: ['irctc.co.in'],
+  trai: ['trai.gov.in'],
+};
+
+export const BRAND_KEYWORDS = Object.keys(BRAND_DOMAINS);
+
+// Confusable character map for homograph detection
+export const CONFUSABLES: Record<string, string> = {
+  '0': 'o',
+  '1': 'l',
+  '3': 'e',
+  '4': 'a',
+  '5': 's',
+  '6': 'g',
+  '7': 't',
+  '8': 'b',
+  '9': 'q',
+  '@': 'a',
+  $: 's',
+  '!': 'i',
+  '|': 'i',
+  ɑ: 'a',
+  ο: 'o',
+  е: 'e',
+  с: 'c',
+  р: 'p',
+  а: 'a',
+  і: 'i',
+};

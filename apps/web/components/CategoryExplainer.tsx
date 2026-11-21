@@ -1,0 +1,162 @@
+import React from 'react';
+
+export const CATEGORY_INFO: Record<
+  string,
+  {
+    title: string;
+    icon: string;
+    whatTheyWant: string;
+    nextSteps: string[];
+  }
+> = {
+  bank_kyc: {
+    title: 'Bank / KYC Expiry Scam',
+    icon: '🏦',
+    whatTheyWant:
+      'The fraudster wants your NetBanking credentials, debit card details, or PAN/Aadhaar numbers to siphon funds out of your bank account.',
+    nextSteps: [
+      'Never click links in SMS claiming your bank account or KYC has expired.',
+      'Banks NEVER ask you to update KYC via third-party web links or WhatsApp.',
+      'Log in exclusively via your official mobile banking app (e.g. YONO SBI, HDFC Mobile, iMobile).',
+      'If money was deducted, immediately call 1930 (National Cyber Crime Reporting) and inform your bank.',
+    ],
+  },
+  otp_impersonation: {
+    title: 'OTP / Credential Impersonation',
+    icon: '🔑',
+    whatTheyWant:
+      'The scammer wants your one-time verification password (OTP) or UPI/ATM PIN to authorize an unauthorized fund transfer or hijack your WhatsApp/Telegram.',
+    nextSteps: [
+      'NEVER disclose an OTP to anyone, even if the caller claims to be your bank manager or customer support.',
+      'Entering your UPI PIN ALWAYS debits money from your account — you NEVER need a PIN to receive cashback or payments.',
+      'Block the sender and report the fraudulent number to your mobile carrier via 1909.',
+    ],
+  },
+  upi_payment: {
+    title: 'UPI / Fake Collect Request Scam',
+    icon: '💸',
+    whatTheyWant:
+      'The scammer tricks you into scanning a QR code or approving a UPI Collect Request under the guise of sending you a payment or refund.',
+    nextSteps: [
+      'Remember the golden rule of UPI: Scanning a QR code or entering a PIN pays money, never receives it.',
+      'Decline all unexpected collect requests in PhonePe, Google Pay, or Paytm.',
+      'Report the receiver VPA (UPI ID) directly in your payment app as fraud.',
+    ],
+  },
+  delivery_courier: {
+    title: 'Postal / Courier Delivery Scam',
+    icon: '📦',
+    whatTheyWant:
+      'The fraudster asks for a nominal "re-delivery fee" (₹10–₹50) on a fake phishing portal to harvest your credit or debit card details.',
+    nextSteps: [
+      'Never pay redelivery charges through unverified links sent via SMS.',
+      'Track parcels only on official tracking portals: indiapost.gov.in, bluedart.com, or delhivery.com.',
+      'Legitimate delivery associates call you directly when at your address and do not demand payment links for standard packages.',
+    ],
+  },
+  government_tax: {
+    title: 'Government / Police / Digital Arrest Extortion',
+    icon: '⚖️',
+    whatTheyWant:
+      'Extortionists threaten you with police arrest warrants, CBI/ED inquiries, customs drug seizure, or unpaid e-challans to coerce an instant money transfer.',
+    nextSteps: [
+      'The police, CBI, ED, and courts NEVER conduct "digital arrests" or interrogations over Skype/WhatsApp video.',
+      'Do not panic or transfer money to "escrow verification accounts".',
+      'File an immediate complaint on cybercrime.gov.in or report to your local police cyber cell.',
+    ],
+  },
+  lottery_prize: {
+    title: 'Lottery / Prize / Refund Bait',
+    icon: '🎁',
+    whatTheyWant:
+      'Claims you won a massive jackpot (e.g. KBC, foreign lottery) and asks for an upfront "GST" or "processing fee" before releasing the nonexistent prize.',
+    nextSteps: [
+      'You cannot win a lottery or prize you never entered.',
+      'Never pay advance fees to claim a gift, car, or monetary reward.',
+      'Ignore, block, and delete the message.',
+    ],
+  },
+  job_task: {
+    title: 'Work-From-Home / Task Scam',
+    icon: '💻',
+    whatTheyWant:
+      'Lures you with easy money for liking YouTube videos or writing reviews, gives a tiny payout to build trust, then demands thousands for "prepaid tasks" you can never recover.',
+    nextSteps: [
+      'Legitimate companies never ask employees to pay money upfront to receive tasks or salaries.',
+      'Avoid joining unofficial Telegram VIP investment groups.',
+      'Cut off all communication and report the Telegram channel / WhatsApp number.',
+    ],
+  },
+  investment_crypto: {
+    title: 'Guaranteed Returns / Crypto Scheme',
+    icon: '📈',
+    whatTheyWant:
+      'Promises guaranteed returns (e.g. 100%–200% profit) using fake stock market tips or automated crypto bots, then freezes your deposit.',
+    nextSteps: [
+      'All investments carry risk; ANY claim of "guaranteed returns with 0% risk" is guaranteed fraud.',
+      'Only invest through SEBI-registered brokers and official Indian exchanges.',
+      'Never deposit money into personal savings accounts for "crypto trading".',
+    ],
+  },
+  other: {
+    title: 'Suspicious / Unverified Message',
+    icon: '⚠️',
+    whatTheyWant:
+      'This message contains aggressive urgency, unverified links, or pressure tactics typical of social engineering campaigns.',
+    nextSteps: [
+      'Do not click any embedded links or call numbers provided inside the message.',
+      'Independently verify any claim by contacting the organization through its publicly listed official portal.',
+      'When in doubt, consult family, your bank, or dial 1930.',
+    ],
+  },
+};
+
+export function CategoryExplainer({ category }: { category: string }) {
+  const info = CATEGORY_INFO[category] || CATEGORY_INFO.other;
+
+  return (
+    <div className="space-y-4 rounded-xl border bg-card p-5 text-card-foreground shadow-sm">
+      <div className="flex items-center gap-2">
+        <span className="text-2xl" role="img" aria-label={info.title}>
+          {info.icon}
+        </span>
+        <h3 className="text-lg font-bold text-foreground">{info.title}</h3>
+      </div>
+
+      <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3.5">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 mb-1">
+          🎯 What the scammer wants
+        </h4>
+        <p className="text-sm text-foreground/90 leading-relaxed">{info.whatTheyWant}</p>
+      </div>
+
+      <div>
+        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+          🛡️ Recommended Action Steps
+        </h4>
+        <ul className="space-y-2 text-sm text-foreground/90">
+          {info.nextSteps.map((step, idx) => (
+            <li key={idx} className="flex items-start gap-2">
+              <span className="text-primary font-bold">•</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="pt-2 border-t text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
+        <span>
+          Emergency Cyber Helpline: <strong className="text-foreground">1930</strong>
+        </span>
+        <a
+          href="https://cybercrime.gov.in"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary hover:underline font-medium"
+        >
+          National Cybercrime Portal (cybercrime.gov.in) ↗
+        </a>
+      </div>
+    </div>
+  );
+}

@@ -4,6 +4,7 @@ node_modules/
 .pnp.js
 
 # Build outputs
+*.tsbuildinfo
 dist/
 .next/
 out/
@@ -34,8 +35,6 @@ Thumbs.db
 npm-debug.log*
 pnpm-debug.log*
 
-# Prisma
-prisma/migrations/
 
 # Misc
 .vercel

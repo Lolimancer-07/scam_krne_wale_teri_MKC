@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Analysis {
+  id           String     @id @default(cuid())
+  messageHash  String
+  verdict      String
+  score        Int
+  category     String
+  language     String     @default("en")
+  redFlagCount Int        @default(0)
+  hasUrl       Boolean    @default(false)
+  rawText      String?
+  rawStoredAt  DateTime?
+  createdAt    DateTime   @default(now())
+  feedback     Feedback[]
+
+  @@index([createdAt])
+  @@index([verdict])
+  @@index([messageHash])
+}
+
+model Feedback {
+  id         String   @id @default(cuid())
+  analysisId String
+  analysis   Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  isCorrect  Boolean
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  @@index([analysisId])
+}
+
+model QuizResult {
+  id        String   @id @default(cuid())
+  score     Int
+  total     Int
+  createdAt DateTime @default(now())
+}
+

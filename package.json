@@ -1,13 +1,18 @@
 {
   "name": "scamshield",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
-    "dev": "pnpm --filter web dev",
-    "build": "pnpm --filter detector build && pnpm --filter web build",
-    "test": "pnpm --filter detector test && pnpm --filter web test",
+    "dev": "pnpm --filter @scamshield/web dev",
+    "build": "pnpm --filter @scamshield/detector build && pnpm --filter @scamshield/web build",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @scamshield/web test:e2e",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "prepare": "husky"
   },
   "devDependencies": {

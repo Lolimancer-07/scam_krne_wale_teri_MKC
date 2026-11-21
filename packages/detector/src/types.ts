@@ -1,4 +1,5 @@
 export type Verdict = 'safe' | 'suspicious' | 'likely_scam';
+
 export type ScamCategory =
   | 'bank_kyc'
   | 'upi_payment'
@@ -27,6 +28,7 @@ export interface DetectionResult {
   redFlags: RedFlag[];
   signals: SignalResult[];
   urlAnalysis?: UrlAnalysisResult;
+  urlAnalyses?: UrlAnalysisResult[];
   mlScore?: number;
   ruleScore: number;
   fusionDetails: FusionDetails;
@@ -63,4 +65,16 @@ export interface FusionDetails {
 export interface AnalyzeTextInput {
   text: string;
   enableAi?: boolean;
+  /**
+   * Optional 0-100 scam-likelihood nudge supplied by the caller (e.g. the web
+   * app's Claude integration). The detector package never calls an LLM itself.
+   */
+  aiNudge?: number;
+}
+
+export interface RuleEngineResult {
+  score: number;
+  category: ScamCategory;
+  signals: SignalResult[];
+  redFlags: RedFlag[];
 }

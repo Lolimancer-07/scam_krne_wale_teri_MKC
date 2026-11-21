@@ -7,4 +7,3 @@ allowBuilds:
   '@sentry/cli': true
   esbuild: true
   prisma: true
-  tesseract.js: true

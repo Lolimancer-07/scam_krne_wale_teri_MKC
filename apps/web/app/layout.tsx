@@ -5,8 +5,9 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'ScamShield — AI Scam Detector',
-  description: 'Detect scam messages in real-time using AI and rule-based analysis',
+  title: 'ScamShield — AI & Heuristic Scam Message Detector',
+  description:
+    'Identify fake banks, delivery services, government threats, and phishing links in SMS and WhatsApp messages.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
