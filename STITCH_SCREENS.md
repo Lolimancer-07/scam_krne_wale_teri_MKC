@@ -3,11 +3,11 @@
 **Project Name:** Full UI Redesign  
 **Stitch Project ID:** `206713362209727463`  
 **Canvas URL:** [https://stitch.google.com/projects/206713362209727463](https://stitch.google.com/projects/206713362209727463)  
-**Aesthetic:** High-Contrast Dark Monochrome Cyber-Defense (`#090D16` obsidian slate, crisp white typography, `#1E293B` precision borders, with `#EF4444` cyber crimson and `#10B981` neon emerald accents)
+**Aesthetic:** Deep Space Obsidian Telemetry (`#000f21` / `#031427` dark slate/navy backdrop, subtle grid lines, micro-glassmorphism panels `backdrop-blur-md bg-white/[0.02]`, low-opacity 1px border cards, `#6366f1` / `#a855f7` electric indigo/violet gradients, `#10b981` emerald green telemetry pings, and `#f43f5e` / `#f59e0b` alerts)
 
 ---
 
-## Generated Cohesive Screens
+## 1. ScamShield Production App Screens (Redesigned)
 
 | Screen # | Name / Route                                            | Screen ID                          | Direct Canvas Link                                                                                              | Key Preserved Features from UI_AUDIT.md                                                                                                                                                                                                                                                                                               |
 | -------- | ------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -19,6 +19,17 @@
 
 ---
 
+## 2. Obsidian Telemetry Core Screens (Design System Showcase)
+
+| Screen # | Screen Title                           | Screen ID                          | Direct Canvas Link                                                                                              | Key Design System Modules Included                                                                                                                                                                                                           |
+| -------- | -------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A**    | **Telemetry & Analytics Dashboard**    | `03ce51c1e2194d99b82a1c72fb9938ec` | [View Screen A](https://stitch.google.com/projects/206713362209727463?node-id=03ce51c1e2194d99b82a1c72fb9938ec) | Live metrics bar (Total Events, Active ARR, Ingestion Latency, Error Rate), interactive retention matrix heatmap with cohort rows, anomaly event timeline with severity badges, and dual ANSI SQL / Visual filter panel.                     |
+| **B**    | **Funnel & User Journey Analysis**     | `be024e0f3b21472b91c25b863b89c6f1` | [View Screen B](https://stitch.google.com/projects/206713362209727463?node-id=be024e0f3b21472b91c25b863b89c6f1) | Interactive step-by-step dropoff visualizer with conversion drop percentage callouts, automatic bottleneck detection banners, segmented audience toggles (Enterprise vs Product-Led), and sub-second session replay drawer.                  |
+| **C**    | **Settings, SDK & API Key Management** | `bbf9de4be1ab42c4a10e2adb2c61455f` | [View Screen C](https://stitch.google.com/projects/206713362209727463?node-id=bbf9de4be1ab42c4a10e2adb2c61455f) | Tabbed navigation (General, Team, API Keys, Telemetry Endpoints, Audit Logs), 1-click token generator with copyable keys and masked secrets, interactive SDK snippet box (Node.js, Go, Python, Rust), and webhook delivery status log table. |
+| **D**    | **Pricing & Tier Comparison**          | `a4b041963fc544749f76a92b6beed313` | [View Screen D](https://stitch.google.com/projects/206713362209727463?node-id=a4b041963fc544749f76a92b6beed313) | Monthly/annual toggle with savings pill, 3 tiered Bento pricing cards ('Free Sandbox', 'Growth Telemetry', 'Enterprise Grid') with glowing neon borders on recommended tier, itemized feature comparison table, and SOC 2 / GDPR badges.     |
+
+---
+
 ## Stitch CLI Management Commands
 
 ```bash
@@ -26,11 +37,8 @@
 stitch open project 206713362209727463
 
 # Open a specific screen in your browser
-stitch open screen 2779417ff2ac4cffa3b31e673786ba31 --project 206713362209727463
+stitch open screen 03ce51c1e2194d99b82a1c72fb9938ec --project 206713362209727463
 
 # Generate design variants of any screen
-stitch generate variants --screen 2779417ff2ac4cffa3b31e673786ba31 --project 206713362209727463 --count 3
-
-# Edit or refine a screen prompt
-stitch edit screen 2779417ff2ac4cffa3b31e673786ba31 --project 206713362209727463 --prompt "Make the verdict score badge more prominent"
+stitch generate variants --screen 03ce51c1e2194d99b82a1c72fb9938ec --project 206713362209727463 --count 3
 ```

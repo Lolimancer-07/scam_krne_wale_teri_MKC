@@ -49,7 +49,13 @@ export async function GET() {
         byVerdict,
         byCategory,
       }),
-      { status: 200, headers: { 'X-Request-Id': requestId } },
+      {
+        status: 200,
+        headers: {
+          'X-Request-Id': requestId,
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      },
     );
   } catch {
     // Never present invented numbers as live community statistics. The UI
@@ -66,7 +72,13 @@ export async function GET() {
         byCategory: {},
         degraded: true,
       }),
-      { status: 200, headers: { 'X-Request-Id': requestId } },
+      {
+        status: 200,
+        headers: {
+          'X-Request-Id': requestId,
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      },
     );
   }
 }

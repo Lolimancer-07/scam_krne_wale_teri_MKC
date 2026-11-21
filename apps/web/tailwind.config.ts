@@ -17,6 +17,13 @@ module.exports = {
     },
     extend: {
       colors: {
+        obsidian: {
+          DEFAULT: '#000f21',
+          depth: '#000814',
+          surface: '#031427',
+          card: '#041c38',
+          elevated: '#072448',
+        },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

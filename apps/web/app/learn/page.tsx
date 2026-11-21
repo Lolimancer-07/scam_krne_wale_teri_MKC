@@ -3,12 +3,16 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Quiz } from '@/components/Quiz';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useLanguage } from '@/components/LanguageProvider';
 
 const SCAM_GUIDES = [
   {
     icon: '🏦',
     title: 'Bank & KYC Expiry Scams',
     threat: 'High',
+    threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
     description:
       'Fraudsters claim your bank account, NetBanking, debit card, or PAN linking will be suspended within 24 hours. They provide a lookalike link (e.g. sbi-kyc.xyz) to steal login passwords and OTPs.',
     example:
@@ -23,6 +27,7 @@ const SCAM_GUIDES = [
     icon: '⚡',
     title: 'Electricity & Utility Disconnection',
     threat: 'Critical',
+    threatColor: 'bg-rose-600/30 text-rose-200 border-rose-500/50',
     description:
       'A panic message threatens that your power supply will be cut off tonight at 9:30 PM due to an unpaid bill. Victims are urged to call a personal 10-digit mobile number, leading to remote-access app downloads (AnyDesk, TeamViewer).',
     example:
@@ -37,6 +42,7 @@ const SCAM_GUIDES = [
     icon: '💸',
     title: 'UPI "Receive Money" QR Code Scams',
     threat: 'High',
+    threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
     description:
       'When selling goods on OLX or receiving refunds, scammers send a QR code or Collect Request saying "Scan this QR and enter your PIN to receive money in your bank account".',
     example:
@@ -51,6 +57,7 @@ const SCAM_GUIDES = [
     icon: '⚖️',
     title: 'Digital Arrest & Police Extortion',
     threat: 'Severe',
+    threatColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
     description:
       'Scammers impersonate police, CBI, ED, or customs officers. They place video calls in fake police station setups and claim a parcel containing illegal drugs was intercepted in your name, threatening immediate arrest.',
     example:
@@ -65,6 +72,7 @@ const SCAM_GUIDES = [
     icon: '📦',
     title: 'Postal & Courier Customs Fee Bait',
     threat: 'Medium',
+    threatColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
     description:
       'Messages pretending to be India Post or BlueDart claim your shipment is held due to an incomplete house number. You are asked to pay a tiny fee (₹10–₹25) on a phishing website.',
     example:
@@ -79,6 +87,7 @@ const SCAM_GUIDES = [
     icon: '💻',
     title: 'Work-from-Home & Video Like Traps',
     threat: 'High',
+    threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
     description:
       'Offers high daily income (₹3,000–₹8,000) for liking YouTube videos or writing reviews. After giving small payouts (₹150), they lure you into Telegram VIP groups demanding large prepaid deposits.',
     example:
@@ -95,60 +104,73 @@ export default function LearnPage() {
   const [activeTab, setActiveTab] = useState<'guides' | 'quiz'>('guides');
 
   return (
-    <div className="min-h-screen bg-background flex flex-col justify-between">
+    <div className="min-h-screen flex flex-col justify-between selection:bg-indigo-500/30">
       {/* Header */}
-      <header className="border-b bg-background/80 backdrop-blur sticky top-0 z-50">
+      <header className="border-b border-indigo-500/15 bg-[#000f21]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🛡️</span>
-            <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-primary bg-clip-text text-transparent">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center text-lg shadow-sm">
+              🛡️
+            </div>
+            <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
               ScamShield
             </span>
           </Link>
 
           <nav className="flex items-center gap-4 text-xs font-semibold">
-            <Link href="/" className="text-muted-foreground hover:text-foreground transition">
+            <Link href="/" className="text-slate-400 hover:text-white transition">
               Scanner
             </Link>
-            <Link href="/learn" className="text-primary underline transition">
+            <Link
+              href="/learn"
+              className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-medium transition"
+            >
               Learn & Quiz
             </Link>
-            <Link href="/stats" className="text-muted-foreground hover:text-foreground transition">
+            <Link href="/stats" className="text-slate-400 hover:text-white transition">
               Live Stats
             </Link>
           </nav>
+
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="flex-1 max-w-5xl mx-auto px-4 py-8 sm:py-12 w-full space-y-8">
-        <div className="text-center max-w-2xl mx-auto space-y-2">
-          <h1 className="text-3xl sm:text-4xl font-black text-foreground tracking-tight">
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-xs text-indigo-300">
+            <span className="font-mono text-[11px]">Digital Fraud Defense Curriculum</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
             Learn Scam Defense
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
             Understand how digital fraudsters manipulate urgency, fear, and greed. Master the red
             flags and test your skills with our interactive quiz.
           </p>
 
           {/* Tab Selector */}
-          <div className="inline-flex p-1 rounded-xl bg-muted border mt-4">
+          <div className="inline-flex p-1 rounded-xl bg-[#031427]/90 border border-indigo-500/20 mt-4 backdrop-blur-md">
             <button
               onClick={() => setActiveTab('guides')}
-              className={`px-5 py-2 text-xs font-bold rounded-lg transition ${
+              className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${
                 activeTab === 'guides'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               📚 Scam Guide Hub
             </button>
             <button
               onClick={() => setActiveTab('quiz')}
-              className={`px-5 py-2 text-xs font-bold rounded-lg transition ${
+              className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${
                 activeTab === 'quiz'
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               🎯 10-Question Quiz
@@ -156,68 +178,62 @@ export default function LearnPage() {
           </div>
         </div>
 
-        {activeTab === 'quiz' ? (
-          <Quiz />
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Guides View */}
+        {activeTab === 'guides' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {SCAM_GUIDES.map((guide, idx) => (
               <div
                 key={idx}
-                className="p-6 rounded-2xl border bg-card text-card-foreground shadow-sm space-y-4 hover:border-primary/40 transition"
+                className="rounded-2xl border border-white/[0.08] bg-[#031427]/70 backdrop-blur-md p-6 shadow-xl space-y-4 hover:border-indigo-500/30 transition duration-200"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-3">
                     <span className="text-3xl">{guide.icon}</span>
-                    <div>
-                      <h3 className="font-bold text-base text-foreground">{guide.title}</h3>
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300">
-                        Threat: {guide.threat}
-                      </span>
-                    </div>
+                    <h3 className="text-base font-bold text-white font-mono">{guide.title}</h3>
                   </div>
+                  <span
+                    className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono border ${guide.threatColor}`}
+                  >
+                    {guide.threat} Threat
+                  </span>
                 </div>
 
-                <p className="text-xs text-muted-foreground leading-relaxed">{guide.description}</p>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  {guide.description}
+                </p>
 
-                {/* Example SMS */}
-                <div className="p-3 rounded-lg bg-muted/60 border text-xs font-mono text-foreground leading-relaxed select-all">
-                  <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1">
+                <div className="p-3.5 rounded-xl bg-[#000814]/80 border border-white/10 font-mono text-xs text-rose-300 leading-relaxed">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-500 block mb-1">
                     Realistic Scam Example:
                   </span>
                   {guide.example}
                 </div>
 
-                {/* Protection steps */}
-                <div className="pt-2 border-t space-y-1.5">
-                  <span className="text-[10px] uppercase font-bold text-primary tracking-wider block">
-                    🛡️ How to Protect Yourself:
+                <div className="space-y-1.5 pt-1">
+                  <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold font-mono block mb-1">
+                    Defense Checklist:
                   </span>
-                  <ul className="space-y-1 text-xs text-foreground/90">
-                    {guide.protection.map((step, sIdx) => (
-                      <li key={sIdx} className="flex items-start gap-1.5">
-                        <span className="text-primary font-bold">•</span>
-                        <span>{step}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {guide.protection.map((item, pIdx) => (
+                    <div key={pIdx} className="flex items-start gap-2 text-xs text-slate-300">
+                      <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
           </div>
+        ) : (
+          <Quiz />
         )}
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/20 py-6 text-center text-xs text-muted-foreground">
-        <div className="max-w-5xl mx-auto px-4 space-y-1">
-          <p>
-            Emergency Cyber Helpline: <strong className="text-foreground">1930</strong> | National
-            Reporting:{' '}
-            <a href="https://cybercrime.gov.in" className="underline text-primary">
-              cybercrime.gov.in
-            </a>
-          </p>
-        </div>
+      <footer className="border-t border-indigo-500/10 bg-[#000f21]/60 py-6 text-center text-xs text-slate-500">
+        <p>
+          ScamShield Educational Portal — Emergency Cyber Crime Helpline:{' '}
+          <strong className="text-slate-300 font-mono">1930</strong>
+        </p>
       </footer>
     </div>
   );

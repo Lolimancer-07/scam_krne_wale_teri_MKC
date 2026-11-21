@@ -79,8 +79,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const msgHash = hashMessage(text);
 
     // Save record to database if accessible (non-blocking fallback)
+    let analysisId: string | undefined;
     try {
-      await db.analysis.create({
+      const created = await db.analysis.create({
         data: {
           messageHash: msgHash,
           verdict: detectionResult.verdict,
@@ -92,6 +93,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           rawStoredAt: storeRaw ? new Date() : null,
         },
       });
+      analysisId = created.id;
     } catch (dbErr) {
       // Graceful degradation when running offline/local without Postgres
       logger.warn({ requestId, err: (dbErr as Error).message }, 'DB write failed (degraded mode)');
@@ -107,7 +109,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       'Text analysis completed successfully',
     );
 
-    return NextResponse.json(ok(requestId, detectionResult), {
+    return NextResponse.json(ok(requestId, { ...detectionResult, analysisId }), {
       status: 200,
       headers: {
         'X-Request-Id': requestId,

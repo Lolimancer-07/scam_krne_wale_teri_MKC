@@ -172,47 +172,45 @@ export function Quiz() {
       percentage >= 80
         ? {
             title: '🛡️ Cyber Guardian',
-            color: 'text-emerald-600 dark:text-emerald-400',
+            color: 'text-emerald-400',
             desc: 'Outstanding! You can accurately spot fake Indian scams and distinguish authentic alerts.',
           }
         : percentage >= 50
           ? {
               title: '⚠️ Scam Vigilant',
-              color: 'text-amber-600 dark:text-amber-400',
+              color: 'text-amber-400',
               desc: 'Good effort! Review the red flag breakdown below to catch evasive phishing campaigns.',
             }
           : {
               title: '🚨 High Vulnerability',
-              color: 'text-red-600 dark:text-red-400',
+              color: 'text-rose-400',
               desc: 'Be very careful! Review the Learn guide to protect yourself from fake KYC and digital arrest scams.',
             };
 
     return (
-      <div className="w-full max-w-2xl mx-auto p-6 sm:p-8 rounded-2xl border bg-card text-center space-y-6 shadow-sm animate-in fade-in-50">
-        <span className="text-5xl">🏆</span>
+      <div className="w-full max-w-2xl mx-auto p-6 sm:p-8 rounded-2xl border border-indigo-500/20 bg-[#031427]/80 backdrop-blur-md text-center space-y-6 shadow-xl animate-in fade-in-50">
+        <span className="text-5xl inline-block animate-bounce">🏆</span>
         <div>
-          <h2 className={`text-2xl font-black ${badge.color}`}>{badge.title}</h2>
-          <p className="text-sm text-muted-foreground mt-1">{badge.desc}</p>
+          <h2 className={`text-2xl font-black ${badge.color} font-mono`}>{badge.title}</h2>
+          <p className="text-sm text-slate-300 mt-1">{badge.desc}</p>
         </div>
 
-        <div className="p-6 rounded-xl bg-muted/40 border">
-          <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+        <div className="p-6 rounded-xl bg-[#000814]/80 border border-white/10">
+          <span className="text-xs uppercase tracking-wider text-slate-400 font-bold font-mono">
             Your Final Score
           </span>
-          <div className="text-5xl font-black text-foreground mt-1">
+          <div className="text-5xl font-black text-white mt-1 font-mono">
             {score}{' '}
-            <span className="text-xl text-muted-foreground font-bold">
-              / {QUIZ_QUESTIONS.length}
-            </span>
+            <span className="text-xl text-slate-500 font-bold">/ {QUIZ_QUESTIONS.length}</span>
           </div>
-          <span className="text-xs font-semibold text-muted-foreground mt-1 inline-block">
+          <span className="text-xs font-semibold text-indigo-400 mt-1 inline-block font-mono">
             ({percentage}% Accuracy)
           </span>
         </div>
 
         <button
           onClick={handleRestart}
-          className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition shadow-sm"
+          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 border border-indigo-400/20"
         >
           🔄 Retake Quiz
         </button>
@@ -224,38 +222,38 @@ export function Quiz() {
   const isCorrect = isAnswered && selectedAnswer === currentQ.isScam;
 
   return (
-    <div className="w-full max-w-2xl mx-auto rounded-2xl border bg-card p-6 sm:p-8 shadow-sm space-y-6">
+    <div className="w-full max-w-2xl mx-auto rounded-2xl border border-indigo-500/20 bg-[#031427]/80 backdrop-blur-md p-6 sm:p-8 shadow-xl space-y-6">
       {/* Progress & Header */}
-      <div className="flex items-center justify-between border-b pb-4">
+      <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-primary">
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-400 font-mono block">
             Spot the Scam Quiz
           </span>
-          <h3 className="text-sm font-semibold text-muted-foreground">
+          <h3 className="text-sm font-semibold text-slate-300 font-mono">
             Question {currentIndex + 1} of {QUIZ_QUESTIONS.length}
           </h3>
         </div>
         <div className="text-right">
-          <span className="text-xs text-muted-foreground font-semibold">Current Score</span>
-          <div className="text-lg font-black text-foreground">
+          <span className="text-[10px] text-slate-400 font-bold uppercase font-mono block">
+            Current Score
+          </span>
+          <div className="text-lg font-black text-white font-mono">
             {score}{' '}
-            <span className="text-xs text-muted-foreground">
-              / {currentIndex + (isAnswered ? 1 : 0)}
-            </span>
+            <span className="text-xs text-slate-500">/ {currentIndex + (isAnswered ? 1 : 0)}</span>
           </div>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-muted h-2 rounded-full overflow-hidden">
+      <div className="w-full bg-[#000814] h-2 rounded-full overflow-hidden border border-white/10">
         <div
-          className="bg-primary h-full transition-all duration-300"
+          className="bg-gradient-to-r from-indigo-500 to-purple-500 h-full transition-all duration-300"
           style={{ width: `${((currentIndex + 1) / QUIZ_QUESTIONS.length) * 100}%` }}
         />
       </div>
 
       {/* Scenario Box */}
-      <div className="p-5 rounded-xl bg-muted/40 border text-foreground font-mono text-sm leading-relaxed whitespace-pre-wrap select-all">
+      <div className="p-5 rounded-xl bg-[#000814]/90 border border-white/10 text-slate-200 font-mono text-sm leading-relaxed whitespace-pre-wrap select-all">
         {currentQ.scenario}
       </div>
 
@@ -264,18 +262,18 @@ export function Quiz() {
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => handleAnswer(true)}
-            className="p-4 rounded-xl border-2 border-red-200 dark:border-red-900/60 bg-red-50 hover:bg-red-100 dark:bg-red-950/30 dark:hover:bg-red-950/60 text-red-700 dark:text-red-300 font-bold text-sm transition flex flex-col items-center gap-1 shadow-sm"
+            className="p-4 rounded-xl border-2 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-bold text-sm transition flex flex-col items-center gap-1.5 shadow-md shadow-rose-950/20 group"
           >
-            <span className="text-2xl">🚨</span>
-            <span>It&apos;s a SCAM</span>
+            <span className="text-2xl group-hover:scale-110 transition">🚨</span>
+            <span className="font-mono">It&apos;s a SCAM</span>
           </button>
 
           <button
             onClick={() => handleAnswer(false)}
-            className="p-4 rounded-xl border-2 border-emerald-200 dark:border-emerald-900/60 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:hover:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold text-sm transition flex flex-col items-center gap-1 shadow-sm"
+            className="p-4 rounded-xl border-2 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-bold text-sm transition flex flex-col items-center gap-1.5 shadow-md shadow-emerald-950/20 group"
           >
-            <span className="text-2xl">🛡️</span>
-            <span>It&apos;s LEGITIMATE</span>
+            <span className="text-2xl group-hover:scale-110 transition">🛡️</span>
+            <span className="font-mono">It&apos;s LEGITIMATE</span>
           </button>
         </div>
       ) : (
@@ -284,30 +282,30 @@ export function Quiz() {
           <div
             className={`p-4 rounded-xl border text-sm font-semibold flex items-center gap-3 ${
               isCorrect
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400'
-                : 'bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400'
+                ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200'
+                : 'bg-rose-500/15 border-rose-500/40 text-rose-200'
             }`}
           >
             <span className="text-2xl">{isCorrect ? '✅' : '❌'}</span>
             <div>
-              <div className="font-bold">
+              <div className="font-bold font-mono">
                 {isCorrect ? 'Correct!' : 'Incorrect!'} This is{' '}
                 {currentQ.isScam ? 'a SCAM 🚨' : 'LEGITIMATE 🛡️'}.
               </div>
-              <div className="text-xs font-normal mt-0.5 text-foreground/80">
+              <div className="text-xs font-normal mt-0.5 text-slate-300 font-mono">
                 {currentQ.category}
               </div>
             </div>
           </div>
 
           {/* Explanation */}
-          <div className="p-4 rounded-xl bg-muted/50 border text-xs leading-relaxed space-y-2">
-            <p className="font-medium text-foreground">{currentQ.explanation}</p>
+          <div className="p-4 rounded-xl bg-[#000814]/80 border border-white/10 text-xs leading-relaxed space-y-2">
+            <p className="font-medium text-slate-200">{currentQ.explanation}</p>
             <div>
-              <span className="font-bold uppercase tracking-wider text-muted-foreground block mb-1">
+              <span className="font-bold uppercase tracking-wider text-slate-400 font-mono block mb-1">
                 Key Indicators:
               </span>
-              <ul className="list-disc list-inside space-y-0.5 text-foreground/90">
+              <ul className="list-disc list-inside space-y-0.5 text-slate-300">
                 {currentQ.redFlags.map((flag, idx) => (
                   <li key={idx}>{flag}</li>
                 ))}
@@ -318,7 +316,7 @@ export function Quiz() {
           <div className="flex justify-end pt-2">
             <button
               onClick={handleNext}
-              className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-bold text-sm hover:bg-primary/90 transition shadow-sm"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 border border-indigo-400/20"
             >
               {currentIndex + 1 === QUIZ_QUESTIONS.length
                 ? 'View Final Results 🏆'

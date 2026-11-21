@@ -35,7 +35,7 @@ export function RedFlagHighlight({ text, redFlags }: RedFlagHighlightProps) {
     .sort((a, b) => (a.startIndex as number) - (b.startIndex as number));
 
   if (validFlags.length === 0) {
-    return <p className="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">{text}</p>;
+    return <p className="text-slate-300 font-mono text-sm whitespace-pre-wrap">{text}</p>;
   }
 
   // Merge overlapping or adjacent flags
@@ -71,16 +71,16 @@ export function RedFlagHighlight({ text, redFlags }: RedFlagHighlightProps) {
   }
 
   return (
-    <div className="p-4 bg-muted/40 rounded-lg border text-sm leading-relaxed whitespace-pre-wrap font-mono">
+    <div className="p-4 bg-[#000814]/90 rounded-xl border border-white/10 text-sm leading-relaxed whitespace-pre-wrap font-mono text-slate-200">
       {segments.map((seg, i) =>
         seg.isFlagged && seg.flag ? (
           <mark
             key={`${seg.flag.id}-${i}`}
             title={`${seg.flag.reason} (Risk Weight: +${seg.flag.weight})`}
-            className="bg-red-200 text-red-900 dark:bg-red-950/80 dark:text-red-200 px-1 py-0.5 rounded border border-red-300 dark:border-red-800 font-semibold cursor-help inline-block mx-0.5"
+            className="bg-rose-500/20 text-rose-200 border border-rose-500/40 px-1 py-0.5 rounded font-mono font-semibold cursor-help inline-block mx-0.5"
           >
             {seg.text}
-            <span className="ml-1 text-[10px] bg-red-600 text-white dark:bg-red-700 px-1 py-0.2 rounded-full font-sans not-italic">
+            <span className="ml-1 text-[10px] bg-rose-600 text-white px-1.5 py-0.2 rounded-full font-sans not-italic font-bold">
               +{seg.flag.weight}
             </span>
           </mark>

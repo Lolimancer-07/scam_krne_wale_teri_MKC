@@ -159,19 +159,19 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
   };
 
   return (
-    <div className="w-full max-w-3xl rounded-2xl border bg-card p-6 shadow-sm space-y-5">
+    <div className="w-full max-w-3xl rounded-2xl border border-indigo-500/20 bg-[#031427]/80 backdrop-blur-md p-6 sm:p-7 shadow-xl shadow-indigo-950/30 space-y-5">
       {/* Tab Switcher */}
-      <div className="flex border-b pb-3 gap-2">
+      <div className="flex border-b border-indigo-500/15 pb-3 gap-2">
         <button
           type="button"
           onClick={() => {
             setActiveTab('text');
             setErrorMessage(null);
           }}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
             activeTab === 'text'
-              ? 'bg-primary text-primary-foreground shadow-sm'
-              : 'text-muted-foreground hover:bg-muted'
+              ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/20 border border-indigo-400/30'
+              : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
           }`}
         >
           <span>📝</span>
@@ -184,10 +184,10 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
             setActiveTab('image');
             setErrorMessage(null);
           }}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
             activeTab === 'image'
-              ? 'bg-primary text-primary-foreground shadow-sm'
-              : 'text-muted-foreground hover:bg-muted'
+              ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/20 border border-indigo-400/30'
+              : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
           }`}
         >
           <span>📷</span>
@@ -200,10 +200,10 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
             setActiveTab('url');
             setErrorMessage(null);
           }}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition flex items-center gap-1.5 ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
             activeTab === 'url'
-              ? 'bg-primary text-primary-foreground shadow-sm'
-              : 'text-muted-foreground hover:bg-muted'
+              ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/20 border border-indigo-400/30'
+              : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
           }`}
         >
           <span>🔗</span>
@@ -212,10 +212,12 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
       </div>
 
       {/* Privacy Notice Banner */}
-      <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 font-medium">
+      <div className="flex items-center gap-2.5 p-3 rounded-xl bg-amber-500/[0.08] border border-amber-500/20 text-xs text-amber-200 font-medium">
         <span className="text-base">🛡️</span>
         <span>
-          <strong>{isHindi ? 'गोपनीयता:' : 'Privacy Guarantee:'}</strong>{' '}
+          <strong className="text-amber-300">
+            {isHindi ? 'गोपनीयता सुरक्षा:' : 'Privacy Guarantee:'}
+          </strong>{' '}
           {isHindi
             ? 'हम कच्चे संदेशों को कभी संग्रहीत नहीं करते। कभी भी पासवर्ड या वास्तविक ओटीपी पेस्ट न करें।'
             : 'Raw messages are evaluated in-memory and never stored by default. Never paste passwords or active OTPs.'}
@@ -236,16 +238,20 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
                   ? "संदिग्ध एसएमएस, व्हाट्सएप संदेश या ईमेल यहां पेस्ट करें... (उदा. 'प्रिय ग्राहक, आपका एसबीआई केवाईसी समाप्त हो गया है...')"
                   : "Paste suspicious SMS, WhatsApp message, email excerpt, or URL here... (e.g. 'Dear customer, your SBI KYC expires today...')"
               }
-              className="w-full rounded-xl border bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary resize-y font-sans leading-relaxed text-foreground placeholder:text-muted-foreground"
+              className="w-full rounded-xl border border-white/10 bg-[#000814]/80 px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 resize-y font-mono leading-relaxed text-slate-100 placeholder:text-slate-500 transition"
             />
-            <div className="flex justify-between items-center px-1 mt-1 text-xs text-muted-foreground">
-              <span>Supports English, Hindi (हिंदी), and Hinglish</span>
-              <span>{text.length} / 5,000</span>
+            <div className="flex justify-between items-center px-1 mt-1 text-xs text-slate-400">
+              <span className="text-[11px] text-slate-400">
+                Supports English, Hindi (हिंदी), and Hinglish
+              </span>
+              <span className="font-mono text-[11px] text-indigo-300">
+                {text.length.toLocaleString()} / 5,000
+              </span>
             </div>
           </div>
 
           <div>
-            <span className="text-xs font-semibold text-muted-foreground block mb-2">
+            <span className="text-xs font-semibold text-slate-400 block mb-2 font-mono uppercase tracking-wider">
               {isHindi ? 'यथार्थवादी उदाहरण आज़माएं:' : 'Try a Realistic Indian Scam Sample:'}
             </span>
             <div className="flex flex-wrap gap-2">
@@ -257,7 +263,7 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
                     setText(s.text);
                     setErrorMessage(null);
                   }}
-                  className="px-2.5 py-1 text-xs rounded-full border bg-muted/50 hover:bg-muted text-foreground transition"
+                  className="px-2.5 py-1 text-xs rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-indigo-500/15 hover:border-indigo-500/30 text-slate-300 hover:text-white transition"
                 >
                   {s.label}
                 </button>
@@ -265,12 +271,12 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
             </div>
           </div>
 
-          <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer pt-1">
+          <label className="flex items-center gap-2.5 text-xs text-slate-400 cursor-pointer pt-1">
             <input
               type="checkbox"
               checked={storeRaw}
               onChange={(e) => setStoreRaw(e.target.checked)}
-              className="rounded border-gray-300 text-primary focus:ring-primary"
+              className="rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
             />
             <span>
               {isHindi
@@ -280,7 +286,7 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
           </label>
 
           {errorMessage && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-600 dark:text-red-400 font-medium">
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium">
               ⚠️ {errorMessage}
             </div>
           )}
@@ -289,11 +295,11 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
             <button
               type="submit"
               disabled={loading || !text.trim()}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo"
             >
               {loading ? (
                 <>
-                  <span className="animate-spin text-base">⏳</span>
+                  <span className="h-4 w-4 rounded-full border-2 border-white/20 border-t-white animate-spin inline-block" />
                   <span>{loadingStep || (isHindi ? 'विश्लेषण जारी है...' : 'Analyzing...')}</span>
                 </>
               ) : (
@@ -307,14 +313,14 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
       {/* Tab 2: Screenshot OCR */}
       {activeTab === 'image' && (
         <form onSubmit={handleImageSubmit} className="space-y-4">
-          <div className="border-2 border-dashed border-muted-foreground/30 rounded-2xl p-6 text-center hover:border-primary/50 transition bg-muted/20">
+          <div className="border-2 border-dashed border-indigo-500/20 rounded-2xl p-6 text-center hover:border-indigo-500/40 transition bg-[#000814]/50">
             {imagePreview ? (
               <div className="space-y-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={imagePreview}
                   alt="Screenshot preview"
-                  className="max-h-60 mx-auto rounded-lg shadow-sm border"
+                  className="max-h-60 mx-auto rounded-lg shadow-sm border border-white/10"
                 />
                 <button
                   type="button"
@@ -322,7 +328,7 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
                     setImageFile(null);
                     setImagePreview(null);
                   }}
-                  className="text-xs text-red-600 font-semibold underline"
+                  className="text-xs text-rose-400 hover:text-rose-300 font-semibold underline"
                 >
                   {isHindi ? 'चित्र हटाएं' : 'Remove Image'}
                 </button>
@@ -330,12 +336,12 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
             ) : (
               <label className="cursor-pointer space-y-2 block">
                 <span className="text-4xl block">📱</span>
-                <span className="font-bold text-sm block text-foreground">
+                <span className="font-bold text-sm block text-white">
                   {isHindi
                     ? 'स्क्रीनशॉट चुनें या यहां खींचें'
                     : 'Select or Drag & Drop SMS / WhatsApp Screenshot'}
                 </span>
-                <span className="text-xs text-muted-foreground block">
+                <span className="text-xs text-slate-400 block">
                   PNG, JPG, or WebP up to 5MB. Powered by Tesseract.js (English + Hindi)
                 </span>
                 <input
@@ -349,7 +355,7 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
           </div>
 
           {errorMessage && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-600 dark:text-red-400 font-medium">
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium">
               ⚠️ {errorMessage}
             </div>
           )}
@@ -358,11 +364,11 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
             <button
               type="submit"
               disabled={loading || !imageFile}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo"
             >
               {loading ? (
                 <>
-                  <span className="animate-spin text-base">⏳</span>
+                  <span className="h-4 w-4 rounded-full border-2 border-white/20 border-t-white animate-spin inline-block" />
                   <span>{loadingStep || (isHindi ? 'ओसीआर चल रहा है...' : 'Running OCR...')}</span>
                 </>
               ) : (
@@ -377,7 +383,7 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
       {activeTab === 'url' && (
         <form onSubmit={handleUrlSubmit} className="space-y-4">
           <div>
-            <label className="text-xs font-semibold text-muted-foreground block mb-1.5">
+            <label className="text-xs font-semibold text-slate-400 block mb-1.5 font-mono uppercase tracking-wider">
               {isHindi ? 'जांच के लिए वेबसाइट लिंक दर्ज करें:' : 'Enter Suspicious Website Link:'}
             </label>
             <input
@@ -385,16 +391,16 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="e.g. http://sbi-kyc-update.xyz or http://192.168.1.100/pay"
-              className="w-full rounded-xl border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary font-mono text-foreground"
+              className="w-full rounded-xl border border-white/10 bg-[#000814]/80 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 font-mono text-slate-100 placeholder:text-slate-500"
             />
-            <span className="text-[11px] text-muted-foreground block mt-1">
+            <span className="text-[11px] text-slate-400 block mt-1">
               Checks against Indian brand allowlist (SBI, HDFC, ICICI, Paytm, PhonePe, India Post,
               etc.), homographs, and risky TLDs.
             </span>
           </div>
 
           {errorMessage && (
-            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-600 dark:text-red-400 font-medium">
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium">
               ⚠️ {errorMessage}
             </div>
           )}
@@ -403,11 +409,11 @@ export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProp
             <button
               type="submit"
               disabled={loading || !urlInput.trim()}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-sm"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo"
             >
               {loading ? (
                 <>
-                  <span className="animate-spin text-base">⏳</span>
+                  <span className="h-4 w-4 rounded-full border-2 border-white/20 border-t-white animate-spin inline-block" />
                   <span>{loadingStep || (isHindi ? 'जांच जारी है...' : 'Verifying...')}</span>
                 </>
               ) : (

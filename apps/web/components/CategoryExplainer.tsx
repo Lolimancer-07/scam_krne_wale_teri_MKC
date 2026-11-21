@@ -115,46 +115,46 @@ export function CategoryExplainer({ category }: { category: string }) {
   const info = CATEGORY_INFO[category] || CATEGORY_INFO.other;
 
   return (
-    <div className="space-y-4 rounded-xl border bg-card p-5 text-card-foreground shadow-sm">
-      <div className="flex items-center gap-2">
+    <div className="space-y-4 rounded-2xl border border-indigo-500/15 bg-[#031427]/80 backdrop-blur-md p-6 shadow-xl text-slate-200">
+      <div className="flex items-center gap-3">
         <span className="text-2xl" role="img" aria-label={info.title}>
           {info.icon}
         </span>
-        <h3 className="text-lg font-bold text-foreground">{info.title}</h3>
+        <h3 className="text-base font-bold text-white font-mono">{info.title}</h3>
       </div>
 
-      <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3.5">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 mb-1">
+      <div className="rounded-xl bg-amber-500/[0.08] border border-amber-500/20 p-4">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1 font-mono">
           🎯 What the scammer wants
         </h4>
-        <p className="text-sm text-foreground/90 leading-relaxed">{info.whatTheyWant}</p>
+        <p className="text-xs sm:text-sm text-amber-100/90 leading-relaxed">{info.whatTheyWant}</p>
       </div>
 
       <div>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 font-mono">
           🛡️ Recommended Action Steps
         </h4>
-        <ul className="space-y-2 text-sm text-foreground/90">
+        <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
           {info.nextSteps.map((step, idx) => (
-            <li key={idx} className="flex items-start gap-2">
-              <span className="text-primary font-bold">•</span>
+            <li key={idx} className="flex items-start gap-2.5">
+              <span className="text-emerald-400 font-bold shrink-0">✓</span>
               <span>{step}</span>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="pt-2 border-t text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
+      <div className="pt-3 border-t border-white/[0.08] text-xs text-slate-400 flex flex-wrap items-center justify-between gap-2 font-mono">
         <span>
-          Emergency Cyber Helpline: <strong className="text-foreground">1930</strong>
+          Emergency Cyber Helpline: <strong className="text-rose-400">1930</strong>
         </span>
         <a
           href="https://cybercrime.gov.in"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary hover:underline font-medium"
+          className="text-indigo-400 hover:text-indigo-300 underline"
         >
-          National Cybercrime Portal (cybercrime.gov.in) ↗
+          cybercrime.gov.in
         </a>
       </div>
     </div>
