@@ -1,180 +1,142 @@
-import { parse as parseDomain } from 'tldts';
-import type { UrlAnalysisResult } from '../types.js';
-import { RISKY_TLDS, isShortenerHost } from './shorteners.js';
-import { BRANDS, OFFICIAL_DOMAINS, boundedLevenshtein } from './brands.js';
+import { parse } from 'tldts';
+import { UrlAnalysisResult } from '../types.js';
+import { BRAND_DOMAINS, BRAND_KEYWORDS, CONFUSABLES } from '../rules/brands.js';
 
-const MAX_URLS = 10;
+export const KNOWN_SHORTENERS = new Set([
+  'bit.ly',
+  'tinyurl.com',
+  't.co',
+  'goo.gl',
+  'ow.ly',
+  'is.gd',
+  'buff.ly',
+  'short.io',
+  'rb.gy',
+  'cutt.ly',
+  'tiny.cc',
+  'shorte.st',
+  'adf.ly',
+  'linktr.ee',
+  'lnkd.in',
+  'fb.me',
+  'wa.me',
+  'youtu.be',
+  'amzn.to',
+  'rebrand.ly',
+  'bl.ink',
+]);
 
-const SCHEME_URL = /\b(?:https?|hxxps?):\/\/[^\s<>"'`]+/gi;
-const WWW_URL = /\bwww\.[^\s<>"'`]+/gi;
-const DEFANGED_URL =
-  /\b(?:[a-z0-9-]+(?:\[\.\]|\(\.\)|\{\.\}|\[dot\]|\(dot\)|\s+dot\s+))+[a-z]{2,24}\b/gi;
-const BARE_DOMAIN = /\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,24}\b/gi;
+export const RISKY_TLDS = new Set([
+  '.xyz',
+  '.tk',
+  '.ml',
+  '.ga',
+  '.cf',
+  '.gq',
+  '.pw',
+  '.top',
+  '.club',
+  '.online',
+  '.site',
+  '.website',
+  '.space',
+  '.info',
+  '.biz',
+  '.click',
+  '.download',
+  '.link',
+  '.win',
+  '.bid',
+  '.loan',
+  '.review',
+  '.cricket',
+  '.work',
+  '.stream',
+  '.icu',
+  '.vip',
+  '.live',
+]);
 
-const TRAILING_PUNCTUATION = /[.,;:!?)\]}>'"]+$/;
-const LEADING_PUNCTUATION = /^[([{<"']+/;
+export function defang(url: string): string {
+  return url
+    .replace(/^https:\/\//i, 'hxxps://')
+    .replace(/^http:\/\//i, 'hxxp://')
+    .replace(/\./g, '[.]');
+}
 
-/** Extract unique URLs from free text, including common defanged forms. */
 export function extractUrls(text: string): string[] {
-  if (!text) return [];
-
-  const candidates: Array<{ value: string; index: number }> = [];
-
-  for (const regex of [SCHEME_URL, WWW_URL, DEFANGED_URL, BARE_DOMAIN]) {
-    for (const match of text.matchAll(regex)) {
-      candidates.push({ value: match[0], index: match.index ?? 0 });
-    }
-  }
-
-  candidates.sort((a, b) => a.index - b.index);
-
-  const seen = new Set<string>();
-  const urls: string[] = [];
-
-  for (const candidate of candidates) {
-    // Bare domains inside an email address are not URLs.
-    const previous = text[candidate.index - 1];
-    if (previous === '@') continue;
-
-    const normalized = normalizeUrl(candidate.value);
-    if (!normalized) continue;
-
-    const key = normalized.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    urls.push(normalized);
-    if (urls.length >= MAX_URLS) break;
-  }
-
-  return urls;
+  const urlRegex = /(?:https?:\/\/|www\.)[^\s<>"'{}|\\^`[\]]+/gi;
+  const matches = text.match(urlRegex) || [];
+  return matches.map((m) => (m.startsWith('www.') ? `http://${m}` : m));
 }
 
-/** Analyze a single URL with static heuristics only — no network requests. */
-export function analyzeUrl(rawUrl: string): UrlAnalysisResult {
-  const normalized = normalizeUrl(rawUrl) ?? rawUrl.trim();
-  const base: UrlAnalysisResult = {
-    url: normalized,
-    defanged: defangUrl(normalized),
-    riskScore: 0,
-    flags: [],
-    isShortener: false,
-    hasIpHost: false,
-    hasRiskyTld: false,
-  };
+export function levenshtein(a: string, b: string): number {
+  if (a === b) return 0;
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
 
-  let parsed: URL;
-  try {
-    parsed = new URL(normalized);
-  } catch {
-    return { ...base, flags: ['invalid_url'] };
-  }
-
-  const hostname = parsed.hostname
-    .toLowerCase()
-    .replace(/\.$/, '')
-    .replace(/^\[|\]$/g, '');
-  if (!hostname) return { ...base, flags: ['invalid_url'] };
-
-  const domainInfo = parseDomain(hostname, { allowPrivateDomains: true });
-  const registrableDomain = domainInfo.domain ?? hostname;
-  const labels = hostname.split('.').filter(Boolean);
-  const mainLabel = (domainInfo.domain ?? hostname).split('.')[0] ?? hostname;
-  const tld = labels[labels.length - 1] ?? '';
-
-  const flags: string[] = [];
-  let riskScore = 0;
-
-  const addFlag = (flag: string, weight: number) => {
-    if (!flags.includes(flag)) {
-      flags.push(flag);
-      riskScore += weight;
-    }
-  };
-
-  const isIp = Boolean(domainInfo.isIp);
-  const isShortener = isShortenerHost(hostname);
-  const hasRiskyTld = RISKY_TLDS.has(tld) || RISKY_TLDS.has(domainInfo.publicSuffix ?? '');
-  const hasUserInfo = Boolean(parsed.username || parsed.password);
-  const hasPunycode = labels.some((label) => label.startsWith('xn--'));
-  const hasEncodedHost = hostname.includes('%');
-  const hasExplicitHttp = /^http:\/\//i.test(rawUrl);
-
-  base.isShortener = isShortener;
-  base.hasIpHost = isIp;
-  base.hasRiskyTld = hasRiskyTld;
-
-  if (isIp) addFlag('ip_host', 35);
-  if (isShortener) addFlag('shortener', 20);
-  if (hasRiskyTld) addFlag('risky_tld', 18);
-  if (hasUserInfo) addFlag('userinfo', 40);
-  if (hasPunycode) addFlag('punycode', 25);
-  if (hasEncodedHost) addFlag('encoded_host', 15);
-  if (hasExplicitHttp) addFlag('http_only', 5);
-  if (labels.length > 4) addFlag('many_subdomains', 10);
-  if (hostname.length > 40) addFlag('long_host', 8);
-  if (parsed.port && parsed.port !== '80' && parsed.port !== '443') {
-    addFlag('nonstandard_port', 5);
-  }
-
-  // Brand impersonation. Never flag a known official registrable domain.
-  if (!OFFICIAL_DOMAINS.has(registrableDomain)) {
-    const match = findBrandImpersonation(mainLabel, labels, registrableDomain);
-    if (match) {
-      base.lookalikeBrand = match.brand;
-      base.lookalikeDomain = registrableDomain;
-      addFlag(match.flag, match.weight);
-    }
-  }
-
-  base.riskScore = Math.min(100, riskScore);
-  base.flags = flags;
-  return base;
-}
-
-interface BrandMatch {
-  brand: string;
-  flag: string;
-  weight: number;
-}
-
-function findBrandImpersonation(
-  mainLabel: string,
-  labels: string[],
-  registrableDomain: string,
-): BrandMatch | null {
-  const compactMain = mainLabel.replace(/[^a-z0-9]/g, '');
-  const subdomainLabels = labels.slice(
-    0,
-    Math.max(0, labels.length - registrableDomain.split('.').length),
+  const dp: number[][] = Array.from({ length: a.length + 1 }, (_, i) =>
+    Array.from({ length: b.length + 1 }, (_, j) => (i === 0 ? j : j === 0 ? i : 0)),
   );
 
-  for (const brand of BRANDS) {
-    for (const alias of brand.aliases) {
-      const compactAlias = alias.replace(/[^a-z0-9]/g, '');
-      if (!compactAlias) continue;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      dp[i][j] =
+        a[i - 1] === b[j - 1]
+          ? dp[i - 1][j - 1]
+          : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[a.length][b.length];
+}
 
-      const mainLooksLikeBrand =
-        compactMain === compactAlias ||
-        compactMain.startsWith(compactAlias) ||
-        compactMain.endsWith(compactAlias) ||
-        compactMain.includes(`-${compactAlias}`) ||
-        compactMain.includes(`${compactAlias}-`);
+export function normalizeConfusables(str: string): string {
+  let normalized = '';
+  for (const ch of str) {
+    normalized += CONFUSABLES[ch] || ch;
+  }
+  return normalized;
+}
 
-      if (mainLooksLikeBrand) {
-        return { brand: brand.name, flag: 'lookalike_brand', weight: 40 };
-      }
+export function detectLookalike(
+  hostname: string,
+  domain: string | null,
+): { brand: string; legitDomain: string; isLookalike: boolean } | null {
+  if (!hostname) return null;
 
-      const maxDistance = compactAlias.length >= 8 ? 2 : 1;
-      if (
-        compactAlias.length >= 4 &&
-        compactMain.length >= 4 &&
-        boundedLevenshtein(compactMain, compactAlias, maxDistance) <= maxDistance
-      ) {
-        return { brand: brand.name, flag: 'lookalike_brand', weight: 40 };
-      }
+  const cleanHost = hostname.toLowerCase().replace(/^www\./, '');
+  const normalizedHost = normalizeConfusables(cleanHost);
 
-      if (subdomainLabels.some((label) => label.replace(/[^a-z0-9]/g, '') === compactAlias)) {
-        return { brand: brand.name, flag: 'brand_in_subdomain', weight: 30 };
+  for (const brand of BRAND_KEYWORDS) {
+    const legitDomains = BRAND_DOMAINS[brand] || [];
+
+    const isLegit = legitDomains.some(
+      (legit) => cleanHost === legit || cleanHost.endsWith(`.${legit}`),
+    );
+    if (isLegit) {
+      return null;
+    }
+
+    if (normalizedHost.includes(brand)) {
+      return {
+        brand,
+        legitDomain: legitDomains[0] || brand,
+        isLookalike: true,
+      };
+    }
+
+    if (domain) {
+      const sld = domain.split('.')[0] || '';
+      for (const legit of legitDomains) {
+        const legitSld = legit.split('.')[0] || '';
+        const dist = levenshtein(normalizeConfusables(sld), legitSld);
+        if (dist > 0 && dist <= 2 && sld.length > 3) {
+          return {
+            brand,
+            legitDomain: legit,
+            isLookalike: true,
+          };
+        }
       }
     }
   }
@@ -182,53 +144,89 @@ function findBrandImpersonation(
   return null;
 }
 
-/**
- * Normalise a candidate URL: undo common defanging, strip surrounding
- * punctuation and add a scheme when missing. Returns null if it does not look
- * like a real hostname.
- */
-function normalizeUrl(candidate: string): string | null {
-  let value = candidate
-    .trim()
-    .replace(LEADING_PUNCTUATION, '')
-    .replace(TRAILING_PUNCTUATION, '')
-    .replace(/\[\.\]|\(\.\)|\{\.\}|\[dot\]|\(dot\)|\s+dot\s+/gi, '.')
-    .replace(/hxxps?/gi, (match) => match.replace(/xx/i, 'tt'))
-    .replace(/\[:\/\/\]/g, '://')
-    .replace(/\[@\]/g, '@');
+export function analyzeUrl(rawUrl: string): UrlAnalysisResult {
+  const flags: string[] = [];
+  let riskScore = 0;
 
-  if (!value) return null;
-
-  if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(value)) {
-    value = `http://${value}`;
+  let urlToParse = rawUrl.trim();
+  if (!/^https?:\/\//i.test(urlToParse)) {
+    urlToParse = `http://${urlToParse}`;
   }
 
-  let parsed: URL;
-  try {
-    parsed = new URL(value);
-  } catch {
-    return null;
+  const parsed = parse(urlToParse);
+  const hostname = parsed.hostname ? parsed.hostname.toLowerCase() : '';
+  const domain = parsed.domain ? parsed.domain.toLowerCase() : null;
+  const publicSuffix = parsed.publicSuffix ? `.${parsed.publicSuffix.toLowerCase()}` : '';
+
+  const isIpHost =
+    /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) ||
+    /^\[[0-9a-f:]+\]$/i.test(hostname) ||
+    /^(?:0x[0-9a-f]+|\d+)$/i.test(hostname);
+  if (isIpHost) {
+    flags.push('ip_host');
+    riskScore += 45;
   }
 
-  if (!parsed.hostname || !parsed.hostname.includes('.')) {
-    // Allow IPv6 hosts, which are bracketed in URLs.
-    if (!parsed.hostname.startsWith('[')) return null;
+  const isShortener =
+    KNOWN_SHORTENERS.has(hostname) || (domain !== null && KNOWN_SHORTENERS.has(domain));
+  if (isShortener) {
+    flags.push('shortener');
+    riskScore += 25;
   }
 
-  const host = parsed.hostname.replace(/^www\./i, '');
-  const domainInfo = parseDomain(host, { allowPrivateDomains: true });
-  if (!domainInfo.domain && !domainInfo.isIp) return null;
+  const hasRiskyTld = RISKY_TLDS.has(publicSuffix);
+  if (hasRiskyTld) {
+    flags.push('risky_tld');
+    riskScore += 30;
+  }
 
-  return parsed
-    .toString()
-    .replace(/\/$/, (slash) => (parsed.pathname === '/' && !parsed.search ? '' : slash));
-}
+  const hasAtTrick = rawUrl.includes('@');
+  if (hasAtTrick) {
+    flags.push('at_trick');
+    riskScore += 40;
+  }
 
-function defangUrl(url: string): string {
-  return url
-    .replace(/^https/i, 'hxxps')
-    .replace(/^http/i, 'hxxp')
-    .replace(/:\/\//, '[://]')
-    .replace(/\./g, '[.]')
-    .replace(/@/g, '[@]');
+  if (parsed.subdomain) {
+    const subLabels = parsed.subdomain.split('.');
+    if (subLabels.length >= 3) {
+      flags.push('excessive_subdomains');
+      riskScore += 20;
+    }
+  }
+
+  const hasPunycode = hostname.includes('xn--');
+  if (hasPunycode) {
+    flags.push('punycode_homograph');
+    riskScore += 35;
+  }
+
+  const lookalike = detectLookalike(hostname, domain);
+  let lookalikeBrand: string | undefined;
+  let lookalikeDomain: string | undefined;
+
+  if (lookalike && lookalike.isLookalike) {
+    flags.push('brand_impersonation');
+    lookalikeBrand = lookalike.brand;
+    lookalikeDomain = lookalike.legitDomain;
+    riskScore += 45;
+  }
+
+  if (rawUrl.startsWith('http://') && !isIpHost && hostname !== 'localhost') {
+    flags.push('insecure_http');
+    riskScore += 10;
+  }
+
+  const cappedRiskScore = Math.min(100, riskScore);
+
+  return {
+    url: rawUrl,
+    defanged: defang(rawUrl),
+    riskScore: cappedRiskScore,
+    flags,
+    isShortener,
+    hasIpHost: isIpHost,
+    hasRiskyTld,
+    lookalikeBrand,
+    lookalikeDomain,
+  };
 }

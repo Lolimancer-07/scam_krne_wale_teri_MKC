@@ -1,105 +1,100 @@
-import type {
-  AnalyzeTextInput,
-  RedFlag,
-  RuleEngineResult,
-  ScamCategory,
-  SignalResult,
-} from '../types.js';
-import { clamp, findOriginalIndex, firstMatch, snippetAround, tidySnippet } from '../text.js';
-import { RULES, type RuleDefinition } from './definitions.js';
+import { SignalResult, RedFlag, ScamCategory } from '../types.js';
+import { SIGNALS } from './patterns.js';
 
-const CATEGORY_ORDER: Exclude<ScamCategory, 'other'>[] = [
-  'bank_kyc',
-  'upi_payment',
-  'delivery_courier',
-  'government_tax',
-  'lottery_prize',
-  'job_task',
-  'otp_impersonation',
-  'investment_crypto',
-];
-
-function evidenceFor(match: RegExpMatchArray): string {
-  return tidySnippet(match[0]).slice(0, 100);
+export interface RulesResult {
+  score: number;
+  signals: SignalResult[];
+  redFlags: RedFlag[];
+  category: ScamCategory;
 }
 
-/**
- * Evaluate every rule and return a structured result the orchestrator can
- * feed into score fusion.
- *
- * A rule counts once even if several of its patterns match. That keeps the
- * score stable and prevents one noisy regex from dominating.
- */
-export function runRules(input: AnalyzeTextInput): RuleEngineResult {
-  const text = input.text ?? '';
-  const signals: SignalResult[] = [];
+export function determineCategory(matchedSignals: Set<string>): ScamCategory {
+  if (matchedSignals.has('kyc_lure')) return 'bank_kyc';
+  if (matchedSignals.has('otp_request') || matchedSignals.has('pin_cvv_request')) {
+    return 'otp_impersonation';
+  }
+  if (matchedSignals.has('arrest_threat')) return 'government_tax';
+  if (matchedSignals.has('delivery_lure')) return 'delivery_courier';
+  if (matchedSignals.has('job_task_scam')) return 'job_task';
+  if (matchedSignals.has('investment_crypto')) return 'investment_crypto';
+  if (matchedSignals.has('refund_prize_lure')) return 'lottery_prize';
+  if (matchedSignals.has('payment_request')) return 'upi_payment';
+  if (matchedSignals.has('account_block_threat') && matchedSignals.has('impersonated_brand')) {
+    return 'bank_kyc';
+  }
+  return 'other';
+}
+
+export function runRules(text: string): RulesResult {
+  const signalResults: SignalResult[] = [];
   const redFlags: RedFlag[] = [];
-  const categoryScores = new Map<ScamCategory, number>();
-  let score = 0;
+  const matchedSignalIds = new Set<string>();
+  let totalWeight = 0;
 
-  for (const rule of RULES) {
-    const match = findFirstMatch(rule, text);
-
-    if (!match) {
-      signals.push({ id: rule.id, matched: false, weight: rule.weight });
-      continue;
+  for (const signalDef of SIGNALS) {
+    // Check if negative patterns invalidate this signal (e.g. "Do not share OTP")
+    if (signalDef.negativePatterns) {
+      const hasNegativeMatch = signalDef.negativePatterns.some((negPattern) =>
+        negPattern.test(text),
+      );
+      if (hasNegativeMatch) {
+        signalResults.push({
+          id: signalDef.id,
+          matched: false,
+          weight: signalDef.weight,
+        });
+        continue;
+      }
     }
 
-    const evidence = evidenceFor(match);
-    signals.push({ id: rule.id, matched: true, weight: rule.weight, evidence });
-    score += rule.weight;
+    let matched = false;
+    let matchedSnippet = '';
+    let startIndex: number | undefined;
+    let endIndex: number | undefined;
 
-    if (rule.weight > 0 && rule.category !== 'other') {
-      categoryScores.set(rule.category, (categoryScores.get(rule.category) ?? 0) + rule.weight);
+    for (const pattern of signalDef.patterns) {
+      const match = text.match(pattern);
+      if (match && match.index !== undefined) {
+        matched = true;
+        matchedSnippet = match[0];
+        startIndex = match.index;
+        endIndex = match.index + match[0].length;
+        break;
+      }
     }
 
-    if (rule.weight > 0) {
-      const startIndex = findOriginalIndex(text, match[0]);
-      const endIndex = startIndex >= 0 ? startIndex + match[0].length : undefined;
+    signalResults.push({
+      id: signalDef.id,
+      matched,
+      weight: signalDef.weight,
+      evidence: matched ? matchedSnippet : undefined,
+    });
+
+    if (matched) {
+      matchedSignalIds.add(signalDef.id);
+      totalWeight += signalDef.weight;
       redFlags.push({
-        id: rule.id,
-        signal: rule.signal,
-        snippet: startIndex >= 0 ? snippetAround(text, startIndex, match[0].length) : evidence,
-        reason: rule.reason,
-        weight: rule.weight,
-        startIndex: startIndex >= 0 ? startIndex : undefined,
+        id: `${signalDef.id}-${startIndex ?? 0}`,
+        signal: signalDef.id,
+        snippet: matchedSnippet,
+        reason: signalDef.reason,
+        weight: signalDef.weight,
+        startIndex,
         endIndex,
       });
     }
   }
 
-  redFlags.sort((a, b) => b.weight - a.weight || a.id.localeCompare(b.id));
+  // Sort red flags by appearance in message text
+  redFlags.sort((a, b) => (a.startIndex ?? 0) - (b.startIndex ?? 0));
+
+  const score = Math.min(100, totalWeight);
+  const category = determineCategory(matchedSignalIds);
 
   return {
-    score: Math.round(clamp(score, 0, 100)),
-    category: pickCategory(categoryScores),
-    signals,
-    redFlags: redFlags.slice(0, 10),
+    score,
+    signals: signalResults,
+    redFlags,
+    category,
   };
 }
-
-function findFirstMatch(rule: RuleDefinition, text: string): RegExpMatchArray | null {
-  for (const pattern of rule.patterns) {
-    const match = firstMatch(pattern, text);
-    if (match) return match;
-  }
-  return null;
-}
-
-function pickCategory(scores: Map<ScamCategory, number>): ScamCategory {
-  let best: ScamCategory = 'other';
-  let bestScore = 0;
-
-  for (const category of CATEGORY_ORDER) {
-    const value = scores.get(category) ?? 0;
-    if (value > bestScore) {
-      bestScore = value;
-      best = category;
-    }
-  }
-
-  return best;
-}
-
-export { RULES };
-export type { RuleDefinition };
