@@ -392,18 +392,9 @@ export function AnalyzerForm({
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 5 * 1024 * 1024) {
-      setErrorMessage(
-        isHindi ? 'चित्र का आकार 5MB से कम होना चाहिए' : 'Image exceeds 5MB size limit',
-      );
-      return;
+    if (file) {
+      processSelectedImage(file);
     }
-
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
-    setErrorMessage(null);
   };
 
   const handleImageSubmit = async (e: React.FormEvent) => {
@@ -426,7 +417,7 @@ export function AnalyzerForm({
     setErrorMessage(null);
 
     const abortController = new AbortController();
-    const timeoutId = setTimeout(() => abortController.abort(), 14000);
+    const timeoutId = setTimeout(() => abortController.abort(), 18000);
 
     try {
       const formData = new FormData();
@@ -445,14 +436,18 @@ export function AnalyzerForm({
         throw new Error(json.error?.message || 'Failed to analyze screenshot');
       }
 
-      onAnalyzeSuccess(json.data, json.data.extractedText || 'Extracted screenshot text');
+      onAnalyzeSuccess(
+        json.data,
+        json.data.extractedText || 'Extracted screenshot text',
+        imagePreview,
+      );
     } catch (err: unknown) {
       clearTimeout(timeoutId);
       if (err instanceof DOMException && err.name === 'AbortError') {
         setErrorMessage(
           isHindi
             ? 'ओसीआर प्रसंस्करण समय समाप्त हो गया। कृपया चित्र को क्रॉप करें या सीधे टेक्स्ट टैब में पेस्ट करें।'
-            : 'OCR processing timed out. Please try a closer crop or paste text directly in "Paste Message".',
+            : 'Screenshot OCR processing timed out. Please crop the screenshot closer to the message or paste text directly into the "Paste Message" tab.',
         );
       } else {
         setErrorMessage((err as Error).message);
@@ -468,7 +463,11 @@ export function AnalyzerForm({
     setUrlInput('');
     setImageFile(null);
     setImagePreview(null);
+    setIsDragging(false);
     setErrorMessage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -736,25 +735,39 @@ export function AnalyzerForm({
         {/* Tab 2: Screenshot OCR */}
         {activeTab === 'image' && (
           <form onSubmit={handleImageSubmit} className="space-y-5">
-            <div className="border-2 border-dashed border-white/[0.12] rounded-2xl p-8 text-center hover:border-indigo-400/50 transition bg-[#050b14]">
+            <div
+              onDragEnter={handleDragEnter}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center transition bg-[#050b14] ${
+                isDragging
+                  ? 'border-indigo-400 bg-indigo-500/15 scale-[1.01]'
+                  : 'border-white/[0.12] hover:border-indigo-400/50'
+              }`}
+            >
               {imagePreview ? (
                 <div className="space-y-4">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imagePreview}
                     alt="Screenshot preview"
-                    className="max-h-64 mx-auto rounded-xl shadow-md border border-white/[0.08]"
+                    className="max-h-64 mx-auto rounded-xl shadow-md border border-white/[0.08] object-contain"
                   />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setImageFile(null);
-                      setImagePreview(null);
-                    }}
-                    className="font-mono text-xs text-rose-400 hover:underline font-semibold cursor-pointer"
-                  >
-                    {isHindi ? 'चित्र हटाएं' : 'Remove Image Buffer'}
-                  </button>
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImageFile(null);
+                        setImagePreview(null);
+                        if (fileInputRef.current) fileInputRef.current.value = '';
+                      }}
+                      className="font-mono text-xs text-rose-400 hover:text-rose-300 hover:underline font-semibold cursor-pointer flex items-center gap-1.5"
+                    >
+                      <RotateCcwIcon className="w-3.5 h-3.5" />
+                      <span>{isHindi ? 'चित्र हटाएं' : 'Remove Image Buffer'}</span>
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <label className="cursor-pointer space-y-3 block">
@@ -768,17 +781,62 @@ export function AnalyzerForm({
                         : 'Select or Drag & Drop SMS / WhatsApp Screenshot'}
                     </span>
                     <span className="font-body text-xs text-slate-400 block mt-1">
-                      PNG, JPG, or WebP up to 5MB. Powered by Tesseract OCR (English + Hindi)
+                      PNG, JPG, or WebP up to 5MB. Drag &amp; drop, Ctrl+V paste, or browse.
                     </span>
                   </div>
                   <input
+                    ref={fileInputRef}
                     type="file"
-                    accept="image/png,image/jpeg,image/webp"
+                    accept="image/png,image/jpeg,image/jpg,image/webp,image/*,.png,.jpg,.jpeg,.webp"
                     onChange={handleImageChange}
                     className="hidden"
                   />
                 </label>
               )}
+            </div>
+
+            {/* Quick Screenshot Samples: 3 Realistic Indian Scams */}
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs text-slate-400 uppercase tracking-wider font-semibold">
+                  {isHindi ? 'त्वरित स्क्रीनशॉट नमूने:' : 'Quick Load Sample Screenshots:'}
+                </span>
+                <span className="font-mono text-[10px] text-slate-500">
+                  {isHindi
+                    ? 'नमूना लोड करने के लिए क्लिक करें'
+                    : 'Click preset to load authentic simulated screenshot'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                {SCREENSHOT_PRESETS.map((preset) => {
+                  const IconComp = preset.icon;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      aria-label={preset.title}
+                      onClick={() => handleScreenshotPresetSelect(preset)}
+                      className="flex flex-col text-left p-3.5 bg-[#0f172a] rounded-xl border border-white/[0.06] hover:border-indigo-500/40 hover:bg-[#1e293b]/60 transition-all group shadow-sm cursor-pointer"
+                    >
+                      <div className="flex items-center justify-between w-full mb-1.5">
+                        <IconComp className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
+                        <span
+                          className={`px-1.5 py-0.5 font-mono text-[9px] font-bold rounded ${preset.tagColor}`}
+                        >
+                          {preset.tag}
+                        </span>
+                      </div>
+                      <span className="font-headline font-semibold text-xs text-slate-100 group-hover:text-indigo-300 transition-colors">
+                        {preset.title}
+                      </span>
+                      <span className="font-mono text-[10px] text-slate-400 mt-0.5 line-clamp-1">
+                        {preset.desc}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {errorMessage && (
@@ -804,9 +862,10 @@ export function AnalyzerForm({
               <button
                 type="button"
                 onClick={clearInput}
-                className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl transition-all border border-white/[0.08] cursor-pointer"
+                className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl transition-all border border-white/[0.08] cursor-pointer flex items-center gap-1.5"
               >
-                {isHindi ? 'खाली करें' : 'Clear Buffer'}
+                <RotateCcwIcon className="w-3.5 h-3.5" />
+                <span>{isHindi ? 'खाली करें' : 'Clear Buffer'}</span>
               </button>
               <button
                 type="submit"
@@ -854,6 +913,48 @@ export function AnalyzerForm({
               </span>
             </div>
 
+            {/* Quick URL Vectors */}
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs text-slate-400 uppercase tracking-wider font-semibold">
+                  {isHindi ? 'त्वरित यूआरएल नमूने:' : 'Quick Load Suspicious URLs:'}
+                </span>
+                <span className="font-mono text-[10px] text-slate-500">
+                  {isHindi ? 'नमूना लोड करने के लिए क्लिक करें' : 'Click preset to populate target URL'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                {URL_PRESETS.map((preset) => (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    aria-label={preset.title}
+                    onClick={() => {
+                      setUrlInput(preset.url);
+                      setErrorMessage(null);
+                    }}
+                    className="flex flex-col text-left p-3.5 bg-[#0f172a] rounded-xl border border-white/[0.06] hover:border-indigo-500/40 hover:bg-[#1e293b]/60 transition-all group shadow-sm cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between w-full mb-1.5">
+                      <LinkIcon className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
+                      <span
+                        className={`px-1.5 py-0.5 font-mono text-[9px] font-bold rounded ${preset.tagColor}`}
+                      >
+                        {preset.tag}
+                      </span>
+                    </div>
+                    <span className="font-headline font-semibold text-xs text-slate-100 group-hover:text-indigo-300 transition-colors">
+                      {preset.title}
+                    </span>
+                    <span className="font-mono text-[10px] text-slate-400 mt-0.5 line-clamp-1">
+                      {preset.desc}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {errorMessage && (
               <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 animate-in fade-in-50">
                 <div className="flex items-center gap-2.5">
@@ -877,9 +978,10 @@ export function AnalyzerForm({
               <button
                 type="button"
                 onClick={clearInput}
-                className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl transition-all border border-white/[0.08] cursor-pointer"
+                className="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white font-mono text-xs uppercase tracking-wider rounded-xl transition-all border border-white/[0.08] cursor-pointer flex items-center gap-1.5"
               >
-                {isHindi ? 'खाली करें' : 'Clear Buffer'}
+                <RotateCcwIcon className="w-3.5 h-3.5" />
+                <span>{isHindi ? 'खाली करें' : 'Clear Buffer'}</span>
               </button>
               <button
                 type="submit"

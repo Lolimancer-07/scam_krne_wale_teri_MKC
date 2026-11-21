@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/Navbar';
 import { AnalyzerForm } from '@/components/AnalyzerForm';
@@ -18,17 +18,34 @@ import {
 export default function HomePage() {
   const [analyzedResult, setAnalyzedResult] = useState<DetectionResultData | null>(null);
   const [analyzedText, setAnalyzedText] = useState<string>('');
+  const [analyzedScreenshot, setAnalyzedScreenshot] = useState<string | null>(null);
   const { lang } = useLanguage();
 
   const isHindi = lang === 'hi';
 
-  const handleAnalysisSuccess = (data: DetectionResultData, text: string) => {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const textParam = params.get('text');
+      if (textParam) {
+        setAnalyzedText(textParam);
+      }
+    }
+  }, []);
+
+  const handleAnalysisSuccess = (
+    data: DetectionResultData,
+    text: string,
+    screenshot?: string | null,
+  ) => {
     setAnalyzedResult(data);
     setAnalyzedText(text);
+    setAnalyzedScreenshot(screenshot || null);
   };
 
   const handleReset = () => {
     setAnalyzedResult(null);
+    setAnalyzedScreenshot(null);
   };
 
   return (
@@ -110,6 +127,7 @@ export default function HomePage() {
             result={analyzedResult}
             onReset={handleReset}
             lang={lang}
+            screenshotPreview={analyzedScreenshot}
           />
         ) : (
           <AnalyzerForm
