@@ -1,6 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
+import {
+  AlertOctagonIcon,
+  ShieldCheckIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  AwardIcon,
+  RotateCcwIcon,
+  ArrowRightIcon,
+} from './Icons';
 
 interface QuizQuestion {
   id: number;
@@ -142,7 +151,7 @@ export function Quiz() {
   const currentQ = QUIZ_QUESTIONS[currentIndex];
 
   const handleAnswer = (answerIsScam: boolean) => {
-    if (selectedAnswer !== null) return; // Prevent double answer
+    if (selectedAnswer !== null) return;
     setSelectedAnswer(answerIsScam);
 
     if (answerIsScam === currentQ.isScam) {
@@ -171,25 +180,27 @@ export function Quiz() {
     const badge =
       percentage >= 80
         ? {
-            title: '🛡️ Cyber Guardian',
+            title: 'Cyber Guardian',
             color: 'text-emerald-400',
             desc: 'Outstanding! You can accurately spot fake Indian scams and distinguish authentic alerts.',
           }
         : percentage >= 50
           ? {
-              title: '⚠️ Scam Vigilant',
+              title: 'Scam Vigilant',
               color: 'text-amber-400',
               desc: 'Good effort! Review the red flag breakdown below to catch evasive phishing campaigns.',
             }
           : {
-              title: '🚨 High Vulnerability',
+              title: 'High Vulnerability',
               color: 'text-rose-400',
               desc: 'Be very careful! Review the Learn guide to protect yourself from fake KYC and digital arrest scams.',
             };
 
     return (
       <div className="w-full max-w-2xl mx-auto p-6 sm:p-8 rounded-2xl border border-indigo-500/20 bg-[#031427]/80 backdrop-blur-md text-center space-y-6 shadow-xl animate-in fade-in-50">
-        <span className="text-5xl inline-block animate-bounce">🏆</span>
+        <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 w-fit mx-auto text-indigo-400">
+          <AwardIcon className="w-12 h-12" />
+        </div>
         <div>
           <h2 className={`text-2xl font-black ${badge.color} font-mono`}>{badge.title}</h2>
           <p className="text-sm text-slate-300 mt-1">{badge.desc}</p>
@@ -210,9 +221,10 @@ export function Quiz() {
 
         <button
           onClick={handleRestart}
-          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 border border-indigo-400/20"
+          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 border border-indigo-400/20 flex items-center gap-2 mx-auto cursor-pointer"
         >
-          🔄 Retake Quiz
+          <RotateCcwIcon className="w-4 h-4" />
+          <span>Retake Quiz</span>
         </button>
       </div>
     );
@@ -262,17 +274,17 @@ export function Quiz() {
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => handleAnswer(true)}
-            className="p-4 rounded-xl border-2 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-bold text-sm transition flex flex-col items-center gap-1.5 shadow-md shadow-rose-950/20 group"
+            className="p-4 rounded-xl border-2 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-bold text-sm transition flex flex-col items-center gap-2 shadow-md shadow-rose-950/20 group cursor-pointer"
           >
-            <span className="text-2xl group-hover:scale-110 transition">🚨</span>
+            <AlertOctagonIcon className="w-6 h-6 group-hover:scale-110 transition" />
             <span className="font-mono">It&apos;s a SCAM</span>
           </button>
 
           <button
             onClick={() => handleAnswer(false)}
-            className="p-4 rounded-xl border-2 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-bold text-sm transition flex flex-col items-center gap-1.5 shadow-md shadow-emerald-950/20 group"
+            className="p-4 rounded-xl border-2 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 font-bold text-sm transition flex flex-col items-center gap-2 shadow-md shadow-emerald-950/20 group cursor-pointer"
           >
-            <span className="text-2xl group-hover:scale-110 transition">🛡️</span>
+            <ShieldCheckIcon className="w-6 h-6 group-hover:scale-110 transition" />
             <span className="font-mono">It&apos;s LEGITIMATE</span>
           </button>
         </div>
@@ -286,11 +298,15 @@ export function Quiz() {
                 : 'bg-rose-500/15 border-rose-500/40 text-rose-200'
             }`}
           >
-            <span className="text-2xl">{isCorrect ? '✅' : '❌'}</span>
+            {isCorrect ? (
+              <CheckCircleIcon className="w-5 h-5 text-emerald-400 shrink-0" />
+            ) : (
+              <XCircleIcon className="w-5 h-5 text-rose-400 shrink-0" />
+            )}
             <div>
               <div className="font-bold font-mono">
                 {isCorrect ? 'Correct!' : 'Incorrect!'} This is{' '}
-                {currentQ.isScam ? 'a SCAM 🚨' : 'LEGITIMATE 🛡️'}.
+                {currentQ.isScam ? 'a SCAM' : 'LEGITIMATE'}.
               </div>
               <div className="text-xs font-normal mt-0.5 text-slate-300 font-mono">
                 {currentQ.category}
@@ -316,11 +332,14 @@ export function Quiz() {
           <div className="flex justify-end pt-2">
             <button
               onClick={handleNext}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 border border-indigo-400/20"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm transition shadow-lg shadow-indigo-600/30 border border-indigo-400/20 flex items-center gap-1.5 cursor-pointer"
             >
-              {currentIndex + 1 === QUIZ_QUESTIONS.length
-                ? 'View Final Results 🏆'
-                : 'Next Question ➡️'}
+              <span>
+                {currentIndex + 1 === QUIZ_QUESTIONS.length
+                  ? 'View Final Results'
+                  : 'Next Question'}
+              </span>
+              {currentIndex + 1 < QUIZ_QUESTIONS.length && <ArrowRightIcon className="w-4 h-4" />}
             </button>
           </div>
         </div>

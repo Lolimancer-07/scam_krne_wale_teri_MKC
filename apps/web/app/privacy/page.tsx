@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLanguage } from '@/components/LanguageProvider';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { ShieldIcon, CheckCircleIcon } from '@/components/Icons';
 
 export default function PrivacyPage() {
   const { lang } = useLanguage();
@@ -16,8 +17,8 @@ export default function PrivacyPage() {
       <header className="border-b border-indigo-500/15 bg-[#000f21]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center text-lg shadow-sm">
-              🛡️
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center shadow-sm">
+              <ShieldIcon className="w-5 h-5 text-indigo-400" />
             </div>
             <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
               ScamShield
@@ -122,9 +123,12 @@ export default function PrivacyPage() {
               </code>
             </li>
           </ul>
-          <p className="text-sm text-emerald-400 font-semibold font-mono">
-            ✓ All opted-in samples are permanently purged by an automated retention script after 30
-            days.
+          <p className="text-sm text-emerald-400 font-semibold font-mono flex items-center gap-1.5">
+            <CheckCircleIcon className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>
+              All opted-in samples are permanently purged by an automated retention script after 30
+              days.
+            </span>
           </p>
         </section>
 

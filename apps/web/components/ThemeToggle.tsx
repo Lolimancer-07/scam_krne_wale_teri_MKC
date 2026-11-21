@@ -1,20 +1,21 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { SunIcon, MoonIcon } from './Icons';
 
 type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'scamshield-theme';
 
 function getInitialTheme(): Theme {
-  if (typeof window === 'undefined') return 'light';
+  if (typeof window === 'undefined') return 'dark';
   const stored = window.localStorage.getItem(STORAGE_KEY);
   if (stored === 'light' || stored === 'dark') return stored;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark';
 }
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<Theme>('dark');
 
   useEffect(() => {
     setTheme(getInitialTheme());
@@ -33,11 +34,15 @@ export function ThemeToggle() {
   return (
     <button
       onClick={() => applyTheme(theme === 'dark' ? 'light' : 'dark')}
-      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="px-2.5 py-1 rounded-md border text-xs font-bold bg-muted hover:bg-muted/80 text-foreground transition"
+      aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to obsidian dark theme'}
+      title={theme === 'dark' ? 'Switch to light theme' : 'Switch to obsidian dark theme'}
+      className="p-1.5 rounded-lg border border-indigo-500/20 text-slate-400 hover:text-white bg-[#031427]/80 hover:bg-indigo-500/10 transition flex items-center justify-center shadow-sm"
     >
-      {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+      {theme === 'dark' ? (
+        <SunIcon className="w-4 h-4 text-amber-300" />
+      ) : (
+        <MoonIcon className="w-4 h-4 text-indigo-300" />
+      )}
     </button>
   );
 }

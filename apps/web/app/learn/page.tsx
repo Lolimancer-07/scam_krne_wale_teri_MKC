@@ -5,11 +5,22 @@ import Link from 'next/link';
 import { Quiz } from '@/components/Quiz';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { useLanguage } from '@/components/LanguageProvider';
+import {
+  ShieldIcon,
+  BookOpenIcon,
+  TargetIcon,
+  CheckCircleIcon,
+  BuildingIcon,
+  ZapIcon,
+  QrCodeIcon,
+  ScaleIcon,
+  PackageIcon,
+  BriefcaseIcon,
+} from '@/components/Icons';
 
 const SCAM_GUIDES = [
   {
-    icon: '🏦',
+    icon: <BuildingIcon className="w-5 h-5 text-indigo-400" />,
     title: 'Bank & KYC Expiry Scams',
     threat: 'High',
     threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
@@ -24,7 +35,7 @@ const SCAM_GUIDES = [
     ],
   },
   {
-    icon: '⚡',
+    icon: <ZapIcon className="w-5 h-5 text-amber-400" />,
     title: 'Electricity & Utility Disconnection',
     threat: 'Critical',
     threatColor: 'bg-rose-600/30 text-rose-200 border-rose-500/50',
@@ -39,7 +50,7 @@ const SCAM_GUIDES = [
     ],
   },
   {
-    icon: '💸',
+    icon: <QrCodeIcon className="w-5 h-5 text-emerald-400" />,
     title: 'UPI "Receive Money" QR Code Scams',
     threat: 'High',
     threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
@@ -54,7 +65,7 @@ const SCAM_GUIDES = [
     ],
   },
   {
-    icon: '⚖️',
+    icon: <ScaleIcon className="w-5 h-5 text-purple-400" />,
     title: 'Digital Arrest & Police Extortion',
     threat: 'Severe',
     threatColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
@@ -69,7 +80,7 @@ const SCAM_GUIDES = [
     ],
   },
   {
-    icon: '📦',
+    icon: <PackageIcon className="w-5 h-5 text-amber-400" />,
     title: 'Postal & Courier Customs Fee Bait',
     threat: 'Medium',
     threatColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
@@ -84,7 +95,7 @@ const SCAM_GUIDES = [
     ],
   },
   {
-    icon: '💻',
+    icon: <BriefcaseIcon className="w-5 h-5 text-indigo-400" />,
     title: 'Work-from-Home & Video Like Traps',
     threat: 'High',
     threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
@@ -109,8 +120,8 @@ export default function LearnPage() {
       <header className="border-b border-indigo-500/15 bg-[#000f21]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center text-lg shadow-sm">
-              🛡️
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center shadow-sm">
+              <ShieldIcon className="w-5 h-5 text-indigo-400" />
             </div>
             <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
               ScamShield
@@ -157,23 +168,25 @@ export default function LearnPage() {
           <div className="inline-flex p-1 rounded-xl bg-[#031427]/90 border border-indigo-500/20 mt-4 backdrop-blur-md">
             <button
               onClick={() => setActiveTab('guides')}
-              className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${
+              className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                 activeTab === 'guides'
                   ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              📚 Scam Guide Hub
+              <BookOpenIcon className="w-4 h-4" />
+              <span>Scam Guide Hub</span>
             </button>
             <button
               onClick={() => setActiveTab('quiz')}
-              className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${
+              className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                 activeTab === 'quiz'
                   ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              🎯 10-Question Quiz
+              <TargetIcon className="w-4 h-4" />
+              <span>10-Question Quiz</span>
             </button>
           </div>
         </div>
@@ -188,7 +201,9 @@ export default function LearnPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-3xl">{guide.icon}</span>
+                    <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10">
+                      {guide.icon}
+                    </div>
                     <h3 className="text-base font-bold text-white font-mono">{guide.title}</h3>
                   </div>
                   <span
@@ -215,7 +230,7 @@ export default function LearnPage() {
                   </span>
                   {guide.protection.map((item, pIdx) => (
                     <div key={pIdx} className="flex items-start gap-2 text-xs text-slate-300">
-                      <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                      <CheckCircleIcon className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </div>
                   ))}

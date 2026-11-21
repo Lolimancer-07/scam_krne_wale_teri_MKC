@@ -77,6 +77,14 @@ describe('Detector Rules Engine', () => {
     expect(result.redFlags.some((f) => f.signal === 'refund_prize_lure')).toBe(true);
   });
 
+  it('detects malicious apk install lures', () => {
+    const text =
+      'Your parcel requires immediate Android package verification: install http://malware-delivery[.]com/remote.apk to continue the re-shipping process.';
+    const result = runRules(text);
+
+    expect(result.redFlags.some((f) => f.signal === 'apk_install_threat')).toBe(true);
+  });
+
   it('gives low score to normal benign greeting', () => {
     const text = 'Hey Ramesh, are we still meeting for lunch at 1 PM today? Let me know!';
     const result = runRules(text);

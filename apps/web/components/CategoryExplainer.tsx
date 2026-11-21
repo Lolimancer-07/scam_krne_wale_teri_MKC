@@ -1,17 +1,31 @@
 import React from 'react';
+import {
+  BuildingIcon,
+  KeyIcon,
+  QrCodeIcon,
+  PackageIcon,
+  ScaleIcon,
+  AwardIcon,
+  BriefcaseIcon,
+  TrendingUpIcon,
+  AlertTriangleIcon,
+  TargetIcon,
+  ShieldIcon,
+  CheckCircleIcon,
+  PhoneCallIcon,
+} from './Icons';
 
-export const CATEGORY_INFO: Record<
-  string,
-  {
-    title: string;
-    icon: string;
-    whatTheyWant: string;
-    nextSteps: string[];
-  }
-> = {
+interface CategoryMetadata {
+  title: string;
+  renderIcon: (className?: string) => React.ReactNode;
+  whatTheyWant: string;
+  nextSteps: string[];
+}
+
+export const CATEGORY_INFO: Record<string, CategoryMetadata> = {
   bank_kyc: {
     title: 'Bank / KYC Expiry Scam',
-    icon: '🏦',
+    renderIcon: (className = 'w-5 h-5 text-indigo-400') => <BuildingIcon className={className} />,
     whatTheyWant:
       'The fraudster wants your NetBanking credentials, debit card details, or PAN/Aadhaar numbers to siphon funds out of your bank account.',
     nextSteps: [
@@ -23,7 +37,7 @@ export const CATEGORY_INFO: Record<
   },
   otp_impersonation: {
     title: 'OTP / Credential Impersonation',
-    icon: '🔑',
+    renderIcon: (className = 'w-5 h-5 text-indigo-400') => <KeyIcon className={className} />,
     whatTheyWant:
       'The scammer wants your one-time verification password (OTP) or UPI/ATM PIN to authorize an unauthorized fund transfer or hijack your WhatsApp/Telegram.',
     nextSteps: [
@@ -34,7 +48,7 @@ export const CATEGORY_INFO: Record<
   },
   upi_payment: {
     title: 'UPI / Fake Collect Request Scam',
-    icon: '💸',
+    renderIcon: (className = 'w-5 h-5 text-emerald-400') => <QrCodeIcon className={className} />,
     whatTheyWant:
       'The scammer tricks you into scanning a QR code or approving a UPI Collect Request under the guise of sending you a payment or refund.',
     nextSteps: [
@@ -45,7 +59,7 @@ export const CATEGORY_INFO: Record<
   },
   delivery_courier: {
     title: 'Postal / Courier Delivery Scam',
-    icon: '📦',
+    renderIcon: (className = 'w-5 h-5 text-amber-400') => <PackageIcon className={className} />,
     whatTheyWant:
       'The fraudster asks for a nominal "re-delivery fee" (₹10–₹50) on a fake phishing portal to harvest your credit or debit card details.',
     nextSteps: [
@@ -56,7 +70,7 @@ export const CATEGORY_INFO: Record<
   },
   government_tax: {
     title: 'Government / Police / Digital Arrest Extortion',
-    icon: '⚖️',
+    renderIcon: (className = 'w-5 h-5 text-purple-400') => <ScaleIcon className={className} />,
     whatTheyWant:
       'Extortionists threaten you with police arrest warrants, CBI/ED inquiries, customs drug seizure, or unpaid e-challans to coerce an instant money transfer.',
     nextSteps: [
@@ -67,7 +81,7 @@ export const CATEGORY_INFO: Record<
   },
   lottery_prize: {
     title: 'Lottery / Prize / Refund Bait',
-    icon: '🎁',
+    renderIcon: (className = 'w-5 h-5 text-amber-400') => <AwardIcon className={className} />,
     whatTheyWant:
       'Claims you won a massive jackpot (e.g. KBC, foreign lottery) and asks for an upfront "GST" or "processing fee" before releasing the nonexistent prize.',
     nextSteps: [
@@ -78,7 +92,7 @@ export const CATEGORY_INFO: Record<
   },
   job_task: {
     title: 'Work-From-Home / Task Scam',
-    icon: '💻',
+    renderIcon: (className = 'w-5 h-5 text-indigo-400') => <BriefcaseIcon className={className} />,
     whatTheyWant:
       'Lures you with easy money for liking YouTube videos or writing reviews, gives a tiny payout to build trust, then demands thousands for "prepaid tasks" you can never recover.',
     nextSteps: [
@@ -89,7 +103,9 @@ export const CATEGORY_INFO: Record<
   },
   investment_crypto: {
     title: 'Guaranteed Returns / Crypto Scheme',
-    icon: '📈',
+    renderIcon: (className = 'w-5 h-5 text-emerald-400') => (
+      <TrendingUpIcon className={className} />
+    ),
     whatTheyWant:
       'Promises guaranteed returns (e.g. 100%–200% profit) using fake stock market tips or automated crypto bots, then freezes your deposit.',
     nextSteps: [
@@ -100,7 +116,9 @@ export const CATEGORY_INFO: Record<
   },
   other: {
     title: 'Suspicious / Unverified Message',
-    icon: '⚠️',
+    renderIcon: (className = 'w-5 h-5 text-rose-400') => (
+      <AlertTriangleIcon className={className} />
+    ),
     whatTheyWant:
       'This message contains aggressive urgency, unverified links, or pressure tactics typical of social engineering campaigns.',
     nextSteps: [
@@ -117,27 +135,29 @@ export function CategoryExplainer({ category }: { category: string }) {
   return (
     <div className="space-y-4 rounded-2xl border border-indigo-500/15 bg-[#031427]/80 backdrop-blur-md p-6 shadow-xl text-slate-200">
       <div className="flex items-center gap-3">
-        <span className="text-2xl" role="img" aria-label={info.title}>
-          {info.icon}
-        </span>
+        <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10">
+          {info.renderIcon()}
+        </div>
         <h3 className="text-base font-bold text-white font-mono">{info.title}</h3>
       </div>
 
       <div className="rounded-xl bg-amber-500/[0.08] border border-amber-500/20 p-4">
-        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1 font-mono">
-          🎯 What the scammer wants
+        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 mb-1 font-mono flex items-center gap-1.5">
+          <TargetIcon className="w-3.5 h-3.5 text-amber-400" />
+          <span>What the scammer wants</span>
         </h4>
         <p className="text-xs sm:text-sm text-amber-100/90 leading-relaxed">{info.whatTheyWant}</p>
       </div>
 
       <div>
-        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 font-mono">
-          🛡️ Recommended Action Steps
+        <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5 font-mono flex items-center gap-1.5">
+          <ShieldIcon className="w-3.5 h-3.5 text-indigo-400" />
+          <span>Recommended Action Steps</span>
         </h4>
         <ul className="space-y-2 text-xs sm:text-sm text-slate-300">
           {info.nextSteps.map((step, idx) => (
             <li key={idx} className="flex items-start gap-2.5">
-              <span className="text-emerald-400 font-bold shrink-0">✓</span>
+              <CheckCircleIcon className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
               <span>{step}</span>
             </li>
           ))}
@@ -145,17 +165,23 @@ export function CategoryExplainer({ category }: { category: string }) {
       </div>
 
       <div className="pt-3 border-t border-white/[0.08] text-xs text-slate-400 flex flex-wrap items-center justify-between gap-2 font-mono">
+        <div className="flex items-center gap-1.5">
+          <PhoneCallIcon className="w-3.5 h-3.5 text-rose-400" />
+          <span>
+            Emergency Cyber Helpline: <strong className="text-rose-400">1930</strong>
+          </span>
+        </div>
         <span>
-          Emergency Cyber Helpline: <strong className="text-rose-400">1930</strong>
+          National Portal:{' '}
+          <a
+            href="https://cybercrime.gov.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 hover:text-indigo-300 underline"
+          >
+            cybercrime.gov.in
+          </a>
         </span>
-        <a
-          href="https://cybercrime.gov.in"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-indigo-400 hover:text-indigo-300 underline"
-        >
-          cybercrime.gov.in
-        </a>
       </div>
     </div>
   );

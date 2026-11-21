@@ -57,7 +57,7 @@ describe('ResultCard Component', () => {
   it('renders "Likely Scam" verdict banner and risk score', () => {
     render(<ResultCard originalText={sampleText} result={fakeResult} onReset={vi.fn()} />);
 
-    expect(screen.getByText('🚨 Likely Scam')).toBeInTheDocument();
+    expect(screen.getByText('Likely Scam')).toBeInTheDocument();
     expect(screen.getByText('85')).toBeInTheDocument();
     expect(screen.getByText('/100')).toBeInTheDocument();
     expect(screen.getByText(/BANK KYC/i)).toBeInTheDocument();

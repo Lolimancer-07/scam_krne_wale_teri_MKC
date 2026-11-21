@@ -7,6 +7,7 @@ import { ResultCard, DetectionResultData } from '@/components/ResultCard';
 import { useLanguage } from '@/components/LanguageProvider';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { ShieldIcon, PhoneCallIcon, TargetIcon, BarChartIcon, LockIcon } from '@/components/Icons';
 
 export default function HomePage() {
   const [analyzedResult, setAnalyzedResult] = useState<DetectionResultData | null>(null);
@@ -21,7 +22,6 @@ export default function HomePage() {
   };
 
   const handleReset = () => {
-    // Keep the submitted text so the user can edit & re-check instantly.
     setAnalyzedResult(null);
   };
 
@@ -30,9 +30,13 @@ export default function HomePage() {
       {/* Top Navbar */}
       <header className="border-b border-indigo-500/15 bg-[#000f21]/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center text-lg shadow-sm group-hover:border-indigo-400/50 transition">
-              🛡️
+          <button
+            onClick={handleReset}
+            className="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
+            title="ScamShield Home"
+          >
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center shadow-sm group-hover:border-indigo-400/50 transition">
+              <ShieldIcon className="w-5 h-5 text-indigo-400" />
             </div>
             <div className="flex flex-col">
               <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
@@ -42,16 +46,16 @@ export default function HomePage() {
                 {isHindi ? 'भारत धोखाधड़ी सुरक्षा' : 'Obsidian Fraud Defense Engine'}
               </span>
             </div>
-          </Link>
+          </button>
 
           {/* Navigation Links */}
           <nav className="flex items-center gap-3 sm:gap-4 text-xs font-semibold">
-            <Link
-              href="/"
-              className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-medium transition"
+            <button
+              onClick={handleReset}
+              className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-medium hover:bg-indigo-500/20 hover:text-white transition cursor-pointer"
             >
               {isHindi ? 'स्कैनर' : 'Scanner'}
-            </Link>
+            </button>
             <Link
               href="/learn"
               className="text-slate-400 hover:text-white transition hidden sm:inline"
@@ -72,7 +76,7 @@ export default function HomePage() {
             </div>
 
             <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-300">
-              <span className="h-2 w-2 rounded-full bg-rose-500 inline-block animate-pulse" />
+              <PhoneCallIcon className="w-3.5 h-3.5 text-rose-400" />
               <span className="text-xs font-medium font-mono">
                 Helpline: <strong className="text-rose-200">1930</strong>
               </span>
@@ -120,7 +124,9 @@ export default function HomePage() {
               className="p-5 rounded-2xl border border-white/[0.08] bg-[#031427]/60 hover:border-indigo-500/40 hover:bg-[#031427]/90 text-left space-y-2 transition duration-200 shadow-sm block group backdrop-blur-md"
             >
               <div className="flex items-center justify-between">
-                <span className="text-2xl group-hover:scale-110 inline-block transition">🎯</span>
+                <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 group-hover:scale-105 transition">
+                  <TargetIcon className="w-5 h-5" />
+                </div>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-400 font-mono">
                   10 Scenarios
                 </span>
@@ -140,7 +146,9 @@ export default function HomePage() {
               className="p-5 rounded-2xl border border-white/[0.08] bg-[#031427]/60 hover:border-indigo-500/40 hover:bg-[#031427]/90 text-left space-y-2 transition duration-200 shadow-sm block group backdrop-blur-md"
             >
               <div className="flex items-center justify-between">
-                <span className="text-2xl group-hover:scale-110 inline-block transition">📊</span>
+                <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 group-hover:scale-105 transition">
+                  <BarChartIcon className="w-5 h-5" />
+                </div>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-emerald-400 font-mono flex items-center gap-1">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   Live
@@ -161,7 +169,9 @@ export default function HomePage() {
               className="p-5 rounded-2xl border border-white/[0.08] bg-[#031427]/60 hover:border-indigo-500/40 hover:bg-[#031427]/90 text-left space-y-2 transition duration-200 shadow-sm block group backdrop-blur-md"
             >
               <div className="flex items-center justify-between">
-                <span className="text-2xl group-hover:scale-110 inline-block transition">🔒</span>
+                <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 group-hover:scale-105 transition">
+                  <LockIcon className="w-5 h-5" />
+                </div>
                 <span className="text-[10px] uppercase font-bold tracking-widest text-purple-400 font-mono">
                   HMAC-SHA256
                 </span>

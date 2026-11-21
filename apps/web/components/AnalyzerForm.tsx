@@ -2,6 +2,14 @@
 
 import React, { useState } from 'react';
 import { DetectionResultData } from './ResultCard';
+import {
+  FileTextIcon,
+  CameraIcon,
+  LinkIcon,
+  ShieldCheckIcon,
+  SearchIcon,
+  AlertTriangleIcon,
+} from './Icons';
 
 interface AnalyzerFormProps {
   onAnalyzeSuccess: (data: DetectionResultData, text: string) => void;
@@ -11,23 +19,23 @@ interface AnalyzerFormProps {
 
 const SAMPLE_MESSAGES = [
   {
-    label: '🏦 Fake SBI KYC Scam',
+    label: 'SBI KYC Expiry',
     text: 'Dear Customer, your SBI KYC expires today, verify via http://sbi-kyc-update.xyz or account will be blocked',
   },
   {
-    label: '⚡ Electricity Bill Threat',
+    label: 'Electricity Disconnection',
     text: 'Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM due to unpaid bill. Contact electricity officer at 9876543210 immediately.',
   },
   {
-    label: '💼 Part-Time Job Scam',
+    label: 'Telegram Task Scam',
     text: 'Work from home opportunity! Earn Rs 3,000 to Rs 8,000 daily by liking YouTube videos. Join our Telegram group now: https://t.co/fakejob',
   },
   {
-    label: '⚖️ Digital Arrest Notice',
+    label: 'Digital Arrest Notice',
     text: 'Supreme Court of India e-Challan notice: An FIR and digital arrest warrant has been issued against you. Join Skype interrogation immediately.',
   },
   {
-    label: '✅ Legit Bank Alert',
+    label: 'Legitimate Bank Alert',
     text: 'Your SBI a/c ending 4589 is debited for Rs 500.00 on 21-Nov-24 by UPI/P2A/Ref 432109876543. Avail balance: Rs 24,150.20.',
   },
 ];
@@ -173,13 +181,13 @@ export function AnalyzerForm({
             setActiveTab('text');
             setErrorMessage(null);
           }}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-2 cursor-pointer ${
             activeTab === 'text'
               ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/20 border border-indigo-400/30'
               : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
           }`}
         >
-          <span>📝</span>
+          <FileTextIcon className="w-4 h-4" />
           <span>{isHindi ? 'संदेश पेस्ट करें' : 'Paste Message'}</span>
         </button>
 
@@ -189,13 +197,13 @@ export function AnalyzerForm({
             setActiveTab('image');
             setErrorMessage(null);
           }}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-2 cursor-pointer ${
             activeTab === 'image'
               ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/20 border border-indigo-400/30'
               : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
           }`}
         >
-          <span>📷</span>
+          <CameraIcon className="w-4 h-4" />
           <span>{isHindi ? 'स्क्रीनशॉट (OCR)' : 'Screenshot (OCR)'}</span>
         </button>
 
@@ -205,20 +213,20 @@ export function AnalyzerForm({
             setActiveTab('url');
             setErrorMessage(null);
           }}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-1.5 ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-2 cursor-pointer ${
             activeTab === 'url'
               ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/20 border border-indigo-400/30'
               : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
           }`}
         >
-          <span>🔗</span>
+          <LinkIcon className="w-4 h-4" />
           <span>{isHindi ? 'सीधा लिंक' : 'Check URL'}</span>
         </button>
       </div>
 
       {/* Privacy Notice Banner */}
       <div className="flex items-center gap-2.5 p-3 rounded-xl bg-amber-500/[0.08] border border-amber-500/20 text-xs text-amber-200 font-medium">
-        <span className="text-base">🛡️</span>
+        <ShieldCheckIcon className="w-4 h-4 text-amber-400 shrink-0" />
         <span>
           <strong className="text-amber-300">
             {isHindi ? 'गोपनीयता सुरक्षा:' : 'Privacy Guarantee:'}
@@ -268,7 +276,7 @@ export function AnalyzerForm({
                     setText(s.text);
                     setErrorMessage(null);
                   }}
-                  className="px-2.5 py-1 text-xs rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-indigo-500/15 hover:border-indigo-500/30 text-slate-300 hover:text-white transition"
+                  className="px-2.5 py-1 text-xs rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-indigo-500/15 hover:border-indigo-500/30 text-slate-300 hover:text-white transition cursor-pointer"
                 >
                   {s.label}
                 </button>
@@ -291,8 +299,9 @@ export function AnalyzerForm({
           </label>
 
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium">
-              ⚠️ {errorMessage}
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2">
+              <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
+              <span>{errorMessage}</span>
             </div>
           )}
 
@@ -300,7 +309,7 @@ export function AnalyzerForm({
             <button
               type="submit"
               disabled={loading || !text.trim()}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo cursor-pointer"
             >
               {loading ? (
                 <>
@@ -308,7 +317,10 @@ export function AnalyzerForm({
                   <span>{loadingStep || (isHindi ? 'विश्लेषण जारी है...' : 'Analyzing...')}</span>
                 </>
               ) : (
-                <span>🔍 {isHindi ? 'संदेश की जांच करें' : 'Analyze Message'}</span>
+                <>
+                  <SearchIcon className="w-4 h-4" />
+                  <span>{isHindi ? 'संदेश की जांच करें' : 'Analyze Message'}</span>
+                </>
               )}
             </button>
           </div>
@@ -333,14 +345,16 @@ export function AnalyzerForm({
                     setImageFile(null);
                     setImagePreview(null);
                   }}
-                  className="text-xs text-rose-400 hover:text-rose-300 font-semibold underline"
+                  className="text-xs text-rose-400 hover:text-rose-300 font-semibold underline cursor-pointer"
                 >
                   {isHindi ? 'चित्र हटाएं' : 'Remove Image'}
                 </button>
               </div>
             ) : (
               <label className="cursor-pointer space-y-2 block">
-                <span className="text-4xl block">📱</span>
+                <div className="p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 w-fit mx-auto text-indigo-400">
+                  <CameraIcon className="w-8 h-8" />
+                </div>
                 <span className="font-bold text-sm block text-white">
                   {isHindi
                     ? 'स्क्रीनशॉट चुनें या यहां खींचें'
@@ -360,8 +374,9 @@ export function AnalyzerForm({
           </div>
 
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium">
-              ⚠️ {errorMessage}
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2">
+              <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
+              <span>{errorMessage}</span>
             </div>
           )}
 
@@ -369,7 +384,7 @@ export function AnalyzerForm({
             <button
               type="submit"
               disabled={loading || !imageFile}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo cursor-pointer"
             >
               {loading ? (
                 <>
@@ -377,7 +392,10 @@ export function AnalyzerForm({
                   <span>{loadingStep || (isHindi ? 'ओसीआर चल रहा है...' : 'Running OCR...')}</span>
                 </>
               ) : (
-                <span>📸 {isHindi ? 'ओसीआर और जांच शुरू करें' : 'Run OCR & Analyze'}</span>
+                <>
+                  <CameraIcon className="w-4 h-4" />
+                  <span>{isHindi ? 'ओसीआर और जांच शुरू करें' : 'Run OCR & Analyze'}</span>
+                </>
               )}
             </button>
           </div>
@@ -405,8 +423,9 @@ export function AnalyzerForm({
           </div>
 
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium">
-              ⚠️ {errorMessage}
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2">
+              <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
+              <span>{errorMessage}</span>
             </div>
           )}
 
@@ -414,7 +433,7 @@ export function AnalyzerForm({
             <button
               type="submit"
               disabled={loading || !urlInput.trim()}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo cursor-pointer"
             >
               {loading ? (
                 <>
@@ -422,7 +441,10 @@ export function AnalyzerForm({
                   <span>{loadingStep || (isHindi ? 'जांच जारी है...' : 'Verifying...')}</span>
                 </>
               ) : (
-                <span>🔗 {isHindi ? 'लिंक की जांच करें' : 'Verify URL'}</span>
+                <>
+                  <LinkIcon className="w-4 h-4" />
+                  <span>{isHindi ? 'लिंक की जांच करें' : 'Verify URL'}</span>
+                </>
               )}
             </button>
           </div>

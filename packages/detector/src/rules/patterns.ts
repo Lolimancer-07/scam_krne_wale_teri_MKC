@@ -165,6 +165,14 @@ export const SIGNALS: SignalPatternDefinition[] = [
     ],
   },
   {
+    id: 'apk_install_threat',
+    weight: 20,
+    categoryHint: 'other',
+    reason:
+      'Delivers or prompts installing a malicious Android package (.apk) — a common malware delivery channel.',
+    patterns: [/[a-z0-9-]*\.apk\b/i],
+  },
+  {
     id: 'phone_callback_lure',
     weight: 20,
     categoryHint: 'other',
