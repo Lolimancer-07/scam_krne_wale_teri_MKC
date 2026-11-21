@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { generateRequestId, ok, err } from '@/lib/requestId';
+import { generateRequestId, ok } from '@/lib/requestId';
+
+// Aggregate counters must be read per request, never baked in at build time.
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const requestId = generateRequestId();
@@ -49,25 +52,19 @@ export async function GET() {
       { status: 200, headers: { 'X-Request-Id': requestId } },
     );
   } catch {
-    // Offline / fallback mock stats when DB is not actively running
+    // Never present invented numbers as live community statistics. The UI
+    // shows an explicit degraded-state notice when this flag is set.
     return NextResponse.json(
       ok(requestId, {
-        totalScans: 12480,
-        last24Hours: 342,
+        totalScans: 0,
+        last24Hours: 0,
         byVerdict: {
-          likely_scam: 7820,
-          suspicious: 2840,
-          safe: 1820,
+          likely_scam: 0,
+          suspicious: 0,
+          safe: 0,
         },
-        byCategory: {
-          bank_kyc: 4520,
-          electricity_bill: 2180,
-          otp_impersonation: 1940,
-          job_task: 1420,
-          delivery_courier: 1180,
-          government_tax: 820,
-          lottery_prize: 420,
-        },
+        byCategory: {},
+        degraded: true,
       }),
       { status: 200, headers: { 'X-Request-Id': requestId } },
     );

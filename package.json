@@ -11,6 +11,7 @@
     "test:e2e": "pnpm --filter @scamshield/web test:e2e",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
+    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky"

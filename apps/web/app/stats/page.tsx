@@ -12,6 +12,7 @@ interface StatsData {
     safe: number;
   };
   byCategory: Record<string, number>;
+  degraded?: boolean;
 }
 
 export default function StatsPage() {
@@ -27,26 +28,22 @@ export default function StatsPage() {
         }
       })
       .catch(() => {
-        // Fallback default numbers
+        // Database unavailable: show a truthful empty state, not invented data.
         setStats({
-          totalScans: 12480,
-          last24Hours: 342,
-          byVerdict: { likely_scam: 7820, suspicious: 2840, safe: 1820 },
-          byCategory: {
-            bank_kyc: 4520,
-            electricity_bill: 2180,
-            otp_impersonation: 1940,
-            job_task: 1420,
-          },
+          totalScans: 0,
+          last24Hours: 0,
+          byVerdict: { likely_scam: 0, suspicious: 0, safe: 0 },
+          byCategory: {},
+          degraded: true,
         });
       })
       .finally(() => setLoading(false));
   }, []);
 
   const total = stats?.totalScans || 1;
-  const scamPercent = stats ? Math.round((stats.byVerdict.likely_scam / total) * 100) : 63;
-  const suspiciousPercent = stats ? Math.round((stats.byVerdict.suspicious / total) * 100) : 23;
-  const safePercent = stats ? Math.round((stats.byVerdict.safe / total) * 100) : 14;
+  const scamPercent = stats ? Math.round((stats.byVerdict.likely_scam / total) * 100) : 0;
+  const suspiciousPercent = stats ? Math.round((stats.byVerdict.suspicious / total) * 100) : 0;
+  const safePercent = stats ? Math.round((stats.byVerdict.safe / total) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-between">
@@ -83,6 +80,11 @@ export default function StatsPage() {
           <p className="text-sm text-muted-foreground">
             Aggregated anonymous insights from messages analyzed across India. Updated in real time.
           </p>
+          {stats?.degraded && (
+            <p className="inline-block rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-400">
+              Database is offline — showing an empty state. Analysis still works in stateless mode.
+            </p>
+          )}
         </div>
 
         {/* Top Metric Cards */}

@@ -48,6 +48,10 @@ const securityHeaders = [
 
 const nextConfig = {
   transpilePackages: ['@scamshield/detector'],
+  experimental: {
+    // Enables instrumentation.ts, which initialises Sentry when configured.
+    instrumentationHook: true,
+  },
   images: {
     remotePatterns: [],
   },

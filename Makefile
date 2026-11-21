@@ -1,4 +1,6 @@
-.PHONY: dev build test lint typecheck format install clean
+.PHONY: install dev build test lint typecheck verify format clean smoke e2e \
+	db\:generate db\:push db\:migrate db\:deploy \
+	docker\:up docker\:down docker\:prod
 
 install:
 	pnpm install
@@ -10,13 +12,22 @@ build:
 	pnpm build
 
 test:
-	pnpm test
+	pnpm -r test
 
 lint:
-	pnpm lint
+	pnpm -r lint
 
 typecheck:
-	pnpm typecheck
+	pnpm -r typecheck
+
+verify:
+	pnpm verify
+
+smoke:
+	./infra/ci/smoke-test.sh http://localhost:3000
+
+e2e:
+	pnpm test:e2e
 
 format:
 	pnpm format
@@ -24,7 +35,7 @@ format:
 clean:
 	find . -name "dist" -not -path "*/node_modules/*" -exec rm -rf {} + 2>/dev/null; \
 	find . -name ".next" -exec rm -rf {} + 2>/dev/null; \
-	echo "Clean done"
+	echo "Clean completed"
 
 db\:generate:
 	cd apps/web && pnpm exec prisma generate
@@ -34,3 +45,12 @@ db\:push:
 
 db\:migrate:
 	cd apps/web && pnpm exec prisma migrate dev
+
+db\:deploy:
+	cd apps/web && pnpm exec prisma migrate deploy
+
+docker\:up docker\:prod:
+	docker compose -f infra/docker-compose.prod.yml up -d --build
+
+docker\:down:
+	docker compose -f infra/docker-compose.prod.yml down
