@@ -1,0 +1,42 @@
+{
+  "common": {
+    "title": "ScamShield",
+    "tagline": "India Fraud Defense Engine",
+    "cyberHelpline": "National Cyber Helpline: 1930",
+    "reportPortal": "cybercrime.gov.in",
+    "disclaimer": "ScamShield provides automated heuristic guidance and does not replace official advice from law enforcement."
+  },
+  "nav": {
+    "home": "Scanner",
+    "learn": "Learn & Quiz",
+    "stats": "Live Stats",
+    "privacy": "Privacy Policy"
+  },
+  "form": {
+    "tabText": "Text Message",
+    "tabImage": "Screenshot (OCR)",
+    "tabUrl": "Check URL",
+    "pastePlaceholder": "Paste suspicious SMS, WhatsApp message, email excerpt, or URL here...",
+    "urlPlaceholder": "Enter suspicious link (e.g. http://sbi-kyc.xyz)...",
+    "uploadPrompt": "Upload screenshot (PNG, JPG, WebP up to 5MB)",
+    "uploadHelp": "Our OCR extracts English and Hindi text directly in a secure worker.",
+    "privacyNotice": "Privacy Guarantee: We never store your raw messages by default. Never paste passwords or active OTPs.",
+    "donateSample": "Donate anonymized sample to improve open scam defense (all phone numbers and OTPs are auto-redacted)",
+    "analyzeBtn": "Analyze Message",
+    "analyzing": "Analyzing Signals...",
+    "analyzingOcr": "Extracting text with OCR..."
+  },
+  "verdict": {
+    "likelyScam": "Likely Scam",
+    "suspicious": "Suspicious Message",
+    "safe": "Likely Safe",
+    "riskScore": "Risk Score",
+    "redFlagsDetected": "Red Flags Detected",
+    "defangedUrl": "Suspicious Link Analysis (Defanged)",
+    "brandSpoofing": "Brand Spoofing Alert",
+    "whatScammerWants": "What the scammer wants",
+    "actionSteps": "Recommended Action Steps",
+    "checkAnother": "Check Another Message",
+    "feedbackPrompt": "Was this assessment accurate?"
+  }
+}
