@@ -10,16 +10,36 @@ export interface RulesResult {
 
 export function determineCategory(matchedSignals: Set<string>): ScamCategory {
   if (matchedSignals.has('kyc_lure')) return 'bank_kyc';
-  if (matchedSignals.has('otp_request') || matchedSignals.has('pin_cvv_request')) {
+  if (
+    matchedSignals.has('otp_request') ||
+    matchedSignals.has('pin_cvv_request') ||
+    matchedSignals.has('emergency_impersonation')
+  ) {
     return 'otp_impersonation';
   }
-  if (matchedSignals.has('arrest_threat')) return 'government_tax';
+  if (
+    matchedSignals.has('arrest_threat') ||
+    matchedSignals.has('traffic_challan_threat') ||
+    matchedSignals.has('utility_disconnection')
+  ) {
+    return 'government_tax';
+  }
   if (matchedSignals.has('delivery_lure')) return 'delivery_courier';
   if (matchedSignals.has('job_task_scam')) return 'job_task';
   if (matchedSignals.has('investment_crypto')) return 'investment_crypto';
   if (matchedSignals.has('refund_prize_lure')) return 'lottery_prize';
-  if (matchedSignals.has('payment_request')) return 'upi_payment';
-  if (matchedSignals.has('account_block_threat') && matchedSignals.has('impersonated_brand')) {
+  if (
+    matchedSignals.has('payment_request') ||
+    matchedSignals.has('predatory_loan_lure') ||
+    matchedSignals.has('upi_collect_request') ||
+    matchedSignals.has('upi_pin_to_receive')
+  ) {
+    return 'upi_payment';
+  }
+  if (
+    (matchedSignals.has('account_block_threat') || matchedSignals.has('sim_block_threat')) &&
+    matchedSignals.has('impersonated_brand')
+  ) {
     return 'bank_kyc';
   }
   return 'other';

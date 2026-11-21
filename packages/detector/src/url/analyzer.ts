@@ -24,6 +24,35 @@ export const KNOWN_SHORTENERS = new Set([
   'amzn.to',
   'rebrand.ly',
   'bl.ink',
+  't.me',
+  'telegram.me',
+  'surl.li',
+  'qrco.de',
+  'trib.al',
+  'v.gd',
+  'clck.ru',
+  's.id',
+  'shorturl.at',
+  'mysocial.vip',
+  'forms.gle',
+]);
+
+export const FREE_TUNNELS_AND_HOSTS = new Set([
+  'ngrok.io',
+  'ngrok-free.app',
+  'ngrok.app',
+  'pages.dev',
+  'vercel.app',
+  'web.app',
+  'firebaseapp.com',
+  '000webhostapp.com',
+  'glitch.me',
+  'onrender.com',
+  'netlify.app',
+  'duckdns.org',
+  'ddns.net',
+  'serveo.net',
+  'loca.lt',
 ]);
 
 export const RISKY_TLDS = new Set([
@@ -55,7 +84,70 @@ export const RISKY_TLDS = new Set([
   '.icu',
   '.vip',
   '.live',
+  '.shop',
+  '.fit',
+  '.rest',
+  '.buzz',
+  '.cc',
+  '.fun',
+  '.app',
+  '.su',
+  '.monster',
+  '.cfd',
+  '.sbs',
+  '.lat',
+  '.quest',
+  '.beauty',
+  '.press',
+  '.uno',
 ]);
+
+export const SUSPICIOUS_PATH_KEYWORDS = [
+  'kyc',
+  'pan',
+  'yono',
+  'netbanking',
+  'aadhaar',
+  'unblock',
+  'reactivate',
+  'verify',
+  'verification',
+  'login',
+  'credential',
+  'account-update',
+  'passbook',
+  'atm-pin',
+  'bescom',
+  'msedcl',
+  'tpddl',
+  'electricity',
+  'bill-pay',
+  'power-cut',
+  'challan',
+  'echallan',
+  'parivahan',
+  'police-notice',
+  'fir-case',
+  'court-order',
+  'earn',
+  'earnmoney',
+  'parttime',
+  'task',
+  'daily-salary',
+  'youtube-like',
+  'commission',
+  'bonus',
+  'vip-member',
+  'lucky-spin',
+  'winner',
+  'reward',
+  'cashback',
+  'lottery',
+  'kbc',
+  'loan',
+  'instant-loan',
+  'disbursement',
+];
 
 export function defang(url: string): string {
   return url
@@ -158,6 +250,18 @@ export function analyzeUrl(rawUrl: string): UrlAnalysisResult {
   const domain = parsed.domain ? parsed.domain.toLowerCase() : null;
   const publicSuffix = parsed.publicSuffix ? `.${parsed.publicSuffix.toLowerCase()}` : '';
 
+  // Extract path and query for inspection
+  let fullPath = '';
+  try {
+    const u = new URL(urlToParse);
+    fullPath = (u.pathname + u.search).toLowerCase();
+  } catch {
+    const slashIdx = urlToParse.indexOf('/', 8);
+    if (slashIdx !== -1) {
+      fullPath = urlToParse.slice(slashIdx).toLowerCase();
+    }
+  }
+
   const isIpHost =
     /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname) ||
     /^\[[0-9a-f:]+\]$/i.test(hostname) ||
@@ -171,6 +275,13 @@ export function analyzeUrl(rawUrl: string): UrlAnalysisResult {
     KNOWN_SHORTENERS.has(hostname) || (domain !== null && KNOWN_SHORTENERS.has(domain));
   if (isShortener) {
     flags.push('shortener');
+    riskScore += 30;
+  }
+
+  const isFreeTunnelOrHost =
+    FREE_TUNNELS_AND_HOSTS.has(hostname) || (domain !== null && FREE_TUNNELS_AND_HOSTS.has(domain));
+  if (isFreeTunnelOrHost) {
+    flags.push('free_hosting_tunnel');
     riskScore += 25;
   }
 
@@ -200,6 +311,14 @@ export function analyzeUrl(rawUrl: string): UrlAnalysisResult {
     riskScore += 35;
   }
 
+  // Check for malicious file downloads (.apk, .exe, etc.)
+  const isMaliciousDownload = /\.(?:apk|exe|dmg|bat|vbs|sh|scr)(?:$|[?#&])/i.test(fullPath);
+  if (isMaliciousDownload) {
+    flags.push('apk_download');
+    riskScore += 45;
+  }
+
+  // Check lookalike domain/hostname
   const lookalike = detectLookalike(hostname, domain);
   let lookalikeBrand: string | undefined;
   let lookalikeDomain: string | undefined;
@@ -209,6 +328,41 @@ export function analyzeUrl(rawUrl: string): UrlAnalysisResult {
     lookalikeBrand = lookalike.brand;
     lookalikeDomain = lookalike.legitDomain;
     riskScore += 45;
+  }
+
+  // Check for brand impersonation in URL path or subdomain on untrusted hosts/shorteners
+  if (!lookalikeBrand) {
+    for (const brand of BRAND_KEYWORDS) {
+      const legitDomains = BRAND_DOMAINS[brand] || [];
+      const isLegit = legitDomains.some(
+        (legit) => hostname === legit || hostname.endsWith(`.${legit}`),
+      );
+      if (isLegit) continue;
+
+      const brandInPathOrSub =
+        fullPath.includes(brand) || (parsed.subdomain && parsed.subdomain.includes(brand));
+      if (brandInPathOrSub) {
+        flags.push('brand_impersonation');
+        lookalikeBrand = brand;
+        lookalikeDomain = legitDomains[0] || brand;
+        riskScore += 45;
+        break;
+      }
+    }
+  }
+
+  // Check for high-risk suspicious path keywords (kyc, pan, challan, earn, loan, etc.)
+  const hasSuspiciousKeyword = SUSPICIOUS_PATH_KEYWORDS.some((kw) => fullPath.includes(kw));
+  if (hasSuspiciousKeyword) {
+    // If it's not a verified official brand domain
+    const isVerifiedOfficialDomain = Object.values(BRAND_DOMAINS)
+      .flat()
+      .some((legit) => hostname === legit || hostname.endsWith(`.${legit}`));
+
+    if (!isVerifiedOfficialDomain) {
+      flags.push('suspicious_path_keywords');
+      riskScore += 35;
+    }
   }
 
   if (rawUrl.startsWith('http://') && !isIpHost && hostname !== 'localhost') {

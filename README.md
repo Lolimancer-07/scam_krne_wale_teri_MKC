@@ -3,6 +3,7 @@
 **Production-Ready Scam & Fraud Defense Application for Indian Digital Citizens**
 
 [![TypeScript Strict](https://img.shields.io/badge/TypeScript-Strict-blue.svg)](https://www.typescriptlang.org/)
+[![CI](https://github.com/your-org/scamshield/workflows/CI/badge.svg?branch=main)](https://github.com/your-org/scamshield/actions?query=workflow%3ACI)
 [![Next.js 14](https://img.shields.io/badge/Next.js-14%20App%20Router-black.svg)](https://nextjs.org/)
 [![Vitest](<https://img.shields.io/badge/Vitest-Passed%20(49%2F49)-brightgreen.svg>)](https://vitest.dev/)
 [![Offline Accuracy](<https://img.shields.io/badge/Accuracy-94.7%25%20(Gate%20%E2%89%A585%25)-success.svg>)](ml/MODEL_CARD.md)

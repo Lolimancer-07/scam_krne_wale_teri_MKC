@@ -45,11 +45,54 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   const urlAnalysis = analyzeUrl(parseResult.data.url);
   const verdict = scoreToVerdict(urlAnalysis.riskScore);
 
+  let category = 'other';
+  const urlLower = parseResult.data.url.toLowerCase();
+  if (
+    urlAnalysis.lookalikeBrand ||
+    urlLower.includes('kyc') ||
+    urlLower.includes('pan') ||
+    urlLower.includes('yono') ||
+    urlLower.includes('bank')
+  ) {
+    category = 'bank_kyc';
+  } else if (
+    urlLower.includes('bescom') ||
+    urlLower.includes('msedcl') ||
+    urlLower.includes('electricity') ||
+    urlLower.includes('challan') ||
+    urlLower.includes('police') ||
+    urlLower.includes('parivahan')
+  ) {
+    category = 'government_tax';
+  } else if (
+    urlLower.includes('earn') ||
+    urlLower.includes('task') ||
+    urlLower.includes('t.me') ||
+    urlLower.includes('job')
+  ) {
+    category = 'job_task';
+  } else if (urlLower.includes('loan') || urlLower.includes('pay') || urlLower.includes('upi')) {
+    category = 'upi_payment';
+  } else if (
+    urlLower.includes('reward') ||
+    urlLower.includes('gift') ||
+    urlLower.includes('winner') ||
+    urlLower.includes('lottery')
+  ) {
+    category = 'lottery_prize';
+  } else if (
+    urlLower.includes('parcel') ||
+    urlLower.includes('post') ||
+    urlLower.includes('delivery')
+  ) {
+    category = 'delivery_courier';
+  }
+
   return NextResponse.json(
     ok(requestId, {
       verdict,
       score: urlAnalysis.riskScore,
-      category: urlAnalysis.lookalikeBrand ? 'bank_kyc' : 'other',
+      category,
       redFlags: urlAnalysis.flags.map((flag, idx) => ({
         id: `url-flag-${idx}`,
         signal: flag,
@@ -66,17 +109,27 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 function getFlagDescription(flag: string, brand?: string): string {
   switch (flag) {
     case 'brand_impersonation':
-      return `Domain appears to spoof brand ${brand?.toUpperCase() || ''}. Not an official domain.`;
+      return `Domain or link path appears to spoof brand ${brand?.toUpperCase() || ''}. Not an official registered domain.`;
     case 'risky_tld':
       return 'Top-level domain (TLD) is heavily associated with disposable phishing campaigns.';
     case 'ip_host':
       return 'Direct IP address used instead of a registered domain name.';
     case 'shortener':
-      return 'URL shortener hides the true destination address.';
+      return 'URL shortener hides the true destination address, obscuring phishing destinations.';
+    case 'free_hosting_tunnel':
+      return 'Hosted on a free public tunnel or serverless provider frequently abused for temporary phishing.';
+    case 'apk_download':
+      return 'Direct Android application (.apk) download link. Legitimate organizations distribute applications through official app stores.';
+    case 'suspicious_path_keywords':
+      return 'URL path contains high-risk keywords (e.g. KYC, verification, login, task, loan, or power cutoff).';
     case 'at_trick':
       return 'Contains @ sign in URL to mislead address bar rendering.';
     case 'excessive_subdomains':
       return 'Excessive subdomains used to mimic authentic service portals.';
+    case 'punycode_homograph':
+      return 'Punycode character encoding detected, potentially disguising lookalike letters.';
+    case 'insecure_http':
+      return 'Unencrypted HTTP protocol used instead of HTTPS.';
     default:
       return 'Suspicious URL characteristic detected.';
   }

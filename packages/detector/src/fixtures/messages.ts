@@ -469,4 +469,63 @@ export const FIXTURE_MESSAGES: FixtureMessage[] = [
     language: 'en',
     description: 'Real food delivery completion SMS',
   },
+
+  // 69-75: Real Cybercrime Incidents (CERT-In / DoT Chakshu / Police Advisories)
+  {
+    id: 'chakshu-util-1',
+    text: 'Dear Consumer Your Electricity power will be disconnected Tonight at 9:30 pm from electricity office. because your previous month bill was not update. Please immediately contact with our electricity officer 9876543210 Thank you',
+    expectedVerdict: 'likely_scam',
+    expectedCategory: 'government_tax',
+    language: 'en',
+    description:
+      'Authentic BESCOM/MSEDCL electricity disconnection scam reported on Chakshu portal',
+  },
+  {
+    id: 'chakshu-family-1',
+    text: 'Hi Mom, I lost my phone and this is my friend number. I am at hospital for urgent treatment. Please send Rs 15000 immediately to this UPI id medicalemergency@okhdfcbank',
+    expectedVerdict: 'likely_scam',
+    expectedCategory: 'otp_impersonation',
+    language: 'en',
+    description: 'Authentic "Hi Mom" emergency medical distress UPI impersonation scam',
+  },
+  {
+    id: 'certin-loan-1',
+    text: 'Congratulations! Your pre-approved personal loan of Rs 5,00,000 at 2% interest is ready for immediate disbursement without CIBIL. Download and apply via our app: http://instant-loan.xyz/loan.apk',
+    expectedVerdict: 'likely_scam',
+    expectedCategory: 'upi_payment',
+    language: 'en',
+    description: 'Authentic CERT-In advisory: predatory loan APK malware campaign',
+  },
+  {
+    id: 'sancharsaathi-sim-1',
+    text: 'Dear Customer, your Airtel SIM card will be deactivated within 24 hours due to pending KYC verification. To keep outgoing calls active update KYC at http://airtel-5g-update.site',
+    expectedVerdict: 'likely_scam',
+    expectedCategory: 'bank_kyc',
+    language: 'en',
+    description: 'Authentic Sanchar Saathi advisory: 4G/5G SIM card deactivation threat',
+  },
+  {
+    id: 'police-challan-1',
+    text: 'Virtual Court Notice: A traffic challan of Rs 2000 is pending against your vehicle. Pay fine within 24 hours to avoid court summons and vehicle impound: http://echallan-parivahan.top/pay',
+    expectedVerdict: 'likely_scam',
+    expectedCategory: 'government_tax',
+    language: 'en',
+    description: 'Authentic Cyber Police advisory: fake virtual court traffic e-challan scam',
+  },
+  {
+    id: 'chakshu-task-1',
+    text: 'Part-time job offer: Earn Rs 2500 - 5000 daily from home just by liking YouTube videos and rating Google maps. Join our Telegram channel: https://t.me/parttime_earn_daily',
+    expectedVerdict: 'likely_scam',
+    expectedCategory: 'job_task',
+    language: 'en',
+    description: 'Authentic Telegram task and YouTube like part-time job scam',
+  },
+  {
+    id: 'certin-bank-points-1',
+    text: 'Dear Customer, your SBI reward points worth Rs 9,850 will expire tonight. Redeem now into your bank account before 12:00 AM: http://bit.ly/sbi-reward-points',
+    expectedVerdict: 'likely_scam',
+    expectedCategory: 'bank_kyc',
+    language: 'en',
+    description: 'Authentic banking advisory: reward points expiry with shortened phishing link',
+  },
 ];

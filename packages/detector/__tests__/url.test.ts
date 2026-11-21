@@ -56,6 +56,35 @@ describe('URL Analyzer', () => {
     expect(res.riskScore).toBeGreaterThanOrEqual(60);
   });
 
+  it('detects shortened URLs with brand or KYC keywords in path', () => {
+    const res = analyzeUrl('https://bit.ly/sbi-update');
+    expect(res.isShortener).toBe(true);
+    expect(res.flags).toContain('brand_impersonation');
+    expect(res.lookalikeBrand).toBe('sbi');
+    expect(res.riskScore).toBeGreaterThanOrEqual(60);
+  });
+
+  it('detects direct APK file downloads in URL path', () => {
+    const res = analyzeUrl('http://instant-loan.xyz/loan.apk');
+    expect(res.flags).toContain('apk_download');
+    expect(res.flags).toContain('risky_tld');
+    expect(res.riskScore).toBeGreaterThanOrEqual(75);
+  });
+
+  it('detects free hosting / tunneling platforms abused for phishing', () => {
+    const res = analyzeUrl('https://sbi-netbanking.pages.dev/login');
+    expect(res.flags).toContain('free_hosting_tunnel');
+    expect(res.flags).toContain('brand_impersonation');
+    expect(res.riskScore).toBeGreaterThanOrEqual(60);
+  });
+
+  it('detects Telegram lure links for task scams', () => {
+    const res = analyzeUrl('https://t.me/parttime_earn_daily');
+    expect(res.isShortener).toBe(true);
+    expect(res.flags).toContain('suspicious_path_keywords');
+    expect(res.riskScore).toBeGreaterThanOrEqual(60);
+  });
+
   it('does NOT flag legitimate brand domains as lookalikes', () => {
     const res = analyzeUrl('https://onlinesbi.sbi/portal/login');
     expect(res.flags).not.toContain('brand_impersonation');

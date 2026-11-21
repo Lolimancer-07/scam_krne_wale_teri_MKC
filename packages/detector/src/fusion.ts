@@ -46,11 +46,13 @@ export function fuseScores(input: FusionInput): FusionDetails {
   // Safety floor: ensure unambiguous high-confidence fraud cannot be diluted down
   if (
     ruleScore >= 60 ||
+    urlScore >= 60 ||
     (ruleScore >= 35 && urlScore >= 40) ||
+    (ruleScore >= 20 && urlScore >= 50) ||
     (ruleScore >= 40 && mlScore >= 50) ||
     mlScore >= 75
   ) {
-    rawCombined = Math.max(rawCombined, ruleScore, 65);
+    rawCombined = Math.max(rawCombined, ruleScore, urlScore, 65);
   }
 
   const finalScore = Math.min(100, Math.max(0, Math.round(rawCombined + boundedNudge)));

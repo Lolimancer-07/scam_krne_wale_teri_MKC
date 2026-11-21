@@ -7,6 +7,7 @@ export const BRAND_DOMAINS: Record<string, string[]> = {
   pnb: ['pnbindia.in'],
   bob: ['bankofbaroda.in'],
   canara: ['canarabank.com', 'canarabank.in'],
+  unionbank: ['unionbankofindia.co.in'],
   paytm: ['paytm.com'],
   phonepe: ['phonepe.com'],
   googlepay: ['gpay.app', 'google.com'],
@@ -18,6 +19,18 @@ export const BRAND_DOMAINS: Record<string, string[]> = {
   epfo: ['epfindia.gov.in'],
   irctc: ['irctc.co.in'],
   trai: ['trai.gov.in'],
+  bescom: ['bescom.karnataka.gov.in', 'bescom.org'],
+  msedcl: ['mahadiscom.in'],
+  tpddl: ['tatapower-ddl.com'],
+  airtel: ['airtel.in', 'airtel.com'],
+  jio: ['jio.com'],
+  vi: ['myvi.in'],
+  parivahan: ['parivahan.gov.in', 'echallan.parivahan.gov.in'],
+  cbi: ['cbi.gov.in'],
+  cybercrime: ['cybercrime.gov.in'],
+  delhipolice: ['delhipolice.gov.in'],
+  bluedart: ['bluedart.com'],
+  delhivery: ['delhivery.com'],
 };
 
 export const BRAND_KEYWORDS = Object.keys(BRAND_DOMAINS);

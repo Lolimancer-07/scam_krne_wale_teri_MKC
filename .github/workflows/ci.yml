@@ -47,6 +47,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Audit
+        run: pnpm audit --audit-level=high
+
   e2e:
     name: Playwright E2E
     runs-on: ubuntu-latest

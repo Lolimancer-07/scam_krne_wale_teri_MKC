@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DetectionResultData } from './ResultCard';
 import {
   FileTextIcon,
@@ -17,7 +17,11 @@ import {
 } from './Icons';
 
 interface AnalyzerFormProps {
-  onAnalyzeSuccess: (data: DetectionResultData, text: string) => void;
+  onAnalyzeSuccess: (
+    data: DetectionResultData,
+    text: string,
+    screenshotPreview?: string | null,
+  ) => void;
   lang?: 'en' | 'hi';
   initialText?: string;
 }
@@ -70,6 +74,134 @@ const THREAT_PRESETS = [
   },
 ];
 
+const SCREENSHOT_PRESETS = [
+  {
+    id: 'sbi_screenshot',
+    title: 'SBI KYC Block Alert',
+    tag: 'SMS SPOOF',
+    tagColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
+    icon: BuildingIcon,
+    desc: 'Simulated banking SMS',
+    sender: 'VM-SBINB',
+    time: '11:42 AM',
+    text: 'Dear SBI Customer, your YONO account is suspended today due to pending KYC. Update immediately at http://sbi-kyc-verify.xyz to resume banking services.',
+  },
+  {
+    id: 'electricity_screenshot',
+    title: 'Power Cutoff Threat',
+    tag: 'EXTORTION',
+    tagColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
+    icon: ZapIcon,
+    desc: '9:30 PM cutoff notice',
+    sender: 'VK-DHBVN',
+    time: '04:15 PM',
+    text: 'Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM due to unpaid bill. Immediately contact DISCOM officer at 9876543210.',
+  },
+  {
+    id: 'arrest_screenshot',
+    title: 'Digital Arrest Warrant',
+    tag: 'BLACKMAIL',
+    tagColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
+    icon: ScaleIcon,
+    desc: 'Supreme Court & CBI notice',
+    sender: 'CBI-CYBERCELL',
+    time: '02:08 PM',
+    text: 'Supreme Court & CBI Notice: Digital arrest warrant issued against Aadhaar for suspicious parcel with contraband. Join Skype interrogation room immediately.',
+  },
+];
+
+const URL_PRESETS = [
+  {
+    id: 'sbi_phish',
+    title: 'SBI Lookalike Phishing',
+    tag: 'SPOOFED TLD',
+    tagColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
+    desc: 'http://sbi-kyc-verify.xyz',
+    url: 'http://sbi-kyc-verify.xyz',
+  },
+  {
+    id: 'ip_pay',
+    title: 'Direct IP Bypass',
+    tag: 'IP ANOMALY',
+    tagColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
+    desc: 'http://192.168.1.100/pay',
+    url: 'http://192.168.1.100/pay',
+  },
+  {
+    id: 'sbi_legit',
+    title: 'Official SBI Portal',
+    tag: 'ALLOWLISTED',
+    tagColor: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30',
+    desc: 'https://onlinesbi.sbi',
+    url: 'https://onlinesbi.sbi',
+  },
+];
+
+function createScreenshotBlob(preset: (typeof SCREENSHOT_PRESETS)[0]): Promise<File> {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 360;
+    const ctx = canvas.getContext('2d')!;
+
+    // Background
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, 800, 360);
+
+    // Header bar (phone / SMS interface)
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(0, 0, 800, 60);
+
+    // Header text
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = 'bold 20px monospace';
+    ctx.fillText(`< ${preset.sender}`, 24, 38);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '14px monospace';
+    ctx.fillText(`${preset.time} · Verified Sender (TRAI)`, 480, 38);
+
+    // Chat bubble
+    ctx.fillStyle = '#020617';
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(24, 80, 752, 240, 16);
+    ctx.fill();
+    ctx.stroke();
+
+    // Text in chat bubble
+    ctx.fillStyle = '#f1f5f9';
+    ctx.font = '18px monospace';
+    const words = preset.text.split(' ');
+    let line = '';
+    let y = 125;
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = ctx.measureText(testLine);
+      if (metrics.width > 700 && n > 0) {
+        ctx.fillText(line, 44, y);
+        line = words[n] + ' ';
+        y += 30;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, 44, y);
+
+    // Bottom timestamp
+    ctx.fillStyle = '#64748b';
+    ctx.font = '13px monospace';
+    ctx.fillText(`Received ${preset.time} · SMS Gateway IN-DLT`, 44, 295);
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(new File([blob], `${preset.id}.png`, { type: 'image/png' }));
+      }
+    }, 'image/png');
+  });
+}
+
 export function AnalyzerForm({
   onAnalyzeSuccess,
   lang = 'en',
@@ -80,12 +212,91 @@ export function AnalyzerForm({
   const [urlInput, setUrlInput] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [storeRaw, setStoreRaw] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const isHindi = lang === 'hi';
+
+  // Synchronize initialText updates (e.g. from query params)
+  useEffect(() => {
+    if (initialText) {
+      setText(initialText);
+    }
+  }, [initialText]);
+
+  // Support pasting screenshot from clipboard (Ctrl+V / Cmd+V)
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (activeTab !== 'image') return;
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith('image/')) {
+          const file = items[i].getAsFile();
+          if (file) {
+            processSelectedImage(file);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener('paste', handlePaste);
+    return () => window.removeEventListener('paste', handlePaste);
+  }, [activeTab]);
+
+  const processSelectedImage = (file: File) => {
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMessage(
+        isHindi ? 'चित्र का आकार 5MB से कम होना चाहिए' : 'Image exceeds 5MB size limit',
+      );
+      return;
+    }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setErrorMessage(null);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      processSelectedImage(file);
+    }
+  };
+
+  const handleScreenshotPresetSelect = async (preset: (typeof SCREENSHOT_PRESETS)[0]) => {
+    try {
+      const file = await createScreenshotBlob(preset);
+      processSelectedImage(file);
+    } catch {
+      setErrorMessage('Failed to generate sample screenshot preview.');
+    }
+  };
 
   const handleTextSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,12 +354,18 @@ export function AnalyzerForm({
     );
     setErrorMessage(null);
 
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 10000);
+
     try {
       const res = await fetch('/api/v1/analyze/url', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: urlInput.trim() }),
+        signal: abortController.signal,
       });
+
+      clearTimeout(timeoutId);
 
       const json = await res.json();
       if (!res.ok || !json.success) {
@@ -156,8 +373,17 @@ export function AnalyzerForm({
       }
 
       onAnalyzeSuccess(json.data, urlInput.trim());
-    } catch (err) {
-      setErrorMessage((err as Error).message);
+    } catch (err: unknown) {
+      clearTimeout(timeoutId);
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setErrorMessage(
+          isHindi
+            ? 'यूआरएल जांच समय समाप्त हो गया। कृपया कनेक्शन जांचें।'
+            : 'URL verification request timed out. Please check your connection.',
+        );
+      } else {
+        setErrorMessage((err as Error).message);
+      }
     } finally {
       setLoading(false);
       setLoadingStep(null);
@@ -199,6 +425,9 @@ export function AnalyzerForm({
     );
     setErrorMessage(null);
 
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 14000);
+
     try {
       const formData = new FormData();
       formData.append('image', imageFile);
@@ -206,7 +435,10 @@ export function AnalyzerForm({
       const res = await fetch('/api/v1/analyze/image', {
         method: 'POST',
         body: formData,
+        signal: abortController.signal,
       });
+
+      clearTimeout(timeoutId);
 
       const json = await res.json();
       if (!res.ok || !json.success) {
@@ -214,8 +446,17 @@ export function AnalyzerForm({
       }
 
       onAnalyzeSuccess(json.data, json.data.extractedText || 'Extracted screenshot text');
-    } catch (err) {
-      setErrorMessage((err as Error).message);
+    } catch (err: unknown) {
+      clearTimeout(timeoutId);
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        setErrorMessage(
+          isHindi
+            ? 'ओसीआर प्रसंस्करण समय समाप्त हो गया। कृपया चित्र को क्रॉप करें या सीधे टेक्स्ट टैब में पेस्ट करें।'
+            : 'OCR processing timed out. Please try a closer crop or paste text directly in "Paste Message".',
+        );
+      } else {
+        setErrorMessage((err as Error).message);
+      }
     } finally {
       setLoading(false);
       setLoadingStep(null);
@@ -472,9 +713,21 @@ export function AnalyzerForm({
             </div>
 
             {errorMessage && (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium flex items-center gap-2.5 animate-in fade-in-50">
-                <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
-                <span>{errorMessage}</span>
+              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 animate-in fade-in-50">
+                <div className="flex items-center gap-2.5">
+                  <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
+                  <span>{errorMessage}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('text');
+                    setErrorMessage(null);
+                  }}
+                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-indigo-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-indigo-400/30"
+                >
+                  {isHindi ? 'सीधे संदेश पेस्ट करें' : 'Switch to Paste Message Tab'}
+                </button>
               </div>
             )}
           </form>
@@ -529,9 +782,21 @@ export function AnalyzerForm({
             </div>
 
             {errorMessage && (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium flex items-center gap-2.5 animate-in fade-in-50">
-                <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
-                <span>{errorMessage}</span>
+              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 animate-in fade-in-50">
+                <div className="flex items-center gap-2.5">
+                  <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
+                  <span>{errorMessage}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('text');
+                    setErrorMessage(null);
+                  }}
+                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-indigo-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-indigo-400/30"
+                >
+                  {isHindi ? 'सीधे संदेश पेस्ट करें' : 'Switch to Paste Message Tab'}
+                </button>
               </div>
             )}
 
@@ -590,9 +855,21 @@ export function AnalyzerForm({
             </div>
 
             {errorMessage && (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium flex items-center gap-2.5 animate-in fade-in-50">
-                <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
-                <span>{errorMessage}</span>
+              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 font-medium flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 animate-in fade-in-50">
+                <div className="flex items-center gap-2.5">
+                  <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
+                  <span>{errorMessage}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab('text');
+                    setErrorMessage(null);
+                  }}
+                  className="px-3 py-1 bg-white/[0.08] hover:bg-white/[0.15] text-indigo-300 hover:text-white rounded-lg text-xs font-mono font-semibold whitespace-nowrap cursor-pointer transition w-fit border border-indigo-400/30"
+                >
+                  {isHindi ? 'सीधे संदेश पेस्ट करें' : 'Switch to Paste Message Tab'}
+                </button>
               </div>
             )}
 
