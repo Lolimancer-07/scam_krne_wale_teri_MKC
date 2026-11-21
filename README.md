@@ -106,7 +106,7 @@ Input Text/Screenshot/URL
           ▼
 Score Fusion Formula:
 Final Score = clamp(0.50 * Rules + 0.30 * ML + 0.20 * URL + aiNudge, 0, 100)
-Safety Floor: High-confidence fraud triggers (e.g. KYC + spoofed domain) enforce a minimum score of 70+.
+Safety Floor: High-confidence fraud triggers (rules ≥ 60, rules ≥ 35 with a dangerous URL, or ML ≥ 75) enforce a minimum score of 65.
 ```
 
 - `0 – 29`: **Likely Safe** 🛡️
