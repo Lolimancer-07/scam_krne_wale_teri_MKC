@@ -144,4 +144,35 @@ describe('AnalyzerForm Component Interactions', () => {
       expect(onAnalyzeSuccess).toHaveBeenCalledWith(fakeUrlData, 'http://sbi-fake.xyz');
     });
   });
+
+  it('validates and shows helpful message if Run OCR is clicked with no image', async () => {
+    const user = userEvent.setup();
+    render(<AnalyzerForm onAnalyzeSuccess={onAnalyzeSuccess} />);
+
+    // Switch to OCR tab
+    await user.click(screen.getByRole('tab', { name: /Screenshot \(OCR\)/i }));
+
+    const ocrBtn = screen.getByRole('button', { name: /Run OCR & Analyze/i });
+    await user.click(ocrBtn);
+
+    expect(
+      screen.getByText(/Please select or upload a screenshot to analyze/i),
+    ).toBeInTheDocument();
+  });
+
+  it('populates URL when clicking a suspicious URL preset', async () => {
+    const user = userEvent.setup();
+    render(<AnalyzerForm onAnalyzeSuccess={onAnalyzeSuccess} />);
+
+    // Switch to URL tab
+    await user.click(screen.getByRole('tab', { name: /Check URL/i }));
+
+    const presetBtn = screen.getByRole('button', { name: /SBI Lookalike Phishing/i });
+    await user.click(presetBtn);
+
+    const input = screen.getByPlaceholderText(
+      /e\.g\. http:\/\/sbi-kyc-update\.xyz/i,
+    ) as HTMLInputElement;
+    expect(input.value).toBe('http://sbi-kyc-verify.xyz');
+  });
 });

@@ -66,15 +66,13 @@ describe('Additional API v1 Route Handlers', () => {
 
   it('POST /api/v1/analyze/image rejects request without image with 400', async () => {
     const formData = new FormData();
-    const nativeReq = new Request('http://localhost:3000/api/v1/analyze/image', {
+    const req = new NextRequest('http://localhost:3000/api/v1/analyze/image', {
       method: 'POST',
-      body: formData,
     });
-    const req = new NextRequest(nativeReq);
+    vi.spyOn(req, 'formData').mockResolvedValue(formData);
 
     const res = await imageHandler(req);
     const json = await res.json();
-    console.log('DEBUG JSON RESULT:', JSON.stringify(json));
 
     expect(res.status).toBe(400);
     expect(json.success).toBe(false);
@@ -86,16 +84,10 @@ describe('Additional API v1 Route Handlers', () => {
     const fakeTextFile = new Blob(['not an image'], { type: 'text/plain' });
     formData.append('image', fakeTextFile, 'test.txt');
 
-    const nativeReq = new Request('http://localhost:3000/api/v1/analyze/image', {
+    const req = new NextRequest('http://localhost:3000/api/v1/analyze/image', {
       method: 'POST',
-      body: formData,
     });
-    const req = new NextRequest(nativeReq.url, {
-      method: 'POST',
-      headers: nativeReq.headers,
-      body: nativeReq.body,
-      duplex: 'half' as any,
-    });
+    vi.spyOn(req, 'formData').mockResolvedValue(formData);
 
     const res = await imageHandler(req);
     const json = await res.json();

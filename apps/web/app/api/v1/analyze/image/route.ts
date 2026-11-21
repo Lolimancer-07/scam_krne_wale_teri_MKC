@@ -54,7 +54,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   try {
     const file = formData.get('image');
-    console.log('[DEBUG OCR FILE]', typeof file, file);
 
     if (!file || typeof file === 'string') {
       return NextResponse.json(
