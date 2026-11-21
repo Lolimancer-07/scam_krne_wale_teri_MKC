@@ -32,6 +32,8 @@ export interface DetectionResult {
   mlScore?: number;
   ruleScore: number;
   fusionDetails: FusionDetails;
+  /** Optional plain-language explanation produced by the optional AI layer. */
+  ai?: AiExplanation;
 }
 
 export interface SignalResult {
@@ -60,6 +62,19 @@ export interface FusionDetails {
   aiNudge: number;
   finalScore: number;
   formula: string;
+}
+
+/**
+ * Plain-language AI explanation for a detection. Advisory only: the verdict
+ * and score always come from the deterministic fusion result.
+ */
+export interface AiExplanation {
+  category: ScamCategory;
+  explanation: string;
+  recommended_actions: string[];
+  confidence: number;
+  nudge: number;
+  source: 'claude' | 'fallback_template';
 }
 
 export interface AnalyzeTextInput {

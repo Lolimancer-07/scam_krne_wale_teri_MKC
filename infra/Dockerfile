@@ -2,7 +2,7 @@
 
 # ScamShield production image.
 # The detector is consumed as TypeScript source, so the whole workspace is
-# installed and built inside the image.
+# installed and built inside the image; the runtime image serves the build.
 FROM node:22-bookworm-slim AS base
 
 ENV PNPM_HOME=/pnpm
@@ -47,6 +47,8 @@ COPY --from=builder /app/packages/detector ./packages/detector
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+
+USER node
 
 EXPOSE 3000
 

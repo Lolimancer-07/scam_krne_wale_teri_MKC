@@ -19,7 +19,7 @@ Every response includes:
 | `POST` | `/analyze/text`  | Analyze raw SMS / WhatsApp / email text            | 30 req / min  |
 | `POST` | `/analyze/image` | Multipart screenshot upload + OCR (Eng + Hin)      | 10 req / min  |
 | `POST` | `/analyze/url`   | Check direct link for brand lookalike / homographs | 20 req / min  |
-| `POST` | `/feedback`      | Submit user accuracy feedback on a verdict         | 60 req / min  |
+| `POST` | `/feedback`      | Submit user accuracy feedback on a verdict         | 20 req / min  |
 | `GET`  | `/stats`         | Public aggregated anonymous statistics             | 100 req / min |
 | `GET`  | `/health`        | Liveness check (JSON status ok)                    | Unlimited     |
 | `GET`  | `/ready`         | Readiness check (database & services ready)        | Unlimited     |
@@ -102,10 +102,33 @@ Analyzes a raw text message for fraud signals, lookalike URLs, and ML likelihood
       "aiNudge": 0,
       "finalScore": 100,
       "formula": "0.50*rules + 0.30*ml + 0.20*url + aiNudge"
+    },
+    "analysisId": "cm3r812900010v8192837482",
+    "ai": {
+      "category": "bank_kyc",
+      "explanation": "This message impersonates your bank (Canara/SBI) and claims your KYC is expiring to pressure you into clicking a lookalike portal.",
+      "recommended_actions": [
+        "Do not click any links in the message",
+        "Verify through the bank's official app or website",
+        "Report suspected phishing at cybercrime.gov.in"
+      ],
+      "confidence": 0.87,
+      "nudge": 8,
+      "source": "claude"
     }
   }
 }
 ```
+
+### Response fields
+
+- `analysisId`: Database correlation ID for the analysis (used by `/feedback`).
+- `ai`: Optional plain-language explanation, present only when `enableAi` was
+  requested and the optional AI layer was available (falls back to a
+  template-based explanation with `source: "fallback_template"` when AI is
+  disabled or unconfigured). The AI never decides the verdict — the verdict and
+  score always come from the deterministic fusion above. The advisory nudge is
+  clamped to `[-10, +10]`.
 
 ---
 

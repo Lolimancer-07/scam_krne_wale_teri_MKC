@@ -71,7 +71,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter @scamshield/web exec playwright install --with-deps chromium
+        run: pnpm --filter @scamshield/web exec playwright install --with-deps chromium webkit
 
       - name: Run E2E suite
         run: pnpm test:e2e

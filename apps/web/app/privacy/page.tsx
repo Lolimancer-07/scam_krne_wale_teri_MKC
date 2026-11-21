@@ -1,7 +1,15 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { useLanguage } from '@/components/LanguageProvider';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function PrivacyPage() {
+  const { lang } = useLanguage();
+  const isHindi = lang === 'hi';
+
   return (
     <div className="min-h-screen flex flex-col justify-between selection:bg-indigo-500/30">
       {/* Header */}
@@ -27,6 +35,11 @@ export default function PrivacyPage() {
               Live Stats
             </Link>
           </nav>
+
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -37,7 +50,7 @@ export default function PrivacyPage() {
             <span>Cryptographic Privacy Architecture</span>
           </div>
           <h1 className="text-3xl font-black tracking-tight text-white">
-            Privacy Policy & Data Protection
+            {isHindi ? 'गोपनीयता नीति' : 'Privacy Policy & Data Protection'}
           </h1>
           <p className="text-xs text-slate-400 mt-1 font-mono">Effective Date: November 2026</p>
         </div>

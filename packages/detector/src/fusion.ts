@@ -1,4 +1,4 @@
-import { DetectionResult, FusionDetails, Verdict } from './types.js';
+import { DetectionResult, FusionDetails, Verdict, AiExplanation } from './types.js';
 import { RulesResult } from './rules/index.js';
 import { UrlAnalysisResult } from './types.js';
 
@@ -70,6 +70,7 @@ export function buildDetectionResult(
   fusion: FusionDetails,
   rulesResult: RulesResult,
   urlResults: UrlAnalysisResult[],
+  ai?: AiExplanation,
 ): DetectionResult {
   const verdict = scoreToVerdict(fusion.finalScore);
   return {
@@ -82,5 +83,6 @@ export function buildDetectionResult(
     mlScore: fusion.mlScore,
     ruleScore: fusion.ruleScore,
     fusionDetails: fusion,
+    ai,
   };
 }

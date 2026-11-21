@@ -6,6 +6,7 @@ import { DetectionResultData } from './ResultCard';
 interface AnalyzerFormProps {
   onAnalyzeSuccess: (data: DetectionResultData, text: string) => void;
   lang?: 'en' | 'hi';
+  initialText?: string;
 }
 
 const SAMPLE_MESSAGES = [
@@ -31,9 +32,13 @@ const SAMPLE_MESSAGES = [
   },
 ];
 
-export function AnalyzerForm({ onAnalyzeSuccess, lang = 'en' }: AnalyzerFormProps) {
+export function AnalyzerForm({
+  onAnalyzeSuccess,
+  lang = 'en',
+  initialText = '',
+}: AnalyzerFormProps) {
   const [activeTab, setActiveTab] = useState<'text' | 'image' | 'url'>('text');
-  const [text, setText] = useState('');
+  const [text, setText] = useState(initialText);
   const [urlInput, setUrlInput] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);

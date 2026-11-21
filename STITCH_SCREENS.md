@@ -30,6 +30,17 @@
 
 ---
 
+## 2. Obsidian Telemetry Core Screens (Design System Showcase)
+
+| Screen # | Screen Title                           | Screen ID                          | Direct Canvas Link                                                                                              | Key Design System Modules Included                                                                                                                                                                                                           |
+| -------- | -------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **A**    | **Telemetry & Analytics Dashboard**    | `03ce51c1e2194d99b82a1c72fb9938ec` | [View Screen A](https://stitch.google.com/projects/206713362209727463?node-id=03ce51c1e2194d99b82a1c72fb9938ec) | Live metrics bar (Total Events, Active ARR, Ingestion Latency, Error Rate), interactive retention matrix heatmap with cohort rows, anomaly event timeline with severity badges, and dual ANSI SQL / Visual filter panel.                     |
+| **B**    | **Funnel & User Journey Analysis**     | `be024e0f3b21472b91c25b863b89c6f1` | [View Screen B](https://stitch.google.com/projects/206713362209727463?node-id=be024e0f3b21472b91c25b863b89c6f1) | Interactive step-by-step dropoff visualizer with conversion drop percentage callouts, automatic bottleneck detection banners, segmented audience toggles (Enterprise vs Product-Led), and sub-second session replay drawer.                  |
+| **C**    | **Settings, SDK & API Key Management** | `bbf9de4be1ab42c4a10e2adb2c61455f` | [View Screen C](https://stitch.google.com/projects/206713362209727463?node-id=bbf9de4be1ab42c4a10e2adb2c61455f) | Tabbed navigation (General, Team, API Keys, Telemetry Endpoints, Audit Logs), 1-click token generator with copyable keys and masked secrets, interactive SDK snippet box (Node.js, Go, Python, Rust), and webhook delivery status log table. |
+| **D**    | **Pricing & Tier Comparison**          | `a4b041963fc544749f76a92b6beed313` | [View Screen D](https://stitch.google.com/projects/206713362209727463?node-id=a4b041963fc544749f76a92b6beed313) | Monthly/annual toggle with savings pill, 3 tiered Bento pricing cards ('Free Sandbox', 'Growth Telemetry', 'Enterprise Grid') with glowing neon borders on recommended tier, itemized feature comparison table, and SOC 2 / GDPR badges.     |
+
+---
+
 ## Stitch CLI Management Commands
 
 ```bash

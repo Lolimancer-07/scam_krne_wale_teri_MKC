@@ -12,7 +12,7 @@ import { analyzeUrl, extractUrls } from './url/analyzer.js';
 import { fuseScores, buildDetectionResult } from './fusion.js';
 import { predictSpam } from './ml/classifier.js';
 import { explainWithClaude, getFallbackExplanation } from './ai/explainer.js';
-import { DetectionResult, AnalyzeTextInput } from './types.js';
+import { DetectionResult, AnalyzeTextInput, AiExplanation } from './types.js';
 
 /**
  * Main text analysis pipeline for @scamshield/detector
@@ -31,7 +31,8 @@ export async function analyzeText(input: AnalyzeTextInput): Promise<DetectionRes
   // 3. ML Inference (TF-IDF + Logistic Regression)
   const mlResult = predictSpam(text);
 
-  // 4. Optional AI Explanation (behind feature flag)
+  // 4. Optional AI Explanation (behind feature flag) — advisory only
+  let ai: AiExplanation | undefined;
   let aiNudge = 0;
   if (enableAi) {
     try {
@@ -41,10 +42,18 @@ export async function analyzeText(input: AnalyzeTextInput): Promise<DetectionRes
         score: rulesResult.score,
         signals: rulesResult.signals,
       });
+      ai = {
+        category: aiResponse.category,
+        explanation: aiResponse.explanation,
+        recommended_actions: aiResponse.recommended_actions,
+        confidence: aiResponse.confidence,
+        nudge: aiResponse.nudge,
+        source: aiResponse.source,
+      };
       aiNudge = aiResponse.nudge;
     } catch {
-      const fallback = getFallbackExplanation(rulesResult.category, rulesResult.score);
-      aiNudge = fallback.nudge;
+      ai = getFallbackExplanation(rulesResult.category, rulesResult.score);
+      aiNudge = ai.nudge;
     }
   }
 
@@ -56,5 +65,5 @@ export async function analyzeText(input: AnalyzeTextInput): Promise<DetectionRes
     aiNudge,
   });
 
-  return buildDetectionResult(fusion, rulesResult, urlResults);
+  return buildDetectionResult(fusion, rulesResult, urlResults, ai);
 }

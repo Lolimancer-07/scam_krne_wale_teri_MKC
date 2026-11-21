@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { useLanguage } from '@/components/LanguageProvider';
 
 interface StatsData {
   totalScans: number;
@@ -73,6 +76,11 @@ export default function StatsPage() {
               Live Stats
             </Link>
           </nav>
+
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

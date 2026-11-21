@@ -24,6 +24,7 @@ model Analysis {
   @@index([createdAt])
   @@index([verdict])
   @@index([messageHash])
+  @@index([rawStoredAt])
 }
 
 model Feedback {
