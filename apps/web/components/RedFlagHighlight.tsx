@@ -75,7 +75,7 @@ export function RedFlagHighlight({ text, redFlags }: RedFlagHighlightProps) {
   }
 
   return (
-    <div className="p-4 bg-[#050b14] rounded-xl border border-white/[0.08] text-xs sm:text-sm leading-loose whitespace-pre-wrap font-mono text-slate-200 select-text shadow-inner">
+    <div className="p-4 bg-[#0f131c] rounded-xl border border-white/[0.08] text-xs sm:text-sm leading-loose whitespace-pre-wrap font-mono text-slate-200 select-text shadow-inner">
       {segments.map((seg, i) =>
         seg.isFlagged && seg.flag ? (
           <mark

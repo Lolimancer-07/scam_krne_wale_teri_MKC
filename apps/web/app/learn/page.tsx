@@ -5,98 +5,98 @@ import { Navbar } from '@/components/Navbar';
 import { Quiz } from '@/components/Quiz';
 import { useLanguage } from '@/components/LanguageProvider';
 import {
-  BookOpenIcon,
-  TargetIcon,
-  CheckCircleIcon,
   BuildingIcon,
   ZapIcon,
   QrCodeIcon,
   ScaleIcon,
   PackageIcon,
   BriefcaseIcon,
-  ShieldCheckIcon,
+  CheckCircleIcon,
+  BookOpenIcon,
+  TargetIcon,
   SearchIcon,
   ArrowRightIcon,
+  ShieldCheckIcon,
 } from '@/components/Icons';
 
 const SCAM_GUIDES = [
   {
     code: 'VEC_01',
     icon: BuildingIcon,
-    title: 'Bank & KYC Expiry Scams',
-    threat: 'High Threat',
+    title: 'Bank KYC & PAN Suspension',
+    threat: 'Critical Severity',
     threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
     description:
-      'Fraudsters impersonate major Indian banks via bulk SMS or WhatsApp, creating false panic about immediate account suspension to harvest netbanking credentials and OTPs.',
+      'Impersonates public/private Indian banks (SBI, HDFC, PNB) claiming your account, debit card, or netbanking will be suspended within 24 hours unless you click an external link to update KYC/PAN.',
     example:
-      'Dear Customer, your SBI account KYC expires today. Verify immediately via http://sbi-kyc.top',
+      'Dear Customer, your SBI YONO account will be blocked today. Please click http://sbi-kyc-update.xyz to verify your PAN card immediately.',
     protection: [
-      'Check official bank domain (e.g., onlinesbi.sbi, never .top or .xyz).',
-      'Never click KYC update links received via SMS or WhatsApp.',
-      'Banks never ask for PIN, CVV, or OTP to complete KYC.',
+      'Banks never ask you to update KYC or enter netbanking passwords via SMS links.',
+      'Always check the sender ID: official bank SMS headers follow the format VM-SBIINB or AD-HDFCBK.',
+      'Check account status exclusively through official mobile banking apps or official netbanking URLs.',
     ],
   },
   {
     code: 'VEC_02',
     icon: ZapIcon,
-    title: 'Electricity & Utility Disconnection',
-    threat: 'Critical Threat',
-    threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-sm',
+    title: 'Electricity Power Cutoff Threat',
+    threat: 'High Threat',
+    threatColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
     description:
-      'Attackers send urgent messages threatening power disconnection at 9:30 PM tonight due to an unpaid previous month bill, pressuring victims into calling a fake officer.',
+      'Pans victims with an emergency power disconnection notice scheduled for tonight at 9:30 PM due to an unpaid bill. Prompts calling an "officer" phone number.',
     example:
-      'Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM. Call officer at 9876543210 immediately.',
+      'Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM due to unpaid bill. Call electricity officer at 9876543210 immediately.',
     protection: [
-      'State electricity boards never issue cut-off notices from personal 10-digit mobile numbers.',
-      'Never install remote screen-sharing tools (AnyDesk, QuickSupport) instructed over the phone.',
-      'Pay bills strictly via Bharat BillPay (BBPS) or the official DISCOM website.',
+      'State electricity boards (BSES, DHBVN, BESCOM, MSEDCL) send bill updates via official registered SMS headers.',
+      'Official discoms never provide personal 10-digit mobile numbers for bill settlement.',
+      'Pay bills only through the official utility portal, official electricity board app, or authorized BBPS apps.',
     ],
   },
   {
     code: 'VEC_03',
     icon: QrCodeIcon,
-    title: 'UPI & QR Spoof Grid',
-    threat: 'High Threat',
+    title: 'UPI Reverse Charge & QR Scam',
+    threat: 'Critical Severity',
     threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
     description:
-      'When selling goods on OLX or receiving refunds, scammers send a QR code or Collect Request claiming scanning it is necessary to receive payment directly into your account.',
+      'Fraudster pretends to buy an item on OLX or send advance payment, sends a QR code or UPI collect request claiming: "Scan this QR code or enter your UPI PIN to receive money."',
     example:
-      'Payment of ₹15,000 sent for your sofa. Scan this QR code and enter UPI PIN to receive money into your account.',
+      'Scan this QR code on Google Pay / PhonePe and enter your 4-digit PIN to receive ₹15,000 advance payment for your sofa.',
     protection: [
-      'GOLDEN RULE: You NEVER enter your UPI PIN to receive money. A PIN always debits money.',
-      'Scanning a QR code ALWAYS sends funds away from your account.',
-      'Decline all unexpected collect requests in PhonePe, Google Pay, or Paytm.',
+      'GOLDEN RULE: You NEVER enter your UPI PIN to RECEIVE money.',
+      'Scanning a QR code always DEBITS funds from your account, never credits it.',
+      'Decline all collect requests on Google Pay, PhonePe, and Paytm from unknown parties.',
     ],
   },
   {
     code: 'VEC_04',
     icon: ScaleIcon,
-    title: 'Digital Arrest & Police Extortion',
-    threat: 'Critical Threat',
+    title: 'Digital Arrest & Law Enforcement Spoofing',
+    threat: 'Severe Threat',
     threatColor: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
     description:
-      'Scammers impersonate police, CBI, ED, or customs officials in simulated police station video calls, claiming a parcel with illegal narcotics was seized in your name.',
+      'Impersonates CBI, Mumbai Police, Narcotics Control Bureau (NCB), or FedEx. Claims a courier parcel with illegal drugs was sent in your name and demands Skype video isolation.',
     example:
-      'Supreme Court digital arrest warrant issued. Remain on video camera for digital custody interrogation.',
+      'Supreme Court & CBI Cyber Cell: An FIR and non-bailable digital arrest warrant is issued on your Aadhaar for suspicious drugs parcel. Join Skype interrogation room.',
     protection: [
-      '"Digital arrest" DOES NOT EXIST under Indian law.',
-      'Police and courts never conduct arrests or interrogations via Skype or WhatsApp video.',
-      'Never transfer money to "RBI verification escrow accounts". Hang up and dial 1930.',
+      'There is NO legal concept of "digital arrest" under the Indian Penal Code or Code of Criminal Procedure.',
+      'Police, CBI, and Customs never interrogate citizens or demand fund verification transfers over Skype or WhatsApp video.',
+      'Immediately disconnect and report the incident to the National Cyber Crime Helpline: 1930.',
     ],
   },
   {
     code: 'VEC_05',
     icon: PackageIcon,
-    title: 'Postal & Courier Delivery Phishing',
-    threat: 'Medium Threat',
+    title: 'India Post & Courier Failed Delivery',
+    threat: 'Moderate Severity',
     threatColor: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
     description:
-      'Messages pretending to be India Post or BlueDart claim your shipment is held due to an incomplete address, requesting a nominal fee (₹25) on a phishing website.',
+      'Claims your parcel cannot be delivered due to an incorrect address or a pending ₹10 redelivery fee. Directs you to a phishing domain designed to steal credit card details.',
     example:
-      'India Post: Your package is held at depot due to incomplete address. Update address and pay ₹25 fee at http://indiapost-update.xyz',
+      'India Post: Your package cannot be delivered due to incomplete address. Update your address within 24 hours at http://indiapost-parcel-delivery.com or it will be returned.',
     protection: [
-      'Official India Post domains end strictly in .gov.in (epostoffice.gov.in, indiapost.gov.in).',
-      'Never pay redelivery charges through SMS links.',
+      'Official India Post domain is indiapost.gov.in — never trust .com, .top, or .xyz domains.',
+      'Postal authorities do not request online redelivery fees via shortened SMS links.',
       'Track parcels directly on official courier tracking portals.',
     ],
   },
@@ -124,7 +124,7 @@ export default function LearnPage() {
   const isHindi = lang === 'hi';
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-[#050b14] text-slate-100">
+    <div className="min-h-screen flex flex-col justify-between bg-[#0f131c] text-slate-100">
       <Navbar />
 
       <main className="w-full flex-1 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
@@ -134,7 +134,7 @@ export default function LearnPage() {
             <div className="max-w-3xl space-y-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.04] rounded-lg border border-white/[0.08]">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="font-mono text-xs text-indigo-400 uppercase tracking-widest font-semibold">
+                <span className="font-mono text-xs text-emerald-400 uppercase tracking-widest font-semibold">
                   TRAINING_MODULE_02 // CERT-IN ALIGNED
                 </span>
               </div>
@@ -149,9 +149,9 @@ export default function LearnPage() {
             </div>
 
             {/* Readiness Telemetry Widget */}
-            <div className="flex items-center gap-4 bg-[#0a101f] p-4 rounded-2xl border border-white/[0.08] shadow-xl">
+            <div className="flex items-center gap-4 bg-[#181b25] p-4 rounded-2xl border border-white/[0.08] shadow-xl">
               <div className="relative w-14 h-14 flex items-center justify-center">
-                <svg className="w-14 h-14 -rotate-90 text-indigo-500" viewBox="0 0 36 36">
+                <svg className="w-14 h-14 -rotate-90 text-emerald-500" viewBox="0 0 36 36">
                   <path
                     className="text-white/[0.08]"
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -183,14 +183,14 @@ export default function LearnPage() {
           </div>
 
           {/* Dual Tab Switcher */}
-          <div className="mt-8 flex flex-wrap items-center gap-2 bg-[#0a101f] p-1.5 rounded-xl border border-white/[0.08] w-fit shadow-sm">
+          <div className="mt-8 flex flex-wrap items-center gap-2 bg-[#181b25] p-1.5 rounded-xl border border-white/[0.08] w-fit shadow-sm">
             <button
               id="tab-guide"
               type="button"
               onClick={() => setActiveTab('guides')}
               className={`px-5 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'guides'
-                  ? 'bg-indigo-600 text-white shadow-[0_0_12px_rgba(99,102,241,0.35)] font-bold'
+                  ? 'bg-emerald-600 text-white shadow-[0_0_12px_rgba(16,185,129,0.35)] font-bold'
                   : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
               }`}
             >
@@ -204,7 +204,7 @@ export default function LearnPage() {
               onClick={() => setActiveTab('quiz')}
               className={`px-5 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'quiz'
-                  ? 'bg-indigo-600 text-white shadow-[0_0_12px_rgba(99,102,241,0.35)] font-bold'
+                  ? 'bg-emerald-600 text-white shadow-[0_0_12px_rgba(16,185,129,0.35)] font-bold'
                   : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
               }`}
             >
@@ -222,13 +222,13 @@ export default function LearnPage() {
               return (
                 <article
                   key={guide.code}
-                  className="flex flex-col justify-between bg-[#0a101f] rounded-2xl p-6 border border-white/[0.08] shadow-xl hover:border-indigo-500/40 transition-all space-y-4"
+                  className="flex flex-col justify-between bg-[#181b25] rounded-2xl p-6 border border-white/[0.08] shadow-xl hover:border-emerald-500/40 transition-all space-y-4"
                 >
                   <div className="space-y-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-                          <IconComp className="w-5 h-5 text-indigo-400" />
+                        <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                          <IconComp className="w-5 h-5 text-emerald-400" />
                         </div>
                         <span className="font-mono text-xs text-slate-400 font-bold">
                           {guide.code}
@@ -246,7 +246,7 @@ export default function LearnPage() {
                       {guide.description}
                     </p>
 
-                    <div className="bg-[#050b14] p-3.5 rounded-xl border border-white/[0.06] space-y-1">
+                    <div className="bg-[#0f131c] p-3.5 rounded-xl border border-white/[0.06] space-y-1">
                       <span className="font-mono text-[10px] text-rose-400 uppercase font-bold block">
                         Intercepted Bait Pattern
                       </span>
@@ -272,9 +272,9 @@ export default function LearnPage() {
                     <div className="pt-2">
                       <a
                         href={`/?text=${encodeURIComponent(guide.example)}`}
-                        className="w-full px-3.5 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 hover:text-white font-mono text-xs rounded-xl border border-indigo-500/30 transition flex items-center justify-center gap-1.5 font-semibold group cursor-pointer"
+                        className="w-full px-3.5 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-white font-mono text-xs rounded-xl border border-emerald-500/30 transition flex items-center justify-center gap-1.5 font-semibold group cursor-pointer"
                       >
-                        <SearchIcon className="w-3.5 h-3.5 text-indigo-400" />
+                        <SearchIcon className="w-3.5 h-3.5 text-emerald-400" />
                         <span>
                           {isHindi ? 'स्कैनर में इस पैटर्न की जांच करें' : 'Analyze Pattern in Scanner'}
                         </span>
@@ -292,7 +292,7 @@ export default function LearnPage() {
       </main>
 
       {/* Sovereign Footer */}
-      <footer className="w-full bg-[#020617] border-t border-white/[0.08] mt-12 py-8">
+      <footer className="w-full bg-[#0a0e17] border-t border-white/[0.08] mt-12 py-8">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <ShieldCheckIcon className="w-4 h-4 text-emerald-400" />

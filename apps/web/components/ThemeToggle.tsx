@@ -36,12 +36,12 @@ export function ThemeToggle() {
       onClick={() => applyTheme(theme === 'dark' ? 'light' : 'dark')}
       aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to obsidian dark theme'}
       title={theme === 'dark' ? 'Switch to light theme' : 'Switch to obsidian dark theme'}
-      className="p-1.5 rounded-lg border border-indigo-500/20 text-slate-400 hover:text-white bg-[#031427]/80 hover:bg-indigo-500/10 transition flex items-center justify-center shadow-sm"
+      className="p-1.5 rounded-lg border border-emerald-500/20 text-slate-400 hover:text-white bg-[#181b25]/80 hover:bg-emerald-500/10 transition flex items-center justify-center shadow-sm"
     >
       {theme === 'dark' ? (
         <SunIcon className="w-4 h-4 text-amber-300" />
       ) : (
-        <MoonIcon className="w-4 h-4 text-indigo-300" />
+        <MoonIcon className="w-4 h-4 text-emerald-300" />
       )}
     </button>
   );

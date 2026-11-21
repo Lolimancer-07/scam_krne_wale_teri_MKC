@@ -133,7 +133,7 @@ export function CategoryExplainer({ category }: { category: string }) {
   const info = CATEGORY_INFO[category] || CATEGORY_INFO.other;
 
   return (
-    <div className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#0a101f] p-6 shadow-xl text-slate-100">
+    <div className="space-y-4 rounded-2xl border border-white/[0.08] bg-[#181b25] p-6 shadow-xl text-slate-100">
       <div className="flex items-center gap-3">
         <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08]">
           {info.renderIcon()}
@@ -179,7 +179,7 @@ export function CategoryExplainer({ category }: { category: string }) {
             href="https://cybercrime.gov.in"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-indigo-400 hover:underline font-semibold"
+            className="text-emerald-400 hover:underline font-semibold"
           >
             cybercrime.gov.in
           </a>

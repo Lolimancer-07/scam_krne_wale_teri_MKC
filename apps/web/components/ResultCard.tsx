@@ -93,7 +93,7 @@ export function ResultCard({
 
   const verdictConfigs = {
     likely_scam: {
-      panelBorder: 'border-rose-500/40 bg-[#0a101f] shadow-[0_0_30px_rgba(239,68,68,0.2)]',
+      panelBorder: 'border-rose-500/40 bg-[#181b25] shadow-[0_0_30px_rgba(239,68,68,0.2)]',
       badge: 'bg-rose-500/20 text-rose-300 font-bold border border-rose-500/40',
       icon: <AlertOctagonIcon className="w-4 h-4 text-rose-400 shrink-0" />,
       title: 'Likely Scam',
@@ -105,7 +105,7 @@ export function ResultCard({
         'High probability of malicious intent. Do not click links, share OTPs, or transfer money.',
     },
     suspicious: {
-      panelBorder: 'border-amber-500/40 bg-[#0a101f] shadow-[0_0_30px_rgba(245,158,11,0.15)]',
+      panelBorder: 'border-amber-500/40 bg-[#181b25] shadow-[0_0_30px_rgba(245,158,11,0.15)]',
       badge: 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40',
       icon: <AlertTriangleIcon className="w-4 h-4 text-amber-400 shrink-0" />,
       title: 'Suspicious Message',
@@ -117,7 +117,7 @@ export function ResultCard({
         'Contains suspicious patterns commonly seen in fraud campaigns. Exercise extreme caution.',
     },
     safe: {
-      panelBorder: 'border-emerald-500/40 bg-[#0a101f] shadow-[0_0_30px_rgba(16,185,129,0.15)]',
+      panelBorder: 'border-emerald-500/40 bg-[#181b25] shadow-[0_0_30px_rgba(16,185,129,0.15)]',
       badge: 'bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40',
       icon: <ShieldCheckIcon className="w-4 h-4 text-emerald-400 shrink-0" />,
       title: 'Likely Safe',
@@ -278,7 +278,7 @@ export function ResultCard({
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] text-indigo-400 font-semibold">
+            <span className="font-mono text-[11px] text-emerald-400 font-semibold">
               ACTION: {currentVerdictConfig.actionRecommendation}
             </span>
           </div>
@@ -304,7 +304,7 @@ export function ResultCard({
                 onClick={handleReadAloud}
                 className={`px-3.5 py-1.5 text-xs font-mono rounded-xl border transition flex items-center gap-1.5 cursor-pointer ${
                   isSpeaking
-                    ? 'border-indigo-400 bg-indigo-500/20 text-indigo-200 animate-pulse'
+                    ? 'border-emerald-400 bg-emerald-500/20 text-emerald-200 animate-pulse'
                     : 'border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white'
                 }`}
                 aria-label={isSpeaking ? 'Stop voice readout' : 'Read assessment aloud'}
@@ -316,7 +316,7 @@ export function ResultCard({
                   </>
                 ) : (
                   <>
-                    <Volume2Icon className="w-3.5 h-3.5 text-indigo-400" />
+                    <Volume2Icon className="w-3.5 h-3.5 text-emerald-400" />
                     <span>Read Aloud (Voice)</span>
                   </>
                 )}
@@ -325,7 +325,7 @@ export function ResultCard({
           </div>
 
           {/* Quick Metrics Column */}
-          <div className="lg:col-span-4 bg-[#050b14] p-4 rounded-xl border border-white/[0.08] space-y-2.5 font-mono text-xs">
+          <div className="lg:col-span-4 bg-[#0f131c] p-4 rounded-xl border border-white/[0.08] space-y-2.5 font-mono text-xs">
             <div className="flex items-center justify-between">
               <span className="text-slate-400 uppercase text-[10px]">Threat Velocity</span>
               <span
@@ -375,7 +375,7 @@ export function ResultCard({
               {currentVerdictConfig.severityLabel}
             </span>
           </div>
-          <div className="grid grid-cols-3 gap-1.5 h-3 w-full rounded-lg overflow-hidden bg-[#050b14] p-0.5 border border-white/[0.08]">
+          <div className="grid grid-cols-3 gap-1.5 h-3 w-full rounded-lg overflow-hidden bg-[#0f131c] p-0.5 border border-white/[0.08]">
             <div
               className={`h-full rounded transition-all ${
                 result.score <= 30
@@ -409,12 +409,12 @@ export function ResultCard({
       {/* 2. 3-Column Triage Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Metric 1: Link Inspection */}
-        <div className="p-4 bg-[#0a101f] rounded-xl border border-white/[0.08] space-y-2">
+        <div className="p-4 bg-[#181b25] rounded-xl border border-white/[0.08] space-y-2">
           <div className="flex items-center justify-between">
             <span className="font-mono text-xs text-slate-400 uppercase font-semibold">
               Link Inspection
             </span>
-            <LinkIcon className="w-4 h-4 text-indigo-400" />
+            <LinkIcon className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="font-mono text-xs text-rose-400 truncate select-all">
             {result.urlAnalysis
@@ -435,7 +435,7 @@ export function ResultCard({
         </div>
 
         {/* Metric 2: Social Engineering & Psychological Vector */}
-        <div className="p-4 bg-[#0a101f] rounded-xl border border-white/[0.08] space-y-2">
+        <div className="p-4 bg-[#181b25] rounded-xl border border-white/[0.08] space-y-2">
           <div className="flex items-center justify-between">
             <span className="font-mono text-xs text-slate-400 uppercase font-semibold">
               Psychological Vector
@@ -457,7 +457,7 @@ export function ResultCard({
         </div>
 
         {/* Metric 3: Sovereign Protection Action */}
-        <div className="p-4 bg-[#0a101f] rounded-xl border border-white/[0.08] space-y-2">
+        <div className="p-4 bg-[#181b25] rounded-xl border border-white/[0.08] space-y-2">
           <div className="flex items-center justify-between">
             <span className="font-mono text-xs text-slate-400 uppercase font-semibold">
               Sovereign Protection
@@ -485,19 +485,19 @@ export function ResultCard({
 
       {/* 2.5 Original Screenshot Preview (if analyzed via OCR) */}
       {screenshotPreview && (
-        <div className="bg-[#0a101f] p-6 rounded-2xl border border-indigo-500/30 space-y-4 shadow-xl">
+        <div className="bg-[#181b25] p-6 rounded-2xl border border-emerald-500/30 space-y-4 shadow-xl">
           <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
             <div className="flex items-center gap-2">
-              <CameraIcon className="w-4 h-4 text-indigo-400" />
+              <CameraIcon className="w-4 h-4 text-emerald-400" />
               <h3 className="font-mono text-xs font-bold text-white uppercase tracking-wider">
                 ORIGINAL SCANNED SCREENSHOT // OCR EVIDENCE BUFFER
               </h3>
             </div>
-            <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono text-[10px] font-bold border border-indigo-500/30">
+            <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[10px] font-bold border border-emerald-500/30">
               OCR EXTRACTED
             </span>
           </div>
-          <div className="max-w-lg mx-auto overflow-hidden rounded-xl border border-white/[0.08] shadow-lg bg-[#050b14] p-2">
+          <div className="max-w-lg mx-auto overflow-hidden rounded-xl border border-white/[0.08] shadow-lg bg-[#0f131c] p-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={screenshotPreview}
@@ -509,15 +509,15 @@ export function ResultCard({
       )}
 
       {/* 3. Highlighted Message Analysis (Forensic Text Inspection) */}
-      <div className="bg-[#0a101f] p-6 rounded-2xl border border-white/[0.08] space-y-4 shadow-xl">
+      <div className="bg-[#181b25] p-6 rounded-2xl border border-white/[0.08] space-y-4 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.08] pb-3">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-indigo-400" />
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
             <h3 className="font-mono text-xs font-bold text-white uppercase tracking-wider">
               FORENSIC TEXT INSPECTION // WEIGHTED PHRASE BREAKDOWN
             </h3>
           </div>
-          <span className="font-mono text-xs text-indigo-400">
+          <span className="font-mono text-xs text-emerald-400">
             {(result.redFlags || []).length} Red Flag
             {(result.redFlags || []).length === 1 ? '' : 's'} Detected
           </span>
@@ -535,7 +535,7 @@ export function ResultCard({
               {result.redFlags.map((flag) => (
                 <div
                   key={flag.id}
-                  className="p-3 rounded-xl border border-white/[0.06] bg-[#050b14] text-xs flex items-start gap-3 hover:border-white/[0.15] transition"
+                  className="p-3 rounded-xl border border-white/[0.06] bg-[#0f131c] text-xs flex items-start gap-3 hover:border-white/[0.15] transition"
                 >
                   <span className="px-2 py-0.5 rounded-lg bg-rose-500/20 text-rose-300 font-mono font-bold text-[11px] shrink-0 border border-rose-500/30">
                     +{flag.weight}
@@ -555,15 +555,15 @@ export function ResultCard({
 
       {/* 4. Defanged URL Deep Domain Analysis (if URL present) */}
       {result.urlAnalysis && (
-        <div className="rounded-2xl border border-white/[0.08] bg-[#0a101f] p-6 space-y-3.5 shadow-xl">
+        <div className="rounded-2xl border border-white/[0.08] bg-[#181b25] p-6 space-y-3.5 shadow-xl">
           <div className="flex items-center gap-2">
-            <LinkIcon className="w-4 h-4 text-indigo-400" />
+            <LinkIcon className="w-4 h-4 text-emerald-400" />
             <h3 className="font-mono text-xs font-bold text-white uppercase tracking-wider">
               Suspicious Link Analysis (Defanged)
             </h3>
           </div>
 
-          <div className="p-3.5 bg-[#050b14] rounded-xl font-mono text-xs sm:text-sm break-all text-rose-400 select-all border border-rose-500/20">
+          <div className="p-3.5 bg-[#0f131c] rounded-xl font-mono text-xs sm:text-sm break-all text-rose-400 select-all border border-rose-500/20">
             {result.urlAnalysis.defanged}
           </div>
 
@@ -601,20 +601,20 @@ export function ResultCard({
       {/* 5. Action Toolbar: NCRP Police Complaint & Emergency Triage */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Card A: One-Click NCRP Police Complaint Draft Generator */}
-        <div className="p-5 rounded-2xl border border-white/[0.08] bg-[#0a101f] space-y-3 flex flex-col justify-between">
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-[#181b25] space-y-3 flex flex-col justify-between">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-mono text-xs text-indigo-400 uppercase font-bold tracking-wider">
+              <span className="font-mono text-xs text-emerald-400 uppercase font-bold tracking-wider">
                 Sovereign Escort
               </span>
-              <ShieldCheckIcon className="w-4 h-4 text-indigo-400" />
+              <ShieldCheckIcon className="w-4 h-4 text-emerald-400" />
             </div>
             <h4 className="font-headline font-bold text-sm text-white">
               National Cybercrime Portal Draft
             </h4>
             <p className="font-body text-xs text-slate-400">
               Generate a formatted complaint narrative with timestamps and forensic evidence ready
-              for paste into <span className="text-indigo-400 font-mono">cybercrime.gov.in</span>.
+              for paste into <span className="text-emerald-400 font-mono">cybercrime.gov.in</span>.
             </p>
           </div>
 
@@ -629,13 +629,13 @@ export function ResultCard({
                   ? 'Hide NCRP Police Draft'
                   : 'Generate Police Complaint Draft (NCRP Format)'}
               </span>
-              <ArrowRightIcon className="w-3.5 h-3.5 text-indigo-400" />
+              <ArrowRightIcon className="w-3.5 h-3.5 text-emerald-400" />
             </button>
           </div>
         </div>
 
         {/* Card B: Emergency Helpline & Bank Freezing */}
-        <div className="p-5 rounded-2xl border border-white/[0.08] bg-[#0a101f] space-y-3 flex flex-col justify-between">
+        <div className="p-5 rounded-2xl border border-white/[0.08] bg-[#181b25] space-y-3 flex flex-col justify-between">
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="font-mono text-xs text-rose-400 uppercase font-bold tracking-wider">
@@ -671,15 +671,15 @@ export function ResultCard({
 
       {/* Expanded NCRP Police Complaint Drawer */}
       {showNcrpDraft && (
-        <div className="p-5 rounded-2xl border border-indigo-500/30 bg-[#050b14] space-y-3 animate-in fade-in-50">
+        <div className="p-5 rounded-2xl border border-emerald-500/30 bg-[#0f131c] space-y-3 animate-in fade-in-50">
           <div className="flex items-center justify-between">
-            <span className="font-mono text-xs font-bold text-indigo-400 uppercase tracking-wider">
+            <span className="font-mono text-xs font-bold text-emerald-400 uppercase tracking-wider">
               NCRP Incident Report Draft
             </span>
             <button
               type="button"
               onClick={handleCopyNcrpDraft}
-              className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-mono text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+              className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-sm"
             >
               {copiedNcrp ? (
                 <>
@@ -694,7 +694,7 @@ export function ResultCard({
               )}
             </button>
           </div>
-          <pre className="p-4 bg-[#0a101f] font-mono text-xs text-slate-200 leading-relaxed overflow-x-auto rounded-xl border border-white/[0.08] whitespace-pre-wrap select-all">
+          <pre className="p-4 bg-[#181b25] font-mono text-xs text-slate-200 leading-relaxed overflow-x-auto rounded-xl border border-white/[0.08] whitespace-pre-wrap select-all">
             {ncrpComplaintDraft}
           </pre>
         </div>
@@ -702,7 +702,7 @@ export function ResultCard({
 
       {/* Expanded Emergency Bank Freeze Drawer */}
       {showEmergency && (
-        <div className="p-5 rounded-2xl border border-rose-500/30 bg-[#050b14] space-y-3 animate-in fade-in-50">
+        <div className="p-5 rounded-2xl border border-rose-500/30 bg-[#0f131c] space-y-3 animate-in fade-in-50">
           <div className="flex items-center justify-between">
             <h4 className="font-mono text-xs font-bold text-rose-400 uppercase tracking-wider">
               Emergency Action Checklist: Compromised Account or Funds Transferred
@@ -745,7 +745,7 @@ export function ResultCard({
                 href="https://cybercrime.gov.in"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-indigo-400 underline font-semibold"
+                className="text-emerald-400 underline font-semibold"
               >
                 cybercrime.gov.in
               </a>
@@ -763,7 +763,7 @@ export function ResultCard({
       <CategoryExplainer category={result.category || 'general'} />
 
       {/* 7. Action Bar: Accuracy Feedback & Reset */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl border border-white/[0.08] bg-[#0a101f]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-2xl border border-white/[0.08] bg-[#181b25]">
         <div className="flex items-center gap-3">
           <span className="font-body text-xs text-slate-400 font-medium">
             Was this assessment accurate?
@@ -801,14 +801,14 @@ export function ResultCard({
             onClick={handleFamilyShare}
             className="px-4 py-2 text-xs font-mono rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 border border-white/[0.08] transition flex items-center gap-1.5 cursor-pointer"
           >
-            <LockIcon className="w-3.5 h-3.5 text-indigo-400" />
+            <LockIcon className="w-3.5 h-3.5 text-emerald-400" />
             <span>{familyCopied ? 'Alert Copied!' : 'Share Family Alert'}</span>
           </button>
 
           <button
             type="button"
             onClick={onReset}
-            className="px-5 py-2 text-xs font-mono font-bold uppercase tracking-wider rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white transition shadow-[0_0_16px_rgba(99,102,241,0.35)] flex items-center gap-2 cursor-pointer border border-indigo-400/30"
+            className="px-5 py-2 text-xs font-mono font-bold uppercase tracking-wider rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white transition shadow-[0_0_16px_rgba(239,68,68,0.35)] flex items-center gap-2 cursor-pointer border border-red-500/30"
           >
             <RotateCcwIcon className="w-3.5 h-3.5" />
             <span>Check Another Message</span>

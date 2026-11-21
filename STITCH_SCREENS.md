@@ -3,7 +3,7 @@
 **Project Name:** Full UI Redesign  
 **Stitch Project ID:** `206713362209727463`  
 **Canvas URL:** [https://stitch.google.com/projects/206713362209727463](https://stitch.google.com/projects/206713362209727463)  
-**Aesthetic:** Deep Space Obsidian Telemetry (`#000f21` / `#031427` dark slate/navy backdrop, subtle grid lines, micro-glassmorphism panels `backdrop-blur-md bg-white/[0.02]`, low-opacity 1px border cards, `#6366f1` / `#a855f7` electric indigo/violet gradients, `#10b981` emerald green telemetry pings, and `#f43f5e` / `#f59e0b` alerts)
+**Aesthetic:** Obsidian Sentinel Cyber Defense (`#0f131c` / `#181b25` neutral dark charcoal backdrop, subtle grid lines, micro-glassmorphism panels `backdrop-blur-md bg-white/[0.02]`, low-opacity 1px border cards, `#10b981` / `#4edea3` electric emerald green telemetry and active indicators, `#ef4444` / `#f43f5e` cyber threat red action and alert palettes, and `#f59e0b` amber warning tags)
 
 ---
 

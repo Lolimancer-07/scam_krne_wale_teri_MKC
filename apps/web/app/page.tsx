@@ -49,7 +49,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-[#050b14] text-slate-100">
+    <div className="min-h-screen flex flex-col justify-between bg-[#0f131c] text-slate-100">
       {/* Top Cyber Defense Navigation Bar */}
       <Navbar onReset={handleReset} />
 
@@ -59,12 +59,12 @@ export default function HomePage() {
         {!analyzedResult && (
           <section className="relative w-full flex flex-col items-center text-center space-y-4 pt-2 sm:pt-4">
             {/* Ambient background glow */}
-            <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-3/4 max-w-[700px] h-[220px] bg-indigo-500/10 blur-[120px] pointer-events-none rounded-full" />
+            <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-3/4 max-w-[700px] h-[220px] bg-emerald-500/10 blur-[120px] pointer-events-none rounded-full" />
 
             {/* Eyebrow Telemetry Tag */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white/[0.04] rounded-lg border border-white/[0.08] shadow-sm">
               <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" />
-              <span className="font-mono text-xs text-indigo-400 tracking-widest uppercase font-semibold">
+              <span className="font-mono text-xs text-emerald-400 tracking-widest uppercase font-semibold">
                 REAL-TIME HEURISTIC THREAT DETECTOR // v4.2-ACTIVE
               </span>
             </div>
@@ -111,8 +111,8 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/[0.04] rounded-lg text-slate-200 border border-white/[0.08]">
-                <KeyIcon className="w-3.5 h-3.5 text-indigo-400" />
-                <span className="font-mono text-[11px] font-semibold tracking-wide text-indigo-300">
+                <KeyIcon className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="font-mono text-[11px] font-semibold tracking-wide text-emerald-300">
                   INDIAN BANKING &amp; TELECOM MODELS
                 </span>
               </div>
@@ -127,6 +127,7 @@ export default function HomePage() {
             result={analyzedResult}
             onReset={handleReset}
             lang={lang}
+            screenshotPreview={analyzedScreenshot}
           />
         ) : (
           <AnalyzerForm
@@ -140,13 +141,13 @@ export default function HomePage() {
         {!analyzedResult && (
           <section className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 max-w-5xl mx-auto w-full">
             {/* Card 1: Interactive Quiz & Simulations */}
-            <div className="relative bg-[#0a101f] rounded-2xl p-6 flex flex-col justify-between hover:bg-[#0f172a] hover:border-indigo-500/40 transition-all group shadow-xl border border-white/[0.08]">
+            <div className="relative bg-[#181b25] rounded-2xl p-6 flex flex-col justify-between hover:bg-[#1c1f29] hover:border-emerald-500/40 transition-all group shadow-xl border border-white/[0.08]">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-1 bg-indigo-500/15 text-indigo-300 font-mono text-[10px] font-bold rounded-lg uppercase border border-indigo-500/30">
+                  <span className="px-2.5 py-1 bg-emerald-500/15 text-emerald-300 font-mono text-[10px] font-bold rounded-lg uppercase border border-emerald-500/30">
                     5-MIN DRILL
                   </span>
-                  <TargetIcon className="w-5 h-5 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+                  <TargetIcon className="w-5 h-5 text-slate-400 group-hover:text-emerald-400 transition-colors" />
                 </div>
                 <div className="space-y-1">
                   <h3 className="font-headline font-bold text-lg text-white">
@@ -161,7 +162,7 @@ export default function HomePage() {
 
                 {/* Mini Inline Simulation Preview */}
                 <div className="py-1">
-                  <div className="p-3 bg-[#050b14] rounded-xl border border-white/[0.06] flex items-center justify-between">
+                  <div className="p-3 bg-[#0f131c] rounded-xl border border-white/[0.06] flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-400" />
                       <span className="font-mono text-[11px] text-slate-200">UPI Request</span>
@@ -176,7 +177,7 @@ export default function HomePage() {
               <div className="pt-4">
                 <Link
                   href="/learn"
-                  className="inline-flex items-center gap-1.5 font-mono text-xs text-indigo-400 group-hover:text-indigo-300 transition-colors font-bold uppercase tracking-wider"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-400 group-hover:text-emerald-300 transition-colors font-bold uppercase tracking-wider"
                 >
                   <span>{isHindi ? 'ड्रिल शुरू करें' : 'Start Defense Drill'}</span>
                   <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -185,7 +186,7 @@ export default function HomePage() {
             </div>
 
             {/* Card 2: Live Community Stats & Threat Feed */}
-            <div className="relative bg-[#0a101f] rounded-2xl p-6 flex flex-col justify-between hover:bg-[#0f172a] hover:border-indigo-500/40 transition-all group shadow-xl border border-white/[0.08]">
+            <div className="relative bg-[#181b25] rounded-2xl p-6 flex flex-col justify-between hover:bg-[#1c1f29] hover:border-emerald-500/40 transition-all group shadow-xl border border-white/[0.08]">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="px-2.5 py-1 bg-emerald-500/15 text-emerald-300 font-mono text-[10px] font-bold rounded-lg uppercase flex items-center gap-1.5 border border-emerald-500/30">
@@ -207,7 +208,7 @@ export default function HomePage() {
 
                 {/* Stat Counters */}
                 <div className="grid grid-cols-2 gap-2 py-1">
-                  <div className="p-2.5 bg-[#050b14] rounded-xl border border-white/[0.06]">
+                  <div className="p-2.5 bg-[#0f131c] rounded-xl border border-white/[0.06]">
                     <span className="font-mono text-[10px] text-slate-400 uppercase block">
                       Intercepted
                     </span>
@@ -218,7 +219,7 @@ export default function HomePage() {
                       Malicious SMS Patterns
                     </span>
                   </div>
-                  <div className="p-2.5 bg-[#050b14] rounded-xl border border-white/[0.06]">
+                  <div className="p-2.5 bg-[#0f131c] rounded-xl border border-white/[0.06]">
                     <span className="font-mono text-[10px] text-slate-400 uppercase block">
                       Prevented
                     </span>
@@ -235,7 +236,7 @@ export default function HomePage() {
               <div className="pt-4">
                 <Link
                   href="/stats"
-                  className="inline-flex items-center gap-1.5 font-mono text-xs text-indigo-400 group-hover:text-indigo-300 transition-colors font-bold uppercase tracking-wider"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-400 group-hover:text-emerald-300 transition-colors font-bold uppercase tracking-wider"
                 >
                   <span>{isHindi ? 'लाइव आंकड़े देखें' : 'View Live Incident Telemetry'}</span>
                   <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -244,7 +245,7 @@ export default function HomePage() {
             </div>
 
             {/* Card 3: Zero-PII Storage Architecture */}
-            <div className="relative bg-[#0a101f] rounded-2xl p-6 flex flex-col justify-between hover:bg-[#0f172a] hover:border-indigo-500/40 transition-all group shadow-xl border border-white/[0.08]">
+            <div className="relative bg-[#181b25] rounded-2xl p-6 flex flex-col justify-between hover:bg-[#1c1f29] hover:border-emerald-500/40 transition-all group shadow-xl border border-white/[0.08]">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="px-2.5 py-1 bg-white/[0.05] text-slate-300 font-mono text-[10px] font-bold rounded-lg uppercase border border-white/[0.1]">
@@ -264,12 +265,12 @@ export default function HomePage() {
                 </div>
 
                 {/* Architecture Nodes Visual */}
-                <div className="p-3 bg-[#050b14] rounded-xl border border-white/[0.06] space-y-1.5">
+                <div className="p-3 bg-[#0f131c] rounded-xl border border-white/[0.06] space-y-1.5">
                   <div className="flex items-center justify-between font-mono text-[10px]">
                     <span className="text-slate-400">CLIENT_SCRUB</span>
                     <span className="text-emerald-400 font-bold">SHA-256 SALT OK</span>
                   </div>
-                  <div className="w-full bg-[#1e293b] h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-[#262a34] h-1.5 rounded-full overflow-hidden">
                     <div className="bg-emerald-400 h-full w-full" />
                   </div>
                   <div className="flex items-center justify-between font-mono text-[9px] text-slate-500">
@@ -282,7 +283,7 @@ export default function HomePage() {
               <div className="pt-4">
                 <Link
                   href="/privacy"
-                  className="inline-flex items-center gap-1.5 font-mono text-xs text-indigo-400 group-hover:text-indigo-300 transition-colors font-bold uppercase tracking-wider"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-emerald-400 group-hover:text-emerald-300 transition-colors font-bold uppercase tracking-wider"
                 >
                   <span>{isHindi ? 'सुरक्षा श्वेतपत्र पढ़ें' : 'Read Sovereign Whitepaper'}</span>
                   <ArrowRightIcon className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -294,7 +295,7 @@ export default function HomePage() {
       </main>
 
       {/* Sovereign National Defense Footer */}
-      <footer className="w-full bg-[#020617] border-t border-white/[0.08] mt-12">
+      <footer className="w-full bg-[#0a0e17] border-t border-white/[0.08] mt-12">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-2">
@@ -328,13 +329,13 @@ export default function HomePage() {
                 Vector Channels
               </span>
               <div className="flex flex-col gap-1.5 font-body text-xs text-slate-400">
-                <Link href="/learn" className="hover:text-indigo-400 transition-colors">
+                <Link href="/learn" className="hover:text-emerald-400 transition-colors">
                   UPI &amp; QR Spoof Grid
                 </Link>
-                <Link href="/learn" className="hover:text-indigo-400 transition-colors">
+                <Link href="/learn" className="hover:text-emerald-400 transition-colors">
                   Malicious APK Analysis
                 </Link>
-                <Link href="/learn" className="hover:text-indigo-400 transition-colors">
+                <Link href="/learn" className="hover:text-emerald-400 transition-colors">
                   VoIP &amp; +91 Origin Trace
                 </Link>
               </div>
@@ -352,7 +353,7 @@ export default function HomePage() {
                   href="https://cybercrime.gov.in"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-xs text-indigo-400 hover:underline block font-bold"
+                  className="font-mono text-xs text-emerald-400 hover:underline block font-bold"
                 >
                   cybercrime.gov.in (Helpline: 1930)
                 </a>
