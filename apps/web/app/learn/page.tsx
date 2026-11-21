@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import { Navbar } from '@/components/Navbar';
 import { Quiz } from '@/components/Quiz';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { useLanguage } from '@/components/LanguageProvider';
 import {
-  ShieldIcon,
   BookOpenIcon,
   TargetIcon,
   CheckCircleIcon,
@@ -16,239 +14,280 @@ import {
   ScaleIcon,
   PackageIcon,
   BriefcaseIcon,
+  ShieldCheckIcon,
+  LockIcon,
 } from '@/components/Icons';
 
 const SCAM_GUIDES = [
   {
-    icon: <BuildingIcon className="w-5 h-5 text-indigo-400" />,
+    code: 'VEC_01',
+    icon: BuildingIcon,
     title: 'Bank & KYC Expiry Scams',
-    threat: 'High',
-    threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    threat: 'High Threat',
+    threatColor: 'bg-error-container text-on-error border border-error/30',
     description:
-      'Fraudsters claim your bank account, NetBanking, debit card, or PAN linking will be suspended within 24 hours. They provide a lookalike link (e.g. sbi-kyc.xyz) to steal login passwords and OTPs.',
+      'Fraudsters impersonate major Indian banks via bulk SMS or WhatsApp, creating false panic about immediate account suspension to harvest netbanking credentials and OTPs.',
     example:
-      '"Dear Customer, your SBI account KYC expires today. Verify immediately via http://sbi-kyc.top or account will be blocked."',
+      'Dear Customer, your SBI account KYC expires today. Verify immediately via http://sbi-kyc.top',
     protection: [
-      'Banks NEVER ask you to update KYC via web links sent over SMS.',
-      'Check URL domains: only trust sbi.co.in, hdfcbank.com, icicibank.com.',
-      'Always access banking through official mobile banking apps.',
+      'Check official bank domain (e.g., onlinesbi.sbi, never .top or .xyz).',
+      'Never click KYC update links received via SMS or WhatsApp.',
+      'Banks never ask for PIN, CVV, or OTP to complete KYC.',
     ],
   },
   {
-    icon: <ZapIcon className="w-5 h-5 text-amber-400" />,
+    code: 'VEC_02',
+    icon: ZapIcon,
     title: 'Electricity & Utility Disconnection',
-    threat: 'Critical',
-    threatColor: 'bg-rose-600/30 text-rose-200 border-rose-500/50',
+    threat: 'Critical Threat',
+    threatColor: 'bg-error-container text-on-error border border-error/40 shadow-sm',
     description:
-      'A panic message threatens that your power supply will be cut off tonight at 9:30 PM due to an unpaid bill. Victims are urged to call a personal 10-digit mobile number, leading to remote-access app downloads (AnyDesk, TeamViewer).',
+      'Attackers send urgent messages threatening power disconnection at 9:30 PM tonight due to an unpaid previous month bill, pressuring victims into calling a fake officer.',
     example:
-      '"Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM. Contact electricity officer at 9876543210 immediately."',
+      'Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM. Call officer at 9876543210 immediately.',
     protection: [
-      'State electricity boards send formal printed notices, not urgent same-day SMS from mobile numbers.',
-      'NEVER download APKs or screen-sharing apps (QuickSupport, AnyDesk) instructed over the phone.',
-      'Pay bills exclusively via authorized utility apps or Bharat BillPay (BBPS).',
+      'State electricity boards never issue cut-off notices from personal 10-digit mobile numbers.',
+      'Never install remote screen-sharing tools (AnyDesk, QuickSupport) instructed over the phone.',
+      'Pay bills strictly via Bharat BillPay (BBPS) or the official DISCOM website.',
     ],
   },
   {
-    icon: <QrCodeIcon className="w-5 h-5 text-emerald-400" />,
-    title: 'UPI "Receive Money" QR Code Scams',
-    threat: 'High',
-    threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    code: 'VEC_03',
+    icon: QrCodeIcon,
+    title: 'UPI & QR Spoof Grid',
+    threat: 'High Threat',
+    threatColor: 'bg-error-container text-on-error border border-error/30',
     description:
-      'When selling goods on OLX or receiving refunds, scammers send a QR code or Collect Request saying "Scan this QR and enter your PIN to receive money in your bank account".',
+      'When selling goods on OLX or receiving refunds, scammers send a QR code or Collect Request claiming scanning it is necessary to receive payment directly into your account.',
     example:
-      '"Payment of Rs 15,000 sent for your sofa. Scan this QR code and enter UPI PIN to receive money into your account."',
+      'Payment of ₹15,000 sent for your sofa. Scan this QR code and enter UPI PIN to receive money into your account.',
     protection: [
-      'GOLDEN RULE: You NEVER enter your UPI PIN to receive money. Entering a PIN always debits your account.',
-      'Scanning a QR code always sends money away from your wallet.',
-      'Decline all unexpected collect requests in Google Pay, PhonePe, or Paytm.',
+      'GOLDEN RULE: You NEVER enter your UPI PIN to receive money. A PIN always debits money.',
+      'Scanning a QR code ALWAYS sends funds away from your account.',
+      'Decline all unexpected collect requests in PhonePe, Google Pay, or Paytm.',
     ],
   },
   {
-    icon: <ScaleIcon className="w-5 h-5 text-purple-400" />,
+    code: 'VEC_04',
+    icon: ScaleIcon,
     title: 'Digital Arrest & Police Extortion',
-    threat: 'Severe',
-    threatColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    threat: 'Critical Threat',
+    threatColor: 'bg-error-container text-on-error border border-error/40',
     description:
-      'Scammers impersonate police, CBI, ED, or customs officers. They place video calls in fake police station setups and claim a parcel containing illegal drugs was intercepted in your name, threatening immediate arrest.',
+      'Scammers impersonate police, CBI, ED, or customs officials in simulated police station video calls, claiming a parcel with illegal narcotics was seized in your name.',
     example:
-      '"Supreme Court digital arrest warrant issued. Remain on video camera for digital custody interrogation."',
+      'Supreme Court digital arrest warrant issued. Remain on video camera for digital custody interrogation.',
     protection: [
       '"Digital arrest" DOES NOT EXIST under Indian law.',
       'Police and courts never conduct arrests or interrogations via Skype or WhatsApp video.',
-      'Never transfer money to "RBI verification escrow accounts". Hang up and call 1930.',
+      'Never transfer money to "RBI verification escrow accounts". Hang up and dial 1930.',
     ],
   },
   {
-    icon: <PackageIcon className="w-5 h-5 text-amber-400" />,
-    title: 'Postal & Courier Customs Fee Bait',
-    threat: 'Medium',
-    threatColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    code: 'VEC_05',
+    icon: PackageIcon,
+    title: 'Postal & Courier Delivery Phishing',
+    threat: 'Medium Threat',
+    threatColor: 'bg-tertiary-container/30 text-tertiary border border-tertiary/30',
     description:
-      'Messages pretending to be India Post or BlueDart claim your shipment is held due to an incomplete house number. You are asked to pay a tiny fee (₹10–₹25) on a phishing website.',
+      'Messages pretending to be India Post or BlueDart claim your shipment is held due to an incomplete address, requesting a nominal fee (₹25) on a phishing website.',
     example:
-      '"India Post: Your package is held at depot due to incomplete address. Update address and pay ₹25 fee at http://indiapost-update.xyz"',
+      'India Post: Your package is held at depot due to incomplete address. Update address and pay ₹25 fee at http://indiapost-update.xyz',
     protection: [
       'Official India Post domains end strictly in .gov.in (epostoffice.gov.in, indiapost.gov.in).',
       'Never pay redelivery charges through SMS links.',
-      'Track parcels directly on official courier portals.',
+      'Track parcels directly on official courier tracking portals.',
     ],
   },
   {
-    icon: <BriefcaseIcon className="w-5 h-5 text-indigo-400" />,
-    title: 'Work-from-Home & Video Like Traps',
-    threat: 'High',
-    threatColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    code: 'VEC_06',
+    icon: BriefcaseIcon,
+    title: 'Work-from-Home & Task Traps',
+    threat: 'High Threat',
+    threatColor: 'bg-error-container text-on-error border border-error/30',
     description:
-      'Offers high daily income (₹3,000–₹8,000) for liking YouTube videos or writing reviews. After giving small payouts (₹150), they lure you into Telegram VIP groups demanding large prepaid deposits.',
+      'Lures victims with high daily income (₹3,000–₹8,000) for liking YouTube videos or Google reviews. Small initial payouts are followed by demands for large prepaid deposits.',
     example:
-      '"Part-time job offer! Earn ₹5,000 daily by liking YouTube videos. Join our official Telegram group."',
+      'Part-time job offer! Earn ₹5,000 daily by liking YouTube videos. Join our official Telegram group.',
     protection: [
-      'No genuine company pays thousands per day for clicking likes.',
-      'Any job that asks you to pay money upfront to receive tasks is 100% fraud.',
-      'Block and report the Telegram or WhatsApp recruiter.',
+      'No genuine organization pays thousands daily for clicking social media likes.',
+      'Any job requiring you to pay money upfront to receive tasks is guaranteed fraud.',
+      'Block and report the Telegram channel or recruiter number immediately.',
     ],
   },
 ];
 
 export default function LearnPage() {
   const [activeTab, setActiveTab] = useState<'guides' | 'quiz'>('guides');
+  const { lang } = useLanguage();
+  const isHindi = lang === 'hi';
 
   return (
-    <div className="min-h-screen flex flex-col justify-between selection:bg-indigo-500/30">
-      {/* Header */}
-      <header className="border-b border-indigo-500/15 bg-[#000f21]/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 flex items-center justify-center shadow-sm">
-              <ShieldIcon className="w-5 h-5 text-indigo-400" />
+    <div className="min-h-screen flex flex-col justify-between bg-surface text-on-surface">
+      <Navbar />
+
+      <main className="w-full flex-1 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+        {/* Header & Telemetry Overview */}
+        <section className="relative w-full overflow-hidden">
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 border-b border-surface-container-high pb-8">
+            <div className="max-w-3xl space-y-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded-lg border border-outline-variant/30">
+                <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+                <span className="font-mono text-xs text-secondary uppercase tracking-widest font-semibold">
+                  TRAINING_MODULE_02 // CERT-IN ALIGNED
+                </span>
+              </div>
+              <h1 className="font-headline text-3xl sm:text-5xl font-black text-on-surface tracking-tight">
+                {isHindi ? 'धोखाधड़ी से बचाव सीखें' : 'Learn Scam Defense'}
+              </h1>
+              <p className="font-body text-sm sm:text-base text-on-surface-variant max-w-2xl leading-relaxed">
+                {isHindi
+                  ? 'जानें कि डिजिटल जालसाज तात्कालिकता, डर और लालच का कैसे फायदा उठाते हैं। भारतीय खतरों के लाल झंडे पहचानें और क्विज से अपनी परीक्षा लें।'
+                  : 'Understand how digital fraudsters manipulate urgency, fear, and greed. Master red flags across Indian vectors and test your reflexes.'}
+              </p>
             </div>
-            <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              ScamShield
-            </span>
-          </Link>
 
-          <nav className="flex items-center gap-4 text-xs font-semibold">
-            <Link href="/" className="text-slate-400 hover:text-white transition">
-              Scanner
-            </Link>
-            <Link
-              href="/learn"
-              className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-medium transition"
-            >
-              Learn & Quiz
-            </Link>
-            <Link href="/stats" className="text-slate-400 hover:text-white transition">
-              Live Stats
-            </Link>
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            <ThemeToggle />
+            {/* Readiness Telemetry Widget */}
+            <div className="flex items-center gap-4 bg-surface-container-low p-4 rounded-xl border border-surface-container-high shadow-md">
+              <div className="relative w-14 h-14 flex items-center justify-center">
+                <svg className="w-14 h-14 -rotate-90 text-secondary" viewBox="0 0 36 36">
+                  <path
+                    className="text-surface-container-high"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                  />
+                  <path
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeDasharray="100, 100"
+                    strokeLinecap="round"
+                    strokeWidth="3"
+                  />
+                </svg>
+                <span className="absolute font-mono text-xs text-on-surface font-bold">06</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-mono text-[10px] text-on-surface-variant uppercase">
+                  Active Threat Vectors
+                </span>
+                <span className="font-headline font-bold text-sm text-on-surface">
+                  6 Core Defense Modules
+                </span>
+                <span className="font-mono text-[11px] text-secondary">HELPLINE: 1930 READY</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-5xl mx-auto px-4 py-8 sm:py-12 w-full space-y-8">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/5 text-xs text-indigo-300">
-            <span className="font-mono text-[11px]">Digital Fraud Defense Curriculum</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Learn Scam Defense
-          </h1>
-          <p className="text-sm sm:text-base text-slate-400 leading-relaxed">
-            Understand how digital fraudsters manipulate urgency, fear, and greed. Master the red
-            flags and test your skills with our interactive quiz.
-          </p>
-
-          {/* Tab Selector */}
-          <div className="inline-flex p-1 rounded-xl bg-[#031427]/90 border border-indigo-500/20 mt-4 backdrop-blur-md">
+          {/* Dual Tab Switcher */}
+          <div className="mt-8 flex flex-wrap items-center gap-2 bg-surface-container-low p-1.5 rounded-xl border border-surface-container-high w-fit shadow-sm">
             <button
+              id="tab-guide"
+              type="button"
               onClick={() => setActiveTab('guides')}
-              className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+              className={`px-5 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'guides'
-                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-secondary-container text-on-secondary-container shadow-[0_0_12px_rgba(78,222,163,0.25)] font-bold'
+                  : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
               }`}
             >
               <BookOpenIcon className="w-4 h-4" />
-              <span>Scam Guide Hub</span>
+              <span>{isHindi ? 'गाइड संग्रह' : 'Scam Guide Hub'}</span>
             </button>
+
             <button
+              id="tab-quiz"
+              type="button"
               onClick={() => setActiveTab('quiz')}
-              className={`px-5 py-2 text-xs font-bold rounded-lg transition-all duration-200 flex items-center gap-2 cursor-pointer ${
+              className={`px-5 py-2.5 rounded-lg font-mono text-xs uppercase tracking-wider font-semibold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'quiz'
-                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-secondary-container text-on-secondary-container shadow-[0_0_12px_rgba(78,222,163,0.25)] font-bold'
+                  : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high'
               }`}
             >
               <TargetIcon className="w-4 h-4" />
-              <span>10-Question Quiz</span>
+              <span>{isHindi ? '10-प्रश्नों की क्विज' : '10-Question Quiz'}</span>
             </button>
           </div>
-        </div>
+        </section>
 
-        {/* Guides View */}
+        {/* Dynamic Display: Guides Grid or 10-Question Quiz */}
         {activeTab === 'guides' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {SCAM_GUIDES.map((guide, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl border border-white/[0.08] bg-[#031427]/70 backdrop-blur-md p-6 shadow-xl space-y-4 hover:border-indigo-500/30 transition duration-200"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10">
-                      {guide.icon}
+          <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {SCAM_GUIDES.map((guide) => {
+              const IconComp = guide.icon;
+              return (
+                <article
+                  key={guide.code}
+                  className="flex flex-col justify-between bg-surface-container-low rounded-xl p-6 border border-surface-container-high shadow-lg hover:border-outline-variant transition-all space-y-4"
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-lg bg-surface-container-high border border-outline-variant/30 flex items-center justify-center text-primary">
+                          <IconComp className="w-5 h-5 text-primary" />
+                        </div>
+                        <span className="font-mono text-xs text-on-surface-variant font-bold">
+                          {guide.code}
+                        </span>
+                      </div>
+                      <span
+                        className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase ${guide.threatColor}`}
+                      >
+                        {guide.threat}
+                      </span>
                     </div>
-                    <h3 className="text-base font-bold text-white font-mono">{guide.title}</h3>
+
+                    <h2 className="font-headline font-bold text-lg text-on-surface">
+                      {guide.title}
+                    </h2>
+                    <p className="font-body text-xs text-on-surface-variant leading-relaxed">
+                      {guide.description}
+                    </p>
+
+                    <div className="bg-surface-container-lowest p-3.5 rounded-lg border border-surface-container-high space-y-1">
+                      <span className="font-mono text-[10px] text-primary uppercase font-bold block">
+                        Intercepted Bait Pattern
+                      </span>
+                      <p className="font-mono text-xs text-on-surface leading-relaxed">
+                        &quot;{guide.example}&quot;
+                      </p>
+                    </div>
                   </div>
-                  <span
-                    className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold font-mono border ${guide.threatColor}`}
-                  >
-                    {guide.threat} Threat
-                  </span>
-                </div>
 
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  {guide.description}
-                </p>
-
-                <div className="p-3.5 rounded-xl bg-[#000814]/80 border border-white/10 font-mono text-xs text-rose-300 leading-relaxed">
-                  <span className="text-[10px] uppercase tracking-wider text-slate-500 block mb-1">
-                    Realistic Scam Example:
-                  </span>
-                  {guide.example}
-                </div>
-
-                <div className="space-y-1.5 pt-1">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-400 font-bold font-mono block mb-1">
-                    Defense Checklist:
-                  </span>
-                  {guide.protection.map((item, pIdx) => (
-                    <div key={pIdx} className="flex items-start gap-2 text-xs text-slate-300">
-                      <CheckCircleIcon className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+                  <div className="pt-3 border-t border-surface-container-high space-y-2">
+                    <span className="font-mono text-[10px] text-secondary uppercase tracking-wider block font-bold">
+                      Protection Checklist
+                    </span>
+                    <ul className="space-y-1.5 font-body text-xs text-on-surface">
+                      {guide.protection.map((item, pIdx) => (
+                        <li key={pIdx} className="flex items-start gap-2">
+                          <CheckCircleIcon className="w-3.5 h-3.5 text-secondary shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              );
+            })}
+          </section>
         ) : (
           <Quiz />
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-indigo-500/10 bg-[#000f21]/60 py-6 text-center text-xs text-slate-500">
-        <p>
-          ScamShield Educational Portal — Emergency Cyber Crime Helpline:{' '}
-          <strong className="text-slate-300 font-mono">1930</strong>
-        </p>
+      {/* Sovereign Footer */}
+      <footer className="w-full bg-surface-container-lowest border-t border-surface-container-high mt-12 py-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-on-surface-variant">
+          <div className="flex items-center gap-2">
+            <ShieldCheckIcon className="w-4 h-4 text-secondary" />
+            <span>CERT-In &amp; NCRP Aligned Defense Knowledgebase</span>
+          </div>
+          <span>Emergency Cybercrime Helpline: 1930</span>
+        </div>
       </footer>
     </div>
   );
