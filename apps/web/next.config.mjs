@@ -69,6 +69,12 @@ const nextConfig = {
       '.js': ['.ts', '.tsx', '.js'],
       '.jsx': ['.tsx', '.jsx'],
     };
+    // Silence harmless dynamic-require warnings from OpenTelemetry / Sentry
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings ?? []),
+      { module: /@opentelemetry/ },
+      { module: /require-in-the-middle/ },
+    ];
     return config;
   },
 };
