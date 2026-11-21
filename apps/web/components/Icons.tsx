@@ -742,3 +742,47 @@ export function CopyIcon({ className = 'w-4 h-4', size, ...props }: IconProps) {
     </svg>
   );
 }
+
+export function ShareIcon({ className = 'w-4 h-4', size, ...props }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={size}
+      height={size}
+      className={className}
+      {...props}
+    >
+      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+      <path d="M16 6l-4-4-4 4" />
+      <path d="M12 2v13" />
+    </svg>
+  );
+}
+
+export function ImageIcon({ className = 'w-4 h-4', size, ...props }: IconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width={size}
+      height={size}
+      className={className}
+      {...props}
+    >
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <circle cx="9" cy="9" r="2" />
+      <path d="M21 15l-5-5L5 21" />
+    </svg>
+  );
+}

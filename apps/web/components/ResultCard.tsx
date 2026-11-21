@@ -16,6 +16,8 @@ import {
   Volume2Icon,
   CopyIcon,
   PhoneCallIcon,
+  ShareIcon,
+  ImageIcon,
 } from './Icons';
 
 export interface UrlAnalysis {
@@ -60,6 +62,7 @@ interface ResultCardProps {
 
 export function ResultCard({ originalText, result, onReset }: ResultCardProps) {
   const [feedbackSent, setFeedbackSent] = useState<boolean | null>(null);
+  const [familyCopied, setFamilyCopied] = useState<boolean>(false);
   const [showEmergency, setShowEmergency] = useState(false);
   const [copied, setCopied] = useState(false);
   const { lang } = useLanguage();

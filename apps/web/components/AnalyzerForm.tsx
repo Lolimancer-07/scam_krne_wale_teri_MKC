@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { analyzeText } from '@scamshield/detector';
+import { createWorker } from 'tesseract.js';
 import { DetectionResultData } from './ResultCard';
 import {
   FileTextIcon,
@@ -10,6 +12,7 @@ import {
   SearchIcon,
   AlertTriangleIcon,
 } from './Icons';
+import { DetectionResult } from '@scamshield/detector';
 
 interface AnalyzerFormProps {
   onAnalyzeSuccess: (data: DetectionResultData, text: string) => void;
@@ -59,7 +62,14 @@ export function AnalyzerForm({
 
   const handleTextSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim()) {
+      setErrorMessage(
+        isHindi
+          ? 'कृपया जांच के लिए कोई संदेश दर्ज करें या ऊपर एक उदाहरण चुनें।'
+          : 'Please enter or paste a message to analyze, or click one of the realistic samples above.',
+      );
+      return;
+    }
 
     setLoading(true);
     setLoadingStep(isHindi ? 'संकेतों का विश्लेषण जारी है...' : 'Analyzing fraud signals...');
@@ -91,7 +101,14 @@ export function AnalyzerForm({
 
   const handleUrlSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!urlInput.trim()) return;
+    if (!urlInput.trim()) {
+      setErrorMessage(
+        isHindi
+          ? 'कृपया जांच के लिए कोई वेबसाइट लिंक दर्ज करें।'
+          : 'Please enter a website link to verify.',
+      );
+      return;
+    }
 
     setLoading(true);
     setLoadingStep(
@@ -138,7 +155,14 @@ export function AnalyzerForm({
 
   const handleImageSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!imageFile) return;
+    if (!imageFile) {
+      setErrorMessage(
+        isHindi
+          ? 'कृपया विश्लेषण के लिए कोई स्क्रीनशॉट चित्र चुनें।'
+          : 'Please select or upload a screenshot to analyze.',
+      );
+      return;
+    }
 
     setLoading(true);
     setLoadingStep(
@@ -174,9 +198,11 @@ export function AnalyzerForm({
   return (
     <div className="w-full max-w-3xl rounded-2xl border border-indigo-500/20 bg-[#031427]/80 backdrop-blur-md p-6 sm:p-7 shadow-xl shadow-indigo-950/30 space-y-5">
       {/* Tab Switcher */}
-      <div className="flex border-b border-indigo-500/15 pb-3 gap-2">
+      <div className="flex border-b border-indigo-500/15 pb-3 gap-2" role="tablist">
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'text'}
           onClick={() => {
             setActiveTab('text');
             setErrorMessage(null);
@@ -193,6 +219,8 @@ export function AnalyzerForm({
 
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'image'}
           onClick={() => {
             setActiveTab('image');
             setErrorMessage(null);
@@ -209,6 +237,8 @@ export function AnalyzerForm({
 
         <button
           type="button"
+          role="tab"
+          aria-selected={activeTab === 'url'}
           onClick={() => {
             setActiveTab('url');
             setErrorMessage(null);
@@ -243,7 +273,10 @@ export function AnalyzerForm({
           <div className="relative">
             <textarea
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+                if (errorMessage) setErrorMessage(null);
+              }}
               maxLength={5000}
               rows={5}
               placeholder={
@@ -299,7 +332,7 @@ export function AnalyzerForm({
           </label>
 
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2">
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2 animate-in fade-in-50">
               <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{errorMessage}</span>
             </div>
@@ -308,7 +341,7 @@ export function AnalyzerForm({
           <div className="pt-2 flex justify-end">
             <button
               type="submit"
-              disabled={loading || !text.trim()}
+              disabled={loading}
               className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo cursor-pointer"
             >
               {loading ? (
@@ -374,7 +407,7 @@ export function AnalyzerForm({
           </div>
 
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2">
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2 animate-in fade-in-50">
               <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{errorMessage}</span>
             </div>
@@ -383,7 +416,7 @@ export function AnalyzerForm({
           <div className="pt-2 flex justify-end">
             <button
               type="submit"
-              disabled={loading || !imageFile}
+              disabled={loading}
               className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo cursor-pointer"
             >
               {loading ? (
@@ -412,7 +445,10 @@ export function AnalyzerForm({
             <input
               type="text"
               value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
+              onChange={(e) => {
+                setUrlInput(e.target.value);
+                if (errorMessage) setErrorMessage(null);
+              }}
               placeholder="e.g. http://sbi-kyc-update.xyz or http://192.168.1.100/pay"
               className="w-full rounded-xl border border-white/10 bg-[#000814]/80 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-400 font-mono text-slate-100 placeholder:text-slate-500"
             />
@@ -423,7 +459,7 @@ export function AnalyzerForm({
           </div>
 
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2">
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-center gap-2 animate-in fade-in-50">
               <AlertTriangleIcon className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{errorMessage}</span>
             </div>
@@ -432,7 +468,7 @@ export function AnalyzerForm({
           <div className="pt-2 flex justify-end">
             <button
               type="submit"
-              disabled={loading || !urlInput.trim()}
+              disabled={loading}
               className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 border border-indigo-400/20 glow-indigo cursor-pointer"
             >
               {loading ? (
